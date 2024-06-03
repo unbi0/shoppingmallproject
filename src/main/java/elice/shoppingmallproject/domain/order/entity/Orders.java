@@ -1,5 +1,6 @@
 package elice.shoppingmallproject.domain.order.entity;
 
+import elice.shoppingmallproject.global.common.BaseTimeEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -30,7 +31,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Orders {
+public class Orders extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,9 +51,6 @@ public class Orders {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.PLACED;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

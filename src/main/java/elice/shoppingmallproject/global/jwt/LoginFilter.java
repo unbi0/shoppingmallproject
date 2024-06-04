@@ -5,6 +5,7 @@ import elice.shoppingmallproject.domain.auth.entity.Refresh;
 import elice.shoppingmallproject.domain.auth.repository.RefreshRepository;
 import elice.shoppingmallproject.domain.user.entity.CustomUserDetails;
 import elice.shoppingmallproject.domain.user.entity.Role;
+import elice.shoppingmallproject.global.util.TokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -53,7 +54,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         Role role = Role.valueOf(authentication.getAuthorities().iterator().next().getAuthority());
 
         String accessToken = jwtUtil.createJwt("access", email, role, ACCESS_TOKEN_EXPIRATION_MS);
-        String refreshToken = jwtUtil.createJwt("refresh", email, role, REFRESH_TOKEN_EXPIRATION_MS);
+        String refreshToken = TokenUtil.createRefresh();
 
         addRefreshEntity(email, refreshToken, REFRESH_TOKEN_EXPIRATION_MS);
         response.setHeader(ACCESS_TOKEN_HEADER, accessToken);

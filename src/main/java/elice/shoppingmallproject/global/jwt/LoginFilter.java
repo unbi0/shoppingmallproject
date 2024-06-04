@@ -3,26 +3,32 @@ package elice.shoppingmallproject.global.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import elice.shoppingmallproject.domain.auth.entity.Refresh;
 import elice.shoppingmallproject.domain.auth.repository.RefreshRepository;
+import elice.shoppingmallproject.domain.user.dto.UserLoginDto;
 import elice.shoppingmallproject.domain.user.entity.CustomUserDetails;
 import elice.shoppingmallproject.domain.user.entity.Role;
 import elice.shoppingmallproject.global.util.TokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.StreamUtils;
 
+@Slf4j
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private static final long ACCESS_TOKEN_EXPIRATION_MS = 600000L; // 10 minutes
@@ -38,8 +44,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-        String email = obtainUsername(request);
-        String password = obtainPassword(request);
+        UserLoginDto userLoginDto = new UserLoginDto();
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            ServletInputStream inputStream = request.getInputStream();
+            String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+            userLoginDto = objectMapper.readValue(messageBody, UserLoginDto.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String email = userLoginDto.getEmail();
+        String password = userLoginDto.getPassword();
+
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
         return authenticationManager.authenticate(authToken);
@@ -48,10 +64,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authentication) throws IOException, ServletException {
+        logger.info("로그인 성공, access, refresh token 발급");
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
         String email = customUserDetails.getUsername();
-        Role role = Role.valueOf(authentication.getAuthorities().iterator().next().getAuthority());
+        String roleKey = authentication.getAuthorities().iterator().next().getAuthority();
+        Role role = Role.fromKey(roleKey);
+
 
         String accessToken = jwtUtil.createJwt("access", email, role, ACCESS_TOKEN_EXPIRATION_MS);
         String refreshToken = TokenUtil.createRefresh();
@@ -62,18 +81,23 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(HttpStatus.OK.value());
 
         // 응답 본문에 추가 정보로 토큰 반환
+       /*
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", accessToken);
         tokens.put("refreshToken", refreshToken);
+        */
 
+        /*
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        new ObjectMapper().writeValue(response.getWriter(), tokens);
+        */
+
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException failed) throws IOException, ServletException {
+        logger.error("로그인 실패 " + failed.getMessage());
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 

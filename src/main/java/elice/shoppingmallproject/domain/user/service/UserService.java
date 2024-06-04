@@ -26,6 +26,7 @@ public class UserService {
         User user = User.builder()
                 .email(userSignUpDto.getEmail())
                 .password(userSignUpDto.getPassword())
+                .username(userSignUpDto.getUsername())
                 .role(Role.USER)
                 .build();
         user.passwordEncode(bCryptPasswordEncoder);

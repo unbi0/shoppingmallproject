@@ -2,6 +2,7 @@ package elice.shoppingmallproject.domain.order.entity;
 
 import elice.shoppingmallproject.global.common.BaseTimeEntity;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
@@ -21,12 +22,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.query.Order;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
-@Setter
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,9 +38,8 @@ public class Orders extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
-    private User user;
+    @Column(name="user_id")
+    private Long userId;
 
     private String deliveryRequest;
     private String recipientName;
@@ -58,5 +58,16 @@ public class Orders extends BaseTimeEntity {
 
     public void updateOrderStatus(OrderStatus newOrderStatus) {
         this.orderStatus = newOrderStatus;
+    }
+
+    public Orders updateOrder(String deliveryRequest, String recipientName, String recipientTel, String deliveryAddress, String deliveryDetailAddress, int deliveryFee, int totalPrice){
+        this.deliveryRequest = deliveryRequest;
+        this.recipientName = recipientName;
+        this.recipientTel = recipientTel;
+        this.deliveryAddress = deliveryAddress;
+        this.deliveryDetailAddress = deliveryDetailAddress;
+        this.deliveryFee = deliveryFee;
+        this.totalPrice = totalPrice;
+        return this;
     }
 }

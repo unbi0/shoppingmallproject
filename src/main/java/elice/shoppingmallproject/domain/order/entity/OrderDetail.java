@@ -1,5 +1,6 @@
 package elice.shoppingmallproject.domain.order.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,9 +24,8 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderDetailId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderId")
-    private Orders orders;
+    @Column(name="order_id")
+    private Long orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "optionId")
@@ -33,4 +33,11 @@ public class OrderDetail {
 
     private int count;
     private int price;
+
+    public OrderDetail updateOrderDetail(ProductOption productOption, int count, int price){
+        this.productOption = productOption;
+        this.count = count;
+        this.price = price;
+        return this;
+    }
 }

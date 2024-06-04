@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class OrderRequestDto {
 
     // 주문 생성 시 필요한 데이터
+    private Long userId;
     private String deliveryRequest;
     private String recipientName;
     private String recipientTel;
@@ -20,10 +21,11 @@ public class OrderRequestDto {
     private String deliveryDetailAddress;
     private int deliveryFee;
     private int totalPrice;
-    private List<OrderDetail> orderDetails;
+    private List<OrderDetailRequestDto> orderDetailRequestDtoList;
 
     public Orders toOrdersEntity() {
         return Orders.builder()
+            .userId(this.userId)
             .deliveryRequest(this.deliveryRequest)
             .recipientName(this.recipientName)
             .recipientTel(this.recipientTel)
@@ -31,7 +33,6 @@ public class OrderRequestDto {
             .deliveryDetailAddress(this.deliveryDetailAddress)
             .deliveryFee(this.deliveryFee)
             .totalPrice(this.totalPrice)
-            .orderDetailList(this.orderDetails)
             .build();
     }
 }

@@ -1,5 +1,6 @@
 package elice.shoppingmallproject.domain.order.service;
 
+import elice.shoppingmallproject.domain.order.dto.OrderDetailRequestDto;
 import elice.shoppingmallproject.domain.order.dto.OrderRequestDto;
 import elice.shoppingmallproject.domain.order.entity.OrderStatus;
 import elice.shoppingmallproject.domain.order.exception.InvalidOrderException;
@@ -14,21 +15,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService{
 
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private OrderDetailRepository orderDetailRepository;
-
-    @Autowired
-    private UserService userService;
+    private final OrderRepository orderRepository;
+    private final OrderDetailRepository orderDetailRepository;
 
     // 관리자 : 모든 주문내역 조회
     @Override
@@ -51,7 +49,7 @@ public class OrderServiceImpl implements OrderService{
     // 주문 날짜 기간으로 조회
     @Override
     public List<Orders> findByCreatedAt(LocalDateTime startDate, LocalDateTime endDate) {
-        return orderRepository.findByCreatedAt(startDate, endDate);
+        return orderRepository.findByCreatedAtBetween(startDate, endDate);
     }
 
     // 주문상태로 조회
@@ -63,33 +61,23 @@ public class OrderServiceImpl implements OrderService{
     // 사용자 : 주문 생성
     public Orders createOrder(OrderRequestDto orderRequestDto) {
 
-        // 사용자가 존재하는지 확인
-        // spring security 활용
+        // spring security로 사용자가 존재하는지 확인
 
 
         // 주문 상세 리스트가 비어 있는지 확인
-        if (orderRequestDto.getOrderDetails() == null || orderRequestDto.getOrderDetails().isEmpty()) {
+        if (orderRequestDto.getOrderDetailRequestDtoList() == null || orderRequestDto.getOrderDetailRequestDtoList().isEmpty()) {
             throw new InvalidOrderException("선택된 상품이 없습니다. 상품을 선택해주세요.");
         }
 
         // 주문 생성
         Orders newOrder = orderRequestDto.toOrdersEntity();
+        newOrder = orderRepository.save(newOrder);
 
         // 주문 상세 생성
-        List<OrderDetail> orderDetails = new ArrayList<>();
-        for (OrderDetail orderDetail : orderRequestDto.getOrderDetails()) {
-            OrderDetail newOrderDetail = OrderDetail.builder()
-                .orders(orderDetail.getOrders())
-                .productOption(orderDetail.getProductOption())
-                .count(orderDetail.getCount())
-                .price(orderDetail.getPrice())
-                .build();
-
-            orderDetails.add(newOrderDetail);
+        for (OrderDetailRequestDto orderDetailRequestDto : orderRequestDto.getOrderDetailRequestDtoList()) {
+            OrderDetail newOrderDetail = orderDetailRequestDto.toOrderDetailEntity();
+            orderDetailRepository.save(newOrderDetail);
         }
-
-        newOrder.setOrderDetailList(orderDetails);
-        newOrder = orderRepository.save(newOrder);
 
         return orderRepository.save(newOrder);
     }
@@ -104,6 +92,7 @@ public class OrderServiceImpl implements OrderService{
     // 관리자만 상태 수정할 수 있게 변경 예정
     @Override
     public Orders updateOrderStatus(Long id, String orderStatus) {
+        // 주문이 존재하는지 확인
         Orders existingOrder = orderRepository.findById(id)
             .orElseThrow(() -> new OrderNotFoundException("주문 ID " + id + "를 찾을 수 없습니다"));
 
@@ -120,12 +109,16 @@ public class OrderServiceImpl implements OrderService{
             .orElseThrow(() -> new OrderNotFoundException("주문 ID " + id + "를 찾을 수 없습니다"));
 
         // 수정할 주문 정보
-        existingOrder.setDeliveryRequest(updatedOrders.getDeliveryRequest());
-        existingOrder.setRecipientName(updatedOrders.getRecipientName());
-        existingOrder.setRecipientTel(updatedOrders.getRecipientTel());
-        existingOrder.setDeliveryAddress(updatedOrders.getRecipientName());
-        existingOrder.setDeliveryDetailAddress(updatedOrders.getRecipientTel());
-
-        return orderRepository.save(existingOrder);
+        Orders newOrders = existingOrder.updateOrder(
+            updatedOrders.getDeliveryRequest(),
+            updatedOrders.getRecipientName(),
+            updatedOrders.getRecipientTel(),
+            updatedOrders.getDeliveryAddress(),
+            updatedOrders.getDeliveryDetailAddress(),
+            updatedOrders.getDeliveryFee(),
+            updatedOrders.getTotalPrice()
+        );
+        // 수정한 내용 DB 반영
+        return orderRepository.save(newOrders);
     }
 }

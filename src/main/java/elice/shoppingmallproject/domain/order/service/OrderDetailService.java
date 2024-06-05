@@ -18,4 +18,6 @@ public interface OrderDetailService {
     // 주문상세 삭제
     void deleteOrderDetail(Long id);
 
+    // 주문상세 수정
+    OrderDetail updateOrderDetail(Long id, OrderDetail updatedOrderDetail);
 }

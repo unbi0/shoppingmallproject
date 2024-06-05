@@ -42,7 +42,7 @@ public class OrderDetailServiceImpl implements OrderDetailService{
 
     // 사용자 : 주문상세 수정
     @Override
-    public OrderDetail updateOrderdetail(Long id, OrderDetail updatedOrderDetail){
+    public OrderDetail updateOrderDetail(Long id, OrderDetail updatedOrderDetail){
 
         // 주문이 존재하는지 확인
         OrderDetail existingOrderDetail = orderDetailRepository.findById(id)

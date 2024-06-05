@@ -1,5 +1,6 @@
 package elice.shoppingmallproject.domain.order.entity;
 
+import elice.shoppingmallproject.domain.product.entity.ProductOption;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

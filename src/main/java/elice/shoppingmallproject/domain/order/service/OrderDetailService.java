@@ -19,5 +19,5 @@ public interface OrderDetailService {
     void deleteOrderDetail(Long id);
 
     // 주문상세 수정
-    OrderDetail updateOrderdetail(Long id, OrderDetail updatedOrderDetail);
+    OrderDetail updateOrderDetail(Long id, OrderDetail updatedOrderDetail);
 }

@@ -1,6 +1,8 @@
 package elice.shoppingmallproject.domain.order.controller;
 
+import elice.shoppingmallproject.domain.order.dto.OrderDetailRequestDto;
 import elice.shoppingmallproject.domain.order.dto.OrderRequestDto;
+import elice.shoppingmallproject.domain.order.entity.OrderDetail;
 import elice.shoppingmallproject.domain.order.entity.OrderStatus;
 import elice.shoppingmallproject.domain.order.entity.Orders;
 import elice.shoppingmallproject.domain.order.service.OrderDetailService;
@@ -62,6 +64,12 @@ public class OrderController {
     @PutMapping("/{id}")
     public ResponseEntity<Orders> updateOrder(@PathVariable Long id, @RequestBody OrderRequestDto orderRequestDto) {
         return ResponseEntity.ok(orderService.updateOrder(id, orderRequestDto.toOrdersEntity()));
+    }
+
+    // 사용자 : 주문상세 수정
+    @PutMapping("/detail/{id}")
+    public ResponseEntity<OrderDetail> updateOrderdetail(@PathVariable Long id, @RequestBody OrderDetailRequestDto orderDetailRequestDto) {
+        return ResponseEntity.ok(orderDetailService.updateOrderDetail(id, orderDetailRequestDto.toOrderDetailEntity()));
     }
 
     // 주문번호로 주문 조회

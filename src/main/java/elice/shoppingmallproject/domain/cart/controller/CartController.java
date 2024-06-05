@@ -1,4 +1,5 @@
-package elice.shoppingmall.domain.cart.controller;
+package elice.shoppingmallproject.domain.cart.controller;
+
 
 import java.util.List;
 
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import elice.shoppingmall.domain.cart.dto.CartCreateDTO;
-import elice.shoppingmall.domain.cart.dto.CartResponseDTO;
-import elice.shoppingmall.domain.cart.service.CartService;
+import elice.shoppingmallproject.domain.cart.dto.CartCreateDTO;
+import elice.shoppingmallproject.domain.cart.dto.CartResponseDTO;
+import elice.shoppingmallproject.domain.cart.service.CartService;
 
 @RestController
 @RequestMapping("/cart")

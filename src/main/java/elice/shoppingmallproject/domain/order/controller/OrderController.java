@@ -1,6 +1,7 @@
 package elice.shoppingmallproject.domain.order.controller;
 
 import elice.shoppingmallproject.domain.order.dto.OrderRequestDto;
+import elice.shoppingmallproject.domain.order.entity.OrderStatus;
 import elice.shoppingmallproject.domain.order.entity.Orders;
 import elice.shoppingmallproject.domain.order.service.OrderDetailService;
 import elice.shoppingmallproject.domain.order.service.OrderService;
@@ -80,7 +81,7 @@ public class OrderController {
     // 주문상태로 조회
     @GetMapping
     public ResponseEntity<List<Orders>> getOrdersByStatus(@RequestParam String status) {
-        return ResponseEntity.ok(orderService.findByOrderStatus(Enum.valueOf(Orders.OrderStatus.class, status.toUpperCase())));
+        return ResponseEntity.ok(orderService.findByOrderStatus(Enum.valueOf(OrderStatus.class, status.toUpperCase())));
     }
 
 }

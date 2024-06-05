@@ -16,6 +16,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 @Builder
 public class Image {
 
+    //관계맺기 설정
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long image_id;

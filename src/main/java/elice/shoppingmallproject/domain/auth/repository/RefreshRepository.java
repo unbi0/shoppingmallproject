@@ -5,8 +5,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RefreshRepository extends JpaRepository<Refresh, Long> {
-    Boolean existsByRefresh(String refresh);
+    Boolean existsByToken(String token);
+
+    Refresh findByToken(String token);
 
     @Transactional
-    void deleteByRefresh(String refresh);
+    void deleteByToken(String token);
 }

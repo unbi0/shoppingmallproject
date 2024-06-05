@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,6 +40,7 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
+    //exceptionhandling 코드 빠짐
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -52,6 +54,10 @@ public class SecurityConfig {
 
         //http basic 인증 방식 disable
         http.httpBasic(AbstractHttpConfigurer::disable);
+
+        //oauth2
+        //http.oauth2Login(Customizer.withDefaults());
+
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/login", "/", "/sign-up").permitAll()
@@ -61,7 +67,7 @@ public class SecurityConfig {
 
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
+        http.addFilterBefore(new CustomLogoutFilter(refreshRepository), LogoutFilter.class);
 
         //세션 설정
         http.sessionManagement((session) -> session

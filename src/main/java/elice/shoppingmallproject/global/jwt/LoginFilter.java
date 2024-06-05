@@ -16,8 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -73,11 +71,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 
         String accessToken = jwtUtil.createJwt("access", email, role, ACCESS_TOKEN_EXPIRATION_MS);
-        String refreshToken = TokenUtil.createRefresh();
+        String refreshToken = Refresh.generateToken();
 
-        addRefreshEntity(email, refreshToken, REFRESH_TOKEN_EXPIRATION_MS);
+        Refresh refresh = Refresh.createRefresh(email, refreshToken, REFRESH_TOKEN_EXPIRATION_MS);
+
+        refreshRepository.save(refresh);
+
         response.setHeader(ACCESS_TOKEN_HEADER, accessToken);
-        response.addCookie(createCookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken));
+        response.addCookie(createCookie(REFRESH_TOKEN_COOKIE_NAME, refresh.getToken()));
         response.setStatus(HttpStatus.OK.value());
 
         // 응답 본문에 추가 정보로 토큰 반환
@@ -108,14 +109,5 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         return cookie;
     }
 
-    private void addRefreshEntity(String email, String refreshToken, Long expiredMs) {
-        Date expiration = new Date(System.currentTimeMillis() + expiredMs);
 
-        Refresh refresh = new Refresh();
-        refresh.setUsername(email);
-        refresh.setRefresh(refreshToken);
-        refresh.setExpiration(expiration.toString());
-
-        refreshRepository.save(refresh);
-    }
 }

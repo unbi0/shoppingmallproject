@@ -68,7 +68,7 @@ public class OrderController {
 
     // 사용자 : 주문상세 수정
     @PutMapping("/detail/{id}")
-    public ResponseEntity<OrderDetail> updateOrderdetail(@PathVariable Long id, @RequestBody OrderDetailRequestDto orderDetailRequestDto) {
+    public ResponseEntity<OrderDetail> updateOrderDetail(@PathVariable Long id, @RequestBody OrderDetailRequestDto orderDetailRequestDto) {
         return ResponseEntity.ok(orderDetailService.updateOrderDetail(id, orderDetailRequestDto.toOrderDetailEntity()));
     }
 

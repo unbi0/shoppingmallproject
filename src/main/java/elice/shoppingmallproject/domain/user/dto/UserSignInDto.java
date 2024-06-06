@@ -1,13 +1,13 @@
 package elice.shoppingmallproject.domain.user.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
-public class UserSignUpDto {
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserSignInDto {
     private String email;
     private String password;
-    private String username;
 }

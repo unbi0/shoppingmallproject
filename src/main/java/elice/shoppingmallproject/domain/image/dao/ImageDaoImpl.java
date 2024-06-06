@@ -20,4 +20,9 @@ public class ImageDaoImpl implements ImageDao{
         return imageRepository.save(image);
     }
 
+    @Override
+    public void deleteImg(Long image_id) {
+        imageRepository.deleteById(image_id);
+    }
+
 }

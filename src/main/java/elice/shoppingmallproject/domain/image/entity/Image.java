@@ -21,6 +21,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long image_id;
 
+    
     private Long product_id;
 
     @NotNull

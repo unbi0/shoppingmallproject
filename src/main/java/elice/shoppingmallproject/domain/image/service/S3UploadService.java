@@ -1,7 +1,9 @@
 package elice.shoppingmallproject.domain.image.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import elice.shoppingmallproject.domain.image.dao.ImageDaoImpl;
 import elice.shoppingmallproject.domain.image.dto.ImageDto;
 import elice.shoppingmallproject.domain.image.entity.Image;
@@ -11,7 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
 
 @Service
 public class S3UploadService {
@@ -37,7 +43,7 @@ public class S3UploadService {
     public ImageDto uploadFile(MultipartFile multipartFile) throws IOException {
 
         String originalFilename = multipartFile.getOriginalFilename();
-        String fileName =  originalFilename +"/"+ UUID.randomUUID();
+        String fileName =  createFileName(originalFilename);
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(multipartFile.getSize());
@@ -48,11 +54,7 @@ public class S3UploadService {
         String url = amazonS3Client.getUrl(bucket, fileName).toString();
 
 
-        Image image = Image.builder()
-                .product_id(1L) //임의의 값 1L로 설정
-                .url(url)
-                .file_name(fileName)
-                .build();
+        Image image = createImage(1L, url, fileName);
 
         //이 Entity는 DB를 거쳐 왔으므로 image_id가 생성되어있음
         Image savedImage = imageDao.saveImg(image);
@@ -62,26 +64,68 @@ public class S3UploadService {
         return savedImage.toDto();
     }
 
-/*
-    //S3폴더 내 파일 리스트 전달
-    public List<String> getFileList(String directory){
-        List<String> fileList = new ArrayList<>();
+    public List<String> uploadFiles(List<MultipartFile> multipartFile) {
+        List<String> imgUrlList = new ArrayList<>();
 
-        ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request()
-                .withBucketName(bucket)
-                .withPrefix(directory+"/");  //폴더 경로 지정
+        // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
+        for (MultipartFile file : multipartFile) {
+            String fileName = createFileName(file.getOriginalFilename());
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(file.getSize());
+            objectMetadata.setContentType(file.getContentType());
 
-        ListObjectsV2Result result = amazonS3.listObjectsV2(listObjectsV2Request);
-        List<S3ObjectSummary> objectSummaries = result.getObjectSummaries();
+            try(InputStream inputStream = file.getInputStream()) {
+                amazonS3Client.putObject(new PutObjectRequest(bucket+"/post/image", fileName, inputStream, objectMetadata)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
 
-        for (S3ObjectSummary objectSummary : objectSummaries) {
-            String key = objectSummary.getKey();
-            if (!key.equals(directory + "/")) {  // "board/", 안나오게하기위해
-                fileList.add("https://"+bucket+".s3."+region+".amazonaws.com/" + key);
-            } //URL 바로 내보내주려고
+                imgUrlList.add(amazonS3Client.getUrl(bucket+"/post/image", fileName).toString());
+                String url = amazonS3Client.getUrl(bucket+"/post/image", fileName).toString();
+
+                Image image = createImage(2L,url,fileName);
+                imageDao.saveImg(image);
+            } catch(IOException e) {
+                throw new RuntimeException("Failed to upload file: " + file.getOriginalFilename(), e);
+            }
         }
+        return imgUrlList;
+    }
 
-        return fileList;
-    }*/
+    private  Image createImage(Long product_id, String url, String fileName){
+        Image image = Image.builder()
+                .product_id(product_id) //임의의 값 1L로 설정
+                .url(url)
+                .file_name(fileName)
+                .build();
+
+        return image;
+    }
+
+    // 이미지파일명 중복 방지
+    private String createFileName(String fileName) {
+        return UUID.randomUUID().toString().concat(getFileExtension(fileName));
+    }
+
+    // 파일 유효성 검사
+    private String getFileExtension(String fileName) {
+        if (fileName.length() == 0) {
+            throw new IllegalArgumentException("File name cannot be empty");
+        }
+        ArrayList<String> fileValidate = new ArrayList<>();
+        fileValidate.add(".jpg");
+        fileValidate.add(".jpeg");
+        fileValidate.add(".png");
+        fileValidate.add(".JPG");
+        fileValidate.add(".JPEG");
+        fileValidate.add(".PNG");
+        String idxFileName = fileName.substring(fileName.lastIndexOf("."));
+        if (!fileValidate.contains(idxFileName)) {
+            throw new IllegalArgumentException("Invalid file extension: " + idxFileName);
+        }
+        return fileName.substring(fileName.lastIndexOf("."));
+    }
+
+    public void deleteImage(Long image_id){
+        imageDao.deleteImg(image_id);
+    }
 
 }

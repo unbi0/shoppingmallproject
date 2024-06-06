@@ -18,6 +18,7 @@ public class OrderDetailServiceImpl implements OrderDetailService{
 
     private final OrderDetailRepository orderDetailRepository;
 
+    // 모든 주문상세 조회
     @Override
     public List<OrderDetail> findAllOrderDetail(){
         return orderDetailRepository.findAll();

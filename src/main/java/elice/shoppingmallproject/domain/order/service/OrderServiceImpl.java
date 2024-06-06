@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class OrderServiceImpl implements OrderService{
 
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final OrderDetailService orderDetailService;
 
     // 관리자 : 모든 주문내역 조회
     @Override
@@ -49,7 +51,7 @@ public class OrderServiceImpl implements OrderService{
     // 주문 날짜 기간으로 조회
     @Override
     public List<Orders> findByCreatedAt(LocalDateTime startDate, LocalDateTime endDate) {
-        return orderRepository.findByCreatedAtBetween(startDate, endDate);
+        return orderRepository.findByCreateAtBetween(startDate, endDate);
     }
 
     // 주문상태로 조회
@@ -75,8 +77,7 @@ public class OrderServiceImpl implements OrderService{
 
         // 주문 상세 생성
         for (OrderDetailRequestDto orderDetailRequestDto : orderRequestDto.getOrderDetailRequestDtoList()) {
-            OrderDetail newOrderDetail = orderDetailRequestDto.toOrderDetailEntity();
-            orderDetailRepository.save(newOrderDetail);
+            orderDetailService.createOrderDetail(orderDetailRequestDto);
         }
 
         return orderRepository.save(newOrder);
@@ -91,12 +92,12 @@ public class OrderServiceImpl implements OrderService{
     // 관리자 : 주문 상태 수정
     // 관리자만 상태 수정할 수 있게 변경 예정
     @Override
-    public Orders updateOrderStatus(Long id, String orderStatus) {
+    public Orders updateOrderStatus(Long id, OrderStatus newOrderStatus) {
         // 주문이 존재하는지 확인
         Orders existingOrder = orderRepository.findById(id)
             .orElseThrow(() -> new OrderNotFoundException("주문 ID " + id + "를 찾을 수 없습니다"));
 
-        existingOrder.updateOrderStatus(OrderStatus.valueOf(orderStatus));
+        existingOrder.updateOrderStatus(newOrderStatus);
 
         return orderRepository.save(existingOrder);
     }
@@ -118,6 +119,7 @@ public class OrderServiceImpl implements OrderService{
             updatedOrders.getDeliveryFee(),
             updatedOrders.getTotalPrice()
         );
+
         // 수정한 내용 DB 반영
         return orderRepository.save(newOrders);
     }

@@ -35,7 +35,8 @@ public class Orders extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
+    @Column(name = "order_id")
+    private Long id;
 
     @Column(name="user_id")
     private Long userId;
@@ -49,9 +50,10 @@ public class Orders extends BaseTimeEntity {
     private int totalPrice;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private OrderStatus orderStatus = OrderStatus.PLACED;
 
-    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<OrderDetail> orderDetailList = new ArrayList<>();
 

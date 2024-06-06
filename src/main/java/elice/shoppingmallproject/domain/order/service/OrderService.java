@@ -16,7 +16,7 @@ public interface OrderService {
     List<Orders> findAllUserOrders(Long userId);
 
     // 주문번호로 조회
-    Optional<Orders> findOrderById(Long id);
+    Optional<Orders> findOrderById(Long orderId);
 
     // 주문날짜 기간으로 조회
     List<Orders> findByCreatedAt(LocalDateTime startDate, LocalDateTime endDate);
@@ -28,11 +28,11 @@ public interface OrderService {
     Orders createOrder(OrderRequestDto orderRequestDto);
 
     // 사용자 : 주문 삭제
-    void deleteOrder(Long id);
+    void deleteOrder(Long orderId);
 
     // 관리자 : 주문 상태 수정
-    Orders updateOrderStatus(Long id, String status);
+    Orders updateOrderStatus(Long orderId, OrderStatus status);
 
     // 사용자 : 주문 수정
-    Orders updateOrder(Long id, Orders updatedOrders);
+    Orders updateOrder(Long orderId, Orders updatedOrders);
 }

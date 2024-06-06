@@ -1,5 +1,8 @@
 package elice.shoppingmallproject.domain.order.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum OrderStatus {
 
     PLACED("주문완료"),
@@ -17,7 +20,4 @@ public enum OrderStatus {
         this.korean = korean;
     }
 
-    public String getKorean() {
-        return korean;
-    }
 }

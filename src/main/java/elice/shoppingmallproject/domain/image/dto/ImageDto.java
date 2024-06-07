@@ -2,6 +2,7 @@ package elice.shoppingmallproject.domain.image.dto;
 
 import elice.shoppingmallproject.domain.image.entity.Image;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +15,7 @@ public class ImageDto {
     private Long product_id;
     private String url;
     private String file_name;
+    private MultipartFile image;
 
     public Image toEntity(){
         return Image.builder()

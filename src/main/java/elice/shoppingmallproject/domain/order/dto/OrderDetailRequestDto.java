@@ -1,6 +1,7 @@
 package elice.shoppingmallproject.domain.order.dto;
 
 import elice.shoppingmallproject.domain.order.entity.OrderDetail;
+import elice.shoppingmallproject.domain.order.entity.Orders;
 import elice.shoppingmallproject.domain.product.entity.ProductOption;
 import lombok.AllArgsConstructor;
 import lombok.Data;

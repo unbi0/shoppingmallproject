@@ -23,13 +23,16 @@ public class OrderDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderDetailId;
+    @Column(name = "order_detail_id")
+    private Long id;
 
-    @Column(name="order_id")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "order_id")
+    @Column(name = "order_id")
     private Long orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "optionId")
+    @JoinColumn(name = "option_id")
     private ProductOption productOption;
 
     private int count;

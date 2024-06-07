@@ -5,6 +5,8 @@ import elice.shoppingmallproject.domain.image.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ImageDaoImpl implements ImageDao{
 
@@ -24,5 +26,11 @@ public class ImageDaoImpl implements ImageDao{
     public void deleteImg(Long image_id) {
         imageRepository.deleteById(image_id);
     }
+
+    @Override
+    public Image findById(Long imageId) {
+        return imageRepository.getReferenceById(imageId);
+    }
+
 
 }

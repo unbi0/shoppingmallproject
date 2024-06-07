@@ -2,6 +2,7 @@ package elice.shoppingmallproject.domain.image.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import elice.shoppingmallproject.domain.image.dao.ImageDaoImpl;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -41,7 +43,6 @@ public class S3UploadService {
 
 
     public ImageDto uploadFile(MultipartFile multipartFile) throws IOException {
-
         String originalFilename = multipartFile.getOriginalFilename();
         String fileName =  createFileName(originalFilename);
 
@@ -125,7 +126,20 @@ public class S3UploadService {
     }
 
     public void deleteImage(Long image_id){
-        imageDao.deleteImg(image_id);
-    }
+        // Retrieve the Image entity from the database using the image_id
+        Image image = imageDao.findById(image_id);
 
+        if (image != null) {
+            // Get the file_name from the Image entity
+            String keyName = image.getFile_name();
+
+            // Delete the image from the S3 bucket
+            amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, keyName));
+
+            // Delete the image record from the database
+            imageDao.deleteImg(image_id);
+        }else {
+            throw new IllegalArgumentException("Image not found with id: " + image_id);
+        }
+    }
 }

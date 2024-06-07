@@ -11,10 +11,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Auth extends BaseTimeEntity {
 
     @Id
@@ -25,7 +31,7 @@ public class Auth extends BaseTimeEntity {
     @Enumerated
     private Provider provider;
 
-    private String provider_id;
+    private String providerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

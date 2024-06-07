@@ -17,7 +17,7 @@ public class CartService {
     @Autowired
     private CartRepository cartRepository;
 
-    public CartResponseDTO addToCart(CartCreateDTO cartCreateDTO) {
+    public CartResponseDTO addCart(CartCreateDTO cartCreateDTO) {
         Cart cart = new Cart();
         cart.setOptionId(cartCreateDTO.getOptionId());
         cart.setUserId(cartCreateDTO.getUserId());

@@ -1,5 +1,6 @@
 package elice.shoppingmallproject.domain.user.service;
 
+import elice.shoppingmallproject.domain.address.entity.Address;
 import elice.shoppingmallproject.domain.user.dto.UserSignUpDto;
 import elice.shoppingmallproject.domain.user.entity.Role;
 import elice.shoppingmallproject.domain.user.entity.User;
@@ -29,6 +30,11 @@ public class UserService {
                 .username(userSignUpDto.getUsername())
                 .role(Role.USER)
                 .build();
+
+        Address address = Address.createAddress(userSignUpDto.getPostcode(), userSignUpDto.getAddress(),
+                userSignUpDto.getDetailAddress());
+        user.addAddress(address);
+
         user.passwordEncode(bCryptPasswordEncoder);
 
         userRepository.save(user);

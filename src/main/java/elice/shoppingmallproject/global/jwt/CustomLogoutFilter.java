@@ -1,5 +1,6 @@
 package elice.shoppingmallproject.global.jwt;
 
+import elice.shoppingmallproject.domain.auth.entity.Refresh;
 import elice.shoppingmallproject.domain.auth.repository.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -20,9 +22,7 @@ public class CustomLogoutFilter extends GenericFilter {
     private static final String LOGOUT_URI = "/logout";
     private static final String LOGOUT_METHOD = "POST";
     private static final String REFRESH_COOKIE_NAME = "refresh";
-    private static final String REFRESH_CATEGORY = "refresh";
 
-    private final JwtUtil jwtUtil;
     private final RefreshRepository refreshRepository;
 
     @Override
@@ -45,29 +45,22 @@ public class CustomLogoutFilter extends GenericFilter {
             return;
         }
 
-        // refresh token 만료 시간 체크
-        try {
-            jwtUtil.isExpired(refreshToken);
-        } catch (ExpiredJwtException e) {
-            httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
-        // 토큰이 refresh token 인지 확인
-        if (!REFRESH_CATEGORY.equals(jwtUtil.getCategory(refreshToken))) {
-            httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
         // DB 에 저장되어 있는지 확인
-        if (!refreshRepository.existsByRefresh(refreshToken)) {
+        Refresh existToken = refreshRepository.findByToken(refreshToken);
+        if (existToken == null) {
+            httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        // refresh token 만료 시간 체크
+        if (existToken.getExpiration().before(new Date())) {
             httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         // 로그아웃 진행
         // refersh token DB에서 삭제, refresh token cookie 값 -> 0
-        refreshRepository.deleteByRefresh(refreshToken);
+        refreshRepository.deleteByToken(refreshToken);
         clearRefreshTokenCookie(httpResponse);
 
         httpResponse.setStatus(HttpServletResponse.SC_OK);
@@ -87,7 +80,6 @@ public class CustomLogoutFilter extends GenericFilter {
                 .findFirst()
                 .orElse(null);
     }
-
     private void clearRefreshTokenCookie(HttpServletResponse response) {
         Cookie cookie = new Cookie(REFRESH_COOKIE_NAME, null);
         cookie.setMaxAge(0);

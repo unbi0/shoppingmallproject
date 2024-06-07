@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "product_option")
 public class ProductOption {
 
     @Id
@@ -26,4 +25,12 @@ public class ProductOption {
 
     @Column(name = "stock", nullable = false)
     private int stock;
+
+
+    public static ProductOption option(String optionSize, int stock) {
+        ProductOption option = new ProductOption();
+        option.setOptionSize(optionSize);
+        option.setStock(stock);
+        return option;
+    }
 }

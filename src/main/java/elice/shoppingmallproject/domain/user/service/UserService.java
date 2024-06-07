@@ -24,16 +24,11 @@ public class UserService {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
 
-        User user = User.builder()
-                .email(userSignUpDto.getEmail())
-                .password(userSignUpDto.getPassword())
-                .username(userSignUpDto.getUsername())
-                .role(Role.USER)
-                .build();
-
         Address address = Address.createAddress(userSignUpDto.getPostcode(), userSignUpDto.getAddress(),
                 userSignUpDto.getDetailAddress());
-        user.addAddress(address);
+
+        User user = User.createUser(userSignUpDto.getUsername(), userSignUpDto.getEmail(),
+                userSignUpDto.getPassword(), address);
 
         user.passwordEncode(bCryptPasswordEncoder);
 

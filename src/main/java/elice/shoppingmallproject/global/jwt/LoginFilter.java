@@ -105,6 +105,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     public static Cookie createCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(COOKIE_MAX_AGE);
+        cookie.setPath("/");
         cookie.setHttpOnly(true);
         return cookie;
     }

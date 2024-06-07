@@ -2,6 +2,7 @@ package elice.shoppingmallproject.global.jwt;
 
 import elice.shoppingmallproject.domain.user.entity.Role;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
@@ -46,6 +47,11 @@ public class JwtUtil {
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
                 .compact();
+    }
+
+    public String getUserEmail(HttpServletRequest request) {
+        String token = request.getHeader("access");
+        return getEmail(token);
     }
 
 }

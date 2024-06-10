@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+<div class="login-container">
+    <h1>Login</h1>
+    <form>
+        <div class="input-group">
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email">
+        </div>
+        <div class="input-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password">
+        </div>
+        <button type="submit" class="login-button">로그인</button>
+        <div class="signup-link">회원가입</div>
+        <a href="/oauth2/authorization/google" class="google-login">Google 로그인</a>
+        <a href="/oauth2/authorization/naver" class="naver-login">네이버로 로그인</a>
+    </form>
+</div>
+</body>
+</html>

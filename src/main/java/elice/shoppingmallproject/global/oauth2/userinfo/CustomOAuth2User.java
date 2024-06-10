@@ -21,6 +21,7 @@ public class CustomOAuth2User implements OAuth2User {
         attributes.put("providerId", oAuth2UserDto.getProviderId());
         attributes.put("email", oAuth2UserDto.getEmail());
         attributes.put("name", oAuth2UserDto.getName());
+        attributes.put("userId", oAuth2UserDto.getUserId());
         return attributes;
     }
     @Override
@@ -31,5 +32,8 @@ public class CustomOAuth2User implements OAuth2User {
     public String getName() {
 
         return oAuth2UserDto.getName();
+    }
+    public Long getUserId() {
+        return oAuth2UserDto.getUserId();
     }
 }

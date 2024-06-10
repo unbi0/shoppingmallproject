@@ -7,6 +7,7 @@ import elice.shoppingmallproject.global.jwt.JwtUtil;
 import elice.shoppingmallproject.global.jwt.LoginFilter;
 import elice.shoppingmallproject.global.oauth2.handler.CustomSuccessHandler;
 import elice.shoppingmallproject.global.oauth2.service.CustomOAuth2UserService;
+import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -68,10 +69,11 @@ public class SecurityConfig {
 
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/sign-up", "/error").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/reissue").permitAll()
-                        .anyRequest().authenticated());
+                .requestMatchers("/static/**","/error/**", "/css/**", "/js/**", "/login", "/sign-up", "/register-page").permitAll()
+                .requestMatchers("/admin").hasRole("ADMIN")
+                .requestMatchers("/reissue").permitAll()
+                .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+                .anyRequest().permitAll());
 
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);

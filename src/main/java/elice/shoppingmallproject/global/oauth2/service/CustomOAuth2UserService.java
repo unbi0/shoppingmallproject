@@ -46,6 +46,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         User user = userRepository.findByEmail(oAuth2UserDto.getEmail())
                 .orElseGet(() -> registerNewUser(oAuth2UserDto));
 
+        oAuth2UserDto.setUserId(user.getId());
+
         Auth auth = Auth.builder()
                 .provider(Provider.valueOf(oAuth2UserDto.getProvider().toUpperCase()))
                 .providerId(oAuth2UserDto.getProviderId())

@@ -6,7 +6,6 @@ import elice.shoppingmallproject.domain.auth.repository.RefreshRepository;
 import elice.shoppingmallproject.domain.user.dto.UserLoginDto;
 import elice.shoppingmallproject.domain.user.entity.CustomUserDetails;
 import elice.shoppingmallproject.domain.user.entity.Role;
-import elice.shoppingmallproject.global.util.TokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
@@ -15,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -65,19 +63,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         logger.info("로그인 성공, access, refresh token 발급");
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
+        Long userId = customUserDetails.getId();
         String email = customUserDetails.getUsername();
         String roleKey = authentication.getAuthorities().iterator().next().getAuthority();
         Role role = Role.fromKey(roleKey);
 
 
-        String accessToken = jwtUtil.createJwt("access", email, role, ACCESS_TOKEN_EXPIRATION_MS);
+        String accessToken = jwtUtil.createJwt(userId,"access", email, role, ACCESS_TOKEN_EXPIRATION_MS);
         String refreshToken = Refresh.generateToken();
 
         Refresh refresh = Refresh.createRefresh(email, refreshToken, REFRESH_TOKEN_EXPIRATION_MS);
 
         refreshRepository.save(refresh);
 
-        response.setHeader(ACCESS_TOKEN_HEADER, accessToken);
+        response.addCookie(createCookie(ACCESS_TOKEN_HEADER, accessToken));
         response.addCookie(createCookie(REFRESH_TOKEN_COOKIE_NAME, refresh.getToken()));
         response.setStatus(HttpStatus.OK.value());
 
@@ -109,6 +108,4 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         cookie.setHttpOnly(true);
         return cookie;
     }
-
-
 }

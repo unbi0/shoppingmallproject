@@ -38,6 +38,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
         Map<String, Object> attributes = customUserDetails.getAttributes();
 
+        Long userId = customUserDetails.getUserId();
         String email = (String) attributes.get("email");
 
         String roleKey = customUserDetails.getAuthorities().stream()
@@ -47,13 +48,13 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Role role = Role.fromKey(roleKey);
 
-        String accessToken = jwtUtil.createJwt(ACCESS_TOKEN_HEADER, email, role, ACCESS_TOKEN_EXPIRATION_MS);
+        String accessToken = jwtUtil.createJwt(userId, ACCESS_TOKEN_HEADER, email, role, ACCESS_TOKEN_EXPIRATION_MS);
         String refreshToken = Refresh.generateToken();
 
         Refresh refresh = Refresh.createRefresh(email, refreshToken, REFRESH_TOKEN_EXPIRATION_MS);
         refreshRepository.save(refresh);
 
-        response.addCookie(createCookie((ACCESS_TOKEN_HEADER), accessToken));
+        response.addCookie(createCookie(ACCESS_TOKEN_HEADER, accessToken));
         response.addCookie(createCookie(REFRESH_TOKEN_COOKIE_NAME, refresh.getToken()));
 
         getRedirectStrategy().sendRedirect(request, response, "/index.html");

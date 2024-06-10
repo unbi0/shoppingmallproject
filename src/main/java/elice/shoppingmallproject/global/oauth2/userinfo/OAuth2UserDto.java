@@ -1,10 +1,13 @@
 package elice.shoppingmallproject.global.oauth2.userinfo;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class OAuth2UserDto {
 
+    private Long userId;
     private String provider;
     private String providerId;
     private String email;

@@ -51,6 +51,7 @@ public class ReissueService {
         String email = existToken.getEmail();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
+
         Role role = user.getRole();
 
         refreshRepository.deleteByToken(refreshToken);
@@ -58,7 +59,7 @@ public class ReissueService {
         Refresh newRefreshToken = Refresh.createRefresh(email, Refresh.generateToken(), REFRESH_TOKEN_EXPIRATION_MS);
         refreshRepository.save(newRefreshToken);
 
-        String newAccess = jwtUtil.createJwt(ACCESS_TOKEN_HEADER, email, role, ACCESS_TOKEN_EXPIRATION_MS);
+        String newAccess = jwtUtil.createJwt(user.getId(), ACCESS_TOKEN_HEADER, email, role, ACCESS_TOKEN_EXPIRATION_MS);
 
         response.addCookie(createCookie(REFRESH_TOKEN_HEADER, newRefreshToken.getToken()));
         response.setHeader(ACCESS_TOKEN_HEADER, newAccess);

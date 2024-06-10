@@ -5,20 +5,14 @@ import elice.shoppingmallproject.domain.order.dto.OrderRequestDto;
 import elice.shoppingmallproject.domain.order.entity.OrderStatus;
 import elice.shoppingmallproject.domain.order.exception.InvalidOrderException;
 import elice.shoppingmallproject.domain.order.exception.OrderNotFoundException;
-import elice.shoppingmallproject.domain.order.exception.UserNotFoundException;
 import elice.shoppingmallproject.domain.order.repository.OrderDetailRepository;
 import elice.shoppingmallproject.domain.order.repository.OrderRepository;
-import elice.shoppingmallproject.domain.order.entity.OrderDetail;
 import elice.shoppingmallproject.domain.order.entity.Orders;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.Order;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

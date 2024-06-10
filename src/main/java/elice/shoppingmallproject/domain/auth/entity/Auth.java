@@ -4,6 +4,7 @@ import elice.shoppingmallproject.domain.user.entity.User;
 import elice.shoppingmallproject.global.common.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -28,7 +29,7 @@ public class Auth extends BaseTimeEntity {
     @Column(name = "auth_id")
     private Long id;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Provider provider;
 
     private String providerId;

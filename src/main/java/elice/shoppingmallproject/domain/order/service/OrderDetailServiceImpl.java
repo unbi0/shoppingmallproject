@@ -1,13 +1,11 @@
 package elice.shoppingmallproject.domain.order.service;
 
-import elice.shoppingmallproject.domain.order.dto.OrderDetailRequestDto;
 import elice.shoppingmallproject.domain.order.dto.OrderDetailUpdateDto;
 import elice.shoppingmallproject.domain.order.exception.OrderDetailNotFoundException;
 import elice.shoppingmallproject.domain.order.repository.OrderDetailRepository;
 import elice.shoppingmallproject.domain.order.entity.OrderDetail;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,15 +24,8 @@ public class OrderDetailServiceImpl implements OrderDetailService{
 
     // 주문 ID로 주문상세 조회
     @Override
-    public Optional<OrderDetail> findOrderDetailByOrderId(Long orderId) {
-        return orderDetailRepository.findByOrderId(orderId);
-    }
-
-    // 사용자 : 주문상세 생성
-    @Override
-    public void createOrderDetail(OrderDetailRequestDto orderDetailRequestDto) {
-        OrderDetail newOrderDetail = orderDetailRequestDto.toOrderDetailEntity();
-        orderDetailRepository.save(newOrderDetail);
+    public List<OrderDetail> findOrderDetailByOrderId(Long orderId) {
+        return orderDetailRepository.findByOrders_Id(orderId);
     }
 
     // 사용자 : 주문상세 삭제
@@ -51,11 +42,14 @@ public class OrderDetailServiceImpl implements OrderDetailService{
         OrderDetail existingOrderDetail = orderDetailRepository.findById(id)
             .orElseThrow(() -> new OrderDetailNotFoundException("주문상세내역 " + id + "을 찾을 수 없습니다"));
 
+        // productOption -> Product 에서 가격 정보 가져와서 세팅
+        int price = orderDetailUpdateDto.getProductOption().getProduct().getPrice();
+
         // 수정할 주문상세 정보
         OrderDetail newOrderDetail = existingOrderDetail.updateOrderDetail(
             orderDetailUpdateDto.getProductOption(),
             orderDetailUpdateDto.getCount(),
-            orderDetailUpdateDto.getPrice()
+            price
         );
         // 수정한 주문상세 DB 반영
         return orderDetailRepository.save(newOrderDetail);

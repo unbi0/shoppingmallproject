@@ -26,15 +26,8 @@ public class OrderDetailServiceImpl implements OrderDetailService{
 
     // 주문 ID로 주문상세 조회
     @Override
-    public Optional<OrderDetail> findOrderDetailByOrderId(Long orderId) {
-        return orderDetailRepository.findByOrderId(orderId);
-    }
-
-    // 사용자 : 주문상세 생성
-    @Override
-    public void createOrderDetail(OrderDetailRequestDto orderDetailRequestDto) {
-        OrderDetail newOrderDetail = orderDetailRequestDto.toOrderDetailEntity();
-        orderDetailRepository.save(newOrderDetail);
+    public List<OrderDetail> findOrderDetailByOrderId(Long orderId) {
+        return orderDetailRepository.findByOrders_Id(orderId);
     }
 
     // 사용자 : 주문상세 삭제

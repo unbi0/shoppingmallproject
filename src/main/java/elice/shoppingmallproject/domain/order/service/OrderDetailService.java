@@ -12,10 +12,7 @@ public interface OrderDetailService {
     List<OrderDetail> findAllOrderDetail();
 
     // 주문 ID로 주문상세 조회
-    Optional<OrderDetail> findOrderDetailByOrderId(Long orderId);
-
-    // 주문상세 생성
-    void createOrderDetail(OrderDetailRequestDto orderDetailRequestDto);
+    List<OrderDetail> findOrderDetailByOrderId(Long orderId);
 
     // 주문상세 삭제
     void deleteOrderDetail(Long orderDetailId);

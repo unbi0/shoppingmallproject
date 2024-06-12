@@ -1,5 +1,7 @@
 package elice.shoppingmallproject.domain.address.entity;
 
+import elice.shoppingmallproject.domain.address.dto.AddressRequestDto;
+import elice.shoppingmallproject.domain.address.dto.AddressResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,12 +22,19 @@ public class Address {
     private String address;
     private String detailAddress;
 
-    public static Address createAddress(String postcode, String address, String detailAddress) {
+    public static Address createAddress(AddressRequestDto addressRequestDto) {
+
         Address addr = new Address();
 
-        addr.postcode = postcode;
-        addr.address = address;
-        addr.detailAddress = detailAddress;
+        addr.postcode = addressRequestDto.getPostcode();
+        addr.address = addressRequestDto.getAddress();
+        addr.detailAddress = addressRequestDto.getDetailAddress();
         return addr;
+    }
+
+    public void updateAddress(AddressRequestDto addressRequestDto) {
+        this.postcode = addressRequestDto.getPostcode();
+        this.address = addressRequestDto.getAddress();
+        this.detailAddress = addressRequestDto.getDetailAddress();
     }
 }

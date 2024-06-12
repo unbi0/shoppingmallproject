@@ -1,13 +1,18 @@
 package elice.shoppingmallproject.domain.user.controller;
 
+import elice.shoppingmallproject.domain.user.dto.UserManagementDto;
+import elice.shoppingmallproject.domain.user.dto.UserResponseDto;
 import elice.shoppingmallproject.domain.user.dto.UserSignUpDto;
+import elice.shoppingmallproject.domain.user.dto.UserUpdateDto;
 import elice.shoppingmallproject.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -21,5 +26,36 @@ public class UserController {
         userService.signUp(userSignUpDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Created");
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<UserResponseDto> getUser() {
+
+        return ResponseEntity.ok(userService.getUserById());
+    }
+
+    // 관리자만 가능
+    @GetMapping("/users")
+    public ResponseEntity<UserManagementDto> getUsers() {
+        return ResponseEntity.ok(userService.getUsers());
+    }
+
+
+    /*
+    * 주소를 수정할 때 기존 주소는 DB 에 남겨지고 새로운 Address 가 생겨남
+    * 기존 주소를 덮어쓰는 방법을 찾자
+    * */
+    @PutMapping("/user")
+    public ResponseEntity<String> updateUser(@RequestBody UserUpdateDto userUpdateDto) {
+        userService.updateUser(userUpdateDto);
+
+        return ResponseEntity.ok("Success Update");
+    }
+
+    @DeleteMapping("/user")
+    public ResponseEntity<String> deleteUser() {
+        userService.deleteUser();
+
+        return ResponseEntity.ok("Success delete");
     }
 }

@@ -1,6 +1,7 @@
 package elice.shoppingmallproject.domain.user.entity;
 
 import elice.shoppingmallproject.domain.address.entity.Address;
+import elice.shoppingmallproject.domain.user.dto.UserUpdateDto;
 import elice.shoppingmallproject.global.common.BaseTimeEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -51,6 +52,17 @@ public class User extends BaseTimeEntity {
         user.address = address;
 
         return user;
+    }
+
+
+    public void updateUser(UserUpdateDto userUpdateDto) {
+        this.username = userUpdateDto.getUsername();
+        if (this.address != null) {
+            this.address.updateAddress(userUpdateDto.getAddress());
+        } else {
+            this.address = Address.createAddress(userUpdateDto.getAddress());
+        }
+
     }
 
     public void passwordEncode(BCryptPasswordEncoder bCryptPasswordEncoder) {

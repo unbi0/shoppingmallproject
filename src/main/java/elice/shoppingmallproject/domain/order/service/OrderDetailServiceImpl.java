@@ -42,11 +42,14 @@ public class OrderDetailServiceImpl implements OrderDetailService{
         OrderDetail existingOrderDetail = orderDetailRepository.findById(id)
             .orElseThrow(() -> new OrderDetailNotFoundException("주문상세내역 " + id + "을 찾을 수 없습니다"));
 
+        // productOption -> Product 에서 가격 정보 가져와서 세팅
+        int price = orderDetailUpdateDto.getProductOption().getProduct().getPrice();
+
         // 수정할 주문상세 정보
         OrderDetail newOrderDetail = existingOrderDetail.updateOrderDetail(
             orderDetailUpdateDto.getProductOption(),
             orderDetailUpdateDto.getCount(),
-            orderDetailUpdateDto.getPrice()
+            price
         );
         // 수정한 주문상세 DB 반영
         return orderDetailRepository.save(newOrderDetail);

@@ -17,12 +17,4 @@ public class OrderDetailRequestDto {
     private int count;
     private int price;
 
-    public OrderDetail toOrderDetailEntity(Orders orders){
-        return OrderDetail.builder()
-            .orders(orders)
-            .productOption(this.productOption)
-            .count(this.count)
-            .price(this.price)
-            .build();
-    }
 }

@@ -21,12 +21,13 @@ public class JwtUtil {
 
     public Long getUserId(String token) {
 
-        return Jwts.parser()
+        String userId = Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
-                .get("sub", Long.class);
+                .get("sub", String.class);
+        return Long.parseLong(userId);
     }
 
     public String getEmail(String token) {
@@ -71,7 +72,7 @@ public class JwtUtil {
 
     public String createJwt(Long userId, String category, String email, Role role, Long expiredMs) {
         return Jwts.builder()
-                .claim("sub", userId)
+                .claim("sub", String.valueOf(userId))
                 .claim("category", category)
                 .claim("email", email)
                 .claim("role", role.getKey())
@@ -79,11 +80,6 @@ public class JwtUtil {
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
                 .compact();
-    }
-
-    public String getUserEmail(HttpServletRequest request) {
-        String token = request.getHeader("access");
-        return getEmail(token);
     }
 
 }

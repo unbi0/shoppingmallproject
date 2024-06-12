@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="orderList.css">
+  <style>
+    .chip{
+      margin-left: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="margin-top: 40px; margin-bottom: 40px;">주문 조회</h2>
+  <div class="page">
+    <div class="layout" style="max-width: 900px;">
+      <div class="search-area">
+        <span>기간 조회</span>
+        <input class="date-input" type="date">
+        <span>~</span>
+        <input class="date-input" type="date">
+        <span style="margin-left: 30px;">주문번호</span>
+        <input>
+        <button class="search-btn">조회</button>
+      </div>
+
+      <div class="orders-list-area">
+        <div class="orders-list-nav">
+          <div class="orders-list-layout">
+            <chip class="orders-info-chip">주문 건수</chip>
+            <span>16 건</span>
+            <chip class="chip blue-chip">주문완료</chip>
+            <span>1,203</span>
+            <chip class="chip red-chip">배송중</chip>
+            <span>10,005</span>
+            <chip class="chip green-chip">배송완료</chip>
+            <span>5</span>
+          </div>
+          <select class="search-option">
+            <option>최신순</option>
+            <option>날짜순</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="orders-list-title">
+        <div style="width: 40px;">
+          <input type="checkbox">
+        </div>
+        <p style="width: 100px;">주문번호</p>
+        <p style="width: 100px;">주문일</p>
+        <p style="width: 200px;">주문상품</p>
+        <p style="width: 100px;">주문상태</p>
+        <p style="width: 80px;">주문자</p>
+        <p style="width: 120px;"></p>
+        <p style="width: 60px;">수량</p>
+        <p style="width: 140px;">주문가격</p>
+      </div>
+
+      <div class="orders-list">
+        <div style="width: 40px;">
+          <input type="checkbox">
+        </div>
+        <p style="font-weight: bold; width: 100px;">12345678105</p>
+        <p style="width: 100px;">2024-05-18</p>
+        <div style="display: flex; justify-content: center; align-items: center; width: 200px;">
+          <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; font-weight: bold;">17 MESH BLOCK FOOTBALL JERSEY - WHITE</p>
+        </div>
+        <div style="width: 100px; display: flex; justify-content: center;">
+          <chip class="chip blue-chip" style="margin: 0;">주문완료</chip>
+          <select style="height: 20px; width: 20px;">
+            <option>주문완료</option>
+            <option>배송중</option>
+            <option>배송완료</option>
+          </select>
+        </div>
+        <p style="font-weight: bold; width: 80px;">주문자</p>
+        <div style="width: 120px;">
+          <chip class="chip gray-chip" style="margin: 0; padding: 5px 10px;">배송정보</chip>
+        </div>
+        <p style="font-weight: bold; width: 60px;">11,235</p>
+        <p style="font-weight: bold; width: 140px;">KRW 100,350,000</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

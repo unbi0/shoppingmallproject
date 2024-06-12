@@ -10,4 +10,6 @@ import elice.shoppingmallproject.domain.cart.entity.Cart;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
     List<Cart> findByUserId(Long userId);
+    void deleteByCartIds(List<Long> cartIds);
 }
+

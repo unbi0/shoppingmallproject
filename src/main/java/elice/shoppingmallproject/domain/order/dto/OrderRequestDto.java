@@ -19,5 +19,4 @@ public class OrderRequestDto {
     private String deliveryDetailAddress;
     private int deliveryFee;
     private List<OrderDetailRequestDto> orderDetailRequestDtoList;
-
 }

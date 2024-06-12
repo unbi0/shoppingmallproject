@@ -1,4 +1,4 @@
-package elice.shoppingmall.domain.cart.dto;
+package elice.shoppingmallproject.domain.cart.dto;
 
 public class CartResponseDTO {
     private Long cartId;

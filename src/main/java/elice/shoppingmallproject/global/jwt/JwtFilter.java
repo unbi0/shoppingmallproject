@@ -6,10 +6,12 @@ import elice.shoppingmallproject.domain.user.entity.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,7 +25,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String accessToken = request.getHeader("access");
+        String accessToken = getTokenFromCookies(request, "access");
 
         if (accessToken == null) {
             filterChain.doFilter(request, response);
@@ -56,11 +58,13 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
+        Long userId = jwtUtil.getUserId(accessToken);
         String email = jwtUtil.getEmail(accessToken);
         Role role = Role.valueOf(jwtUtil.getRole(accessToken));
 
         //여기서 email 과 role 만 세팅을 해도 괜찮을까?
         User user = User.builder()
+                .id(userId)
                 .email(email)
                 .role(role)
                 .build();
@@ -71,5 +75,16 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
+    }
+
+    private String getTokenFromCookies(HttpServletRequest request, String name) {
+        if (request.getCookies() != null) {
+            return Arrays.stream(request.getCookies())
+                    .filter(cookie -> name.equals(cookie.getName()))
+                    .findFirst()
+                    .map(Cookie::getValue)
+                    .orElse(null);
+        }
+        return null;
     }
 }

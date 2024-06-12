@@ -1,8 +1,7 @@
-package elice.shoppingmall.domain.cart.controller;
+package elice.shoppingmallproject.domain.cart.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,20 +12,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import elice.shoppingmall.domain.cart.dto.CartCreateDTO;
-import elice.shoppingmall.domain.cart.dto.CartResponseDTO;
-import elice.shoppingmall.domain.cart.service.CartService;
+import elice.shoppingmallproject.domain.cart.dto.CartCreateDTO;
+import elice.shoppingmallproject.domain.cart.dto.CartResponseDTO;
+import elice.shoppingmallproject.domain.cart.service.CartService;
 
 @RestController
 @RequestMapping("/cart")
 public class CartController {
 
-    @Autowired
-    private CartService cartService;
+    private final CartService cartService;
+
+    public CartController(CartService cartService) {
+        this.cartService = cartService;
+    }
 
     @PostMapping
     public CartResponseDTO addToCart(@RequestBody CartCreateDTO cartCreateDTO) {
-        return cartService.addToCart(cartCreateDTO);
+        return cartService.addCart(cartCreateDTO);
     }
 
     @GetMapping

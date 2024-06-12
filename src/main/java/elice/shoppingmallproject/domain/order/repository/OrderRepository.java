@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderRepository extends JpaRepository<Orders, Long> {
     List<Orders> findByUserId(Long userId);
-    List<Orders> findByCreatedAt(LocalDateTime startDate, LocalDateTime endDate);
+    List<Orders> findByCreateAtBetween(LocalDateTime startDate, LocalDateTime endDate);
     List<Orders> findByOrderStatus(OrderStatus orderStatus);
 }

@@ -24,7 +24,7 @@ public interface OrderService {
     Orders updateOrderStatus(Long orderId, OrderStatus status);
 
     // 사용자 : 주문 수정
-    Orders updateOrder(Long orderId, Orders updatedOrders);
+    Orders updateOrder(Long orderId, OrderRequestDto updatedOrderRequestDto);
 
 
 

@@ -47,18 +47,42 @@ public class OrderServiceImpl implements OrderService{
             throw new InvalidOrderException("선택된 상품이 없습니다. 상품을 선택해주세요.");
         }
 
+        int totalPrice = 0;
+        // 각각의 주문상세에서 수량과 가격 정보를 가져와서 totalPrice 계산
+        for (OrderDetailRequestDto orderDetailRequestDto : orderRequestDto.getOrderDetailRequestDtoList()) {
+            // 상품 가격
+            int productPrice = orderDetailRequestDto.getProductOption().getProduct().getPrice();
+            // 상품 수량
+            int quantity = orderDetailRequestDto.getCount();
+
+            // 상품 가격 x 상품 수량의 총합
+            totalPrice += (productPrice * quantity);
+        }
+
         // 주문 생성
-        Orders newOrder = orderRequestDto.toOrdersEntity();
-        newOrder = orderRepository.save(newOrder);
+        Orders newOrder = Orders.builder()
+            .userId(userUtil.getAuthenticatedUser())
+            .deliveryRequest(orderRequestDto.getDeliveryRequest())
+            .recipientName(orderRequestDto.getRecipientName())
+            .recipientTel(orderRequestDto.getRecipientTel())
+            .deliveryAddress(orderRequestDto.getDeliveryAddress())
+            .deliveryDetailAddress(orderRequestDto.getDeliveryDetailAddress())
+            .deliveryFee(orderRequestDto.getDeliveryFee())
+            .totalPrice(totalPrice)
+            .build();
 
         // 주문 상세 생성
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (OrderDetailRequestDto orderDetailRequestDto : orderRequestDto.getOrderDetailRequestDtoList()) {
+
+            // productOption -> Product 에서 가격 정보 가져와서 세팅
+            int price = orderDetailRequestDto.getProductOption().getProduct().getPrice();
+
             OrderDetail newOrderDetail = OrderDetail.builder()
                 .orders(newOrder)
                 .productOption(orderDetailRequestDto.getProductOption())
                 .count(orderDetailRequestDto.getCount())
-                .price(orderDetailRequestDto.getPrice())
+                .price(price)
                 .build();
 
             orderDetails.add(newOrderDetail);
@@ -88,20 +112,32 @@ public class OrderServiceImpl implements OrderService{
 
     // 사용자 : 주문 수정
     @Override
-    public Orders updateOrder(Long id, Orders updatedOrders) {
+    public Orders updateOrder(Long id, OrderRequestDto updatedOrderRequestDto) {
         // 주문이 존재하는지 확인
         Orders existingOrder = orderRepository.findById(id)
             .orElseThrow(() -> new OrderNotFoundException("주문 ID " + id + "를 찾을 수 없습니다"));
 
+        int totalPrice = 0;
+        // 각각의 주문상세에서 수량과 가격 정보를 가져와서 totalPrice 계산
+        for (OrderDetailRequestDto orderDetailRequestDto : updatedOrderRequestDto.getOrderDetailRequestDtoList()) {
+            // 상품 가격
+            int productPrice = orderDetailRequestDto.getProductOption().getProduct().getPrice();
+            // 상품 수량
+            int quantity = orderDetailRequestDto.getCount();
+
+            // 상품 가격 x 상품 수량의 총합
+            totalPrice += (productPrice * quantity);
+        }
+
         // 수정할 주문 정보
         Orders newOrders = existingOrder.updateOrder(
-            updatedOrders.getDeliveryRequest(),
-            updatedOrders.getRecipientName(),
-            updatedOrders.getRecipientTel(),
-            updatedOrders.getDeliveryAddress(),
-            updatedOrders.getDeliveryDetailAddress(),
-            updatedOrders.getDeliveryFee(),
-            updatedOrders.getTotalPrice()
+            updatedOrderRequestDto.getDeliveryRequest(),
+            updatedOrderRequestDto.getRecipientName(),
+            updatedOrderRequestDto.getRecipientTel(),
+            updatedOrderRequestDto.getDeliveryAddress(),
+            updatedOrderRequestDto.getDeliveryDetailAddress(),
+            updatedOrderRequestDto.getDeliveryFee(),
+            totalPrice
         );
 
         // 수정한 내용 DB 반영

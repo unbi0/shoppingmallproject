@@ -63,7 +63,7 @@ public class OrderController {
     // 사용자 : 주문 수정
     @PutMapping("/{orderId}")
     public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId, @RequestBody OrderRequestDto orderRequestDto) {
-        return ResponseEntity.ok(orderService.updateOrder(orderId, orderRequestDto.toOrdersEntity()));
+        return ResponseEntity.ok(orderService.updateOrder(orderId, orderRequestDto));
     }
 
     // 관리자 : 주문 상태 수정

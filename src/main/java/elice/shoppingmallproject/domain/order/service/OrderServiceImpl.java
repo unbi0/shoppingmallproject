@@ -9,11 +9,11 @@ import elice.shoppingmallproject.domain.order.exception.OrderNotFoundException;
 import elice.shoppingmallproject.domain.order.repository.OrderDetailRepository;
 import elice.shoppingmallproject.domain.order.repository.OrderRepository;
 import elice.shoppingmallproject.domain.order.entity.Orders;
+import elice.shoppingmallproject.global.util.UserUtil;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class OrderServiceImpl implements OrderService{
 
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
-//    private final UserUtil userUtil;
+    private final UserUtil userUtil;
 
     // 관리자 : 주문 조회
     @Override
@@ -34,8 +34,8 @@ public class OrderServiceImpl implements OrderService{
 
     // 사용자 : 주문 조회
     @Override
-    public List<Orders> searchUserOrders(Long userId, Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
-//        Long userId = userUtil.getAuthenticatedUser();
+    public List<Orders> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
+        Long userId = userUtil.getAuthenticatedUser();
         return orderRepository.searchUserOrders(userId, orderId, startDate, endDate, orderStatus);
     }
 

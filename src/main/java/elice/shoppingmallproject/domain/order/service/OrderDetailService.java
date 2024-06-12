@@ -1,10 +1,8 @@
 package elice.shoppingmallproject.domain.order.service;
 
-import elice.shoppingmallproject.domain.order.dto.OrderDetailRequestDto;
 import elice.shoppingmallproject.domain.order.dto.OrderDetailUpdateDto;
 import elice.shoppingmallproject.domain.order.entity.OrderDetail;
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderDetailService {
 

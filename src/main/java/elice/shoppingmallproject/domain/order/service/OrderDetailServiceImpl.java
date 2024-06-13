@@ -27,32 +27,4 @@ public class OrderDetailServiceImpl implements OrderDetailService{
     public List<OrderDetail> findOrderDetailByOrderId(Long orderId) {
         return orderDetailRepository.findByOrders_Id(orderId);
     }
-
-    // 사용자 : 주문상세 삭제
-    @Override
-    public void deleteOrderDetail(Long orderDetailId) {
-        orderDetailRepository.deleteById(orderDetailId);
-    }
-
-    // 사용자 : 주문상세 수정
-    @Override
-    public OrderDetail updateOrderDetail(Long id, OrderDetailUpdateDto orderDetailUpdateDto){
-
-        // 주문이 존재하는지 확인
-        OrderDetail existingOrderDetail = orderDetailRepository.findById(id)
-            .orElseThrow(() -> new OrderDetailNotFoundException("주문상세내역 " + id + "을 찾을 수 없습니다"));
-
-        // productOption -> Product 에서 가격 정보 가져와서 세팅
-        int price = orderDetailUpdateDto.getProductOption().getProduct().getPrice();
-
-        // 수정할 주문상세 정보
-        OrderDetail newOrderDetail = existingOrderDetail.updateOrderDetail(
-            orderDetailUpdateDto.getProductOption(),
-            orderDetailUpdateDto.getCount(),
-            price
-        );
-        // 수정한 주문상세 DB 반영
-        return orderDetailRepository.save(newOrderDetail);
-
-    }
 }

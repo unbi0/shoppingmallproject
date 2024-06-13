@@ -3,6 +3,7 @@ package elice.shoppingmallproject.domain.order.controller;
 import elice.shoppingmallproject.domain.order.dto.OrderDetailUpdateDto;
 import elice.shoppingmallproject.domain.order.dto.OrderRequestDto;
 import elice.shoppingmallproject.domain.order.dto.OrderStatusUpdateDto;
+import elice.shoppingmallproject.domain.order.dto.OrderUpdateDto;
 import elice.shoppingmallproject.domain.order.entity.OrderDetail;
 import elice.shoppingmallproject.domain.order.entity.OrderStatus;
 import elice.shoppingmallproject.domain.order.entity.Orders;
@@ -62,8 +63,8 @@ public class OrderController {
 
     // 사용자 : 주문 수정
     @PutMapping("/{orderId}")
-    public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId, @RequestBody OrderRequestDto orderRequestDto) {
-        return ResponseEntity.ok(orderService.updateOrder(orderId, orderRequestDto));
+    public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId, @RequestBody OrderUpdateDto orderUpdateDto) {
+        return ResponseEntity.ok(orderService.updateOrder(orderId, orderUpdateDto));
     }
 
     // 관리자 : 주문 상태 수정
@@ -73,23 +74,10 @@ public class OrderController {
         return ResponseEntity.ok(orderService.updateOrderStatus(orderId, newStatus));
     }
 
-    // 사용자 : 주문상세 수정
-    @PutMapping("/detail/{orderDetailId}")
-    public ResponseEntity<OrderDetail> updateOrderDetail(@PathVariable Long orderDetailId, @RequestBody OrderDetailUpdateDto orderDetailUpdateDto) {
-        return ResponseEntity.ok(orderDetailService.updateOrderDetail(orderDetailId, orderDetailUpdateDto));
-    }
-
     // 사용자 : 주문 삭제
     @DeleteMapping("/{orderId}")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId) {
         orderService.deleteOrder(orderId);
-        return ResponseEntity.ok().build();
-    }
-
-    // 사용자 : 주문상세 삭제
-    @DeleteMapping("/detail/{orderDetailId}")
-    public ResponseEntity<Void> deleteOrderDetail(@PathVariable Long orderDetailId) {
-        orderDetailService.deleteOrderDetail(orderDetailId);
         return ResponseEntity.ok().build();
     }
 

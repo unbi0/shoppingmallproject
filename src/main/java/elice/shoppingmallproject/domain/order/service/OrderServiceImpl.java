@@ -2,6 +2,7 @@ package elice.shoppingmallproject.domain.order.service;
 
 import elice.shoppingmallproject.domain.order.dto.OrderDetailRequestDto;
 import elice.shoppingmallproject.domain.order.dto.OrderRequestDto;
+import elice.shoppingmallproject.domain.order.dto.OrderUpdateDto;
 import elice.shoppingmallproject.domain.order.entity.OrderDetail;
 import elice.shoppingmallproject.domain.order.entity.OrderStatus;
 import elice.shoppingmallproject.domain.order.exception.InvalidOrderException;
@@ -112,32 +113,18 @@ public class OrderServiceImpl implements OrderService{
 
     // 사용자 : 주문 수정
     @Override
-    public Orders updateOrder(Long id, OrderRequestDto updatedOrderRequestDto) {
+    public Orders updateOrder(Long id, OrderUpdateDto orderUpdateDto) {
         // 주문이 존재하는지 확인
         Orders existingOrder = orderRepository.findById(id)
             .orElseThrow(() -> new OrderNotFoundException("주문 ID " + id + "를 찾을 수 없습니다"));
 
-        int totalPrice = 0;
-        // 각각의 주문상세에서 수량과 가격 정보를 가져와서 totalPrice 계산
-        for (OrderDetailRequestDto orderDetailRequestDto : updatedOrderRequestDto.getOrderDetailRequestDtoList()) {
-            // 상품 가격
-            int productPrice = orderDetailRequestDto.getProductOption().getProduct().getPrice();
-            // 상품 수량
-            int quantity = orderDetailRequestDto.getCount();
-
-            // 상품 가격 x 상품 수량의 총합
-            totalPrice += (productPrice * quantity);
-        }
-
         // 수정할 주문 정보
         Orders newOrders = existingOrder.updateOrder(
-            updatedOrderRequestDto.getDeliveryRequest(),
-            updatedOrderRequestDto.getRecipientName(),
-            updatedOrderRequestDto.getRecipientTel(),
-            updatedOrderRequestDto.getDeliveryAddress(),
-            updatedOrderRequestDto.getDeliveryDetailAddress(),
-            updatedOrderRequestDto.getDeliveryFee(),
-            totalPrice
+            orderUpdateDto.getDeliveryRequest(),
+            orderUpdateDto.getRecipientName(),
+            orderUpdateDto.getRecipientTel(),
+            orderUpdateDto.getDeliveryAddress(),
+            orderUpdateDto.getDeliveryDetailAddress()
         );
 
         // 수정한 내용 DB 반영

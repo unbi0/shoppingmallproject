@@ -1,6 +1,7 @@
 package elice.shoppingmallproject.domain.order.service;
 
 import elice.shoppingmallproject.domain.order.dto.OrderRequestDto;
+import elice.shoppingmallproject.domain.order.dto.OrderUpdateDto;
 import elice.shoppingmallproject.domain.order.entity.OrderStatus;
 import elice.shoppingmallproject.domain.order.entity.Orders;
 import java.time.LocalDateTime;
@@ -24,8 +25,5 @@ public interface OrderService {
     Orders updateOrderStatus(Long orderId, OrderStatus status);
 
     // 사용자 : 주문 수정
-    Orders updateOrder(Long orderId, OrderRequestDto updatedOrderRequestDto);
-
-
-
+    Orders updateOrder(Long orderId, OrderUpdateDto orderUpdateDto);
 }

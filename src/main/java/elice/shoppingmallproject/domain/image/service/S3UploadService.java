@@ -35,13 +35,11 @@ public class S3UploadService {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-
-
+    
     public String getThumbnailPath(String path) {
         return amazonS3Client.getUrl(bucket, path).toString();
     }
-
-
+    
     public ImageDto uploadFile(MultipartFile multipartFile) throws IOException {
         String originalFilename = multipartFile.getOriginalFilename();
         String fileName =  createFileName(originalFilename);
@@ -125,6 +123,7 @@ public class S3UploadService {
         return fileName.substring(fileName.lastIndexOf("."));
     }
 
+    //S3와 DB에서 이미지 삭제
     public void deleteImage(Long image_id){
         // Retrieve the Image entity from the database using the image_id
         Image image = imageDao.findById(image_id);

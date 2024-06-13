@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>제품 상세 페이지</title>
+  <link rel="stylesheet" href="../css/productDetails.css">
+</head>
+<body data-product-id="${productId}"> <!-- productId를 data 속성으로 전달 -->
+<div class="product-detail-page">
+  <div class="product-images">
+    <img id="product-image-1" alt="상품 이미지" class="product-image">
+  </div>
+  <div class="product-info">
+    <h1 id="product-name" class="product-name"></h1>
+    <div class="size-selector">
+      <label>SIZE</label>
+      <div class="sizes">
+        <button class="size-btn" data-size="S">S</button>
+        <button class="size-btn" data-size="M">M</button>
+        <button class="size-btn" data-size="L">L</button>
+        <button class="size-btn" data-size="XL">XL</button>
+      </div>
+    </div>
+    <div class="quantity-selector">
+      <button id="decrease-quantity">-</button>
+      <span id="quantity">1</span>
+      <button id="increase-quantity">+</button>
+    </div>
+    <div id="product-price" class="price"></div>
+    <div class="buttons">
+      <button id="buy-now">구매하기</button>
+      <button id="add-to-cart">장바구니</button>
+    </div>
+    <div class="product-details">상품 상세정보</div>
+  </div>
+</div>
+<script src="../javascrpit/productDetails.js"></script>
+</body>
+</html>

@@ -62,13 +62,12 @@ public class ImageController {
         return profileImageList;
     }*/
 
-    //@PutMapping
-
-
     @DeleteMapping("/{image_id}/delete")
     public void deleteMovie(@PathVariable Long image_id) {
         log.debug("debug log={}",image_id);
         s3UploadService.deleteImage(image_id);
     }
+
+
 }
 

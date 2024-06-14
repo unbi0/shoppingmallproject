@@ -11,15 +11,12 @@ import elice.shoppingmallproject.global.oauth2.handler.CustomSuccessHandler;
 import elice.shoppingmallproject.global.oauth2.service.CustomOAuth2UserService;
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,6 +28,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private static final String[] WHITER_LIST = {"/error/**", "/css/**", "/js/**", "/", "/loginForm", "/registerForm", "/login", "/sign-up", "/register-page"};
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
@@ -50,18 +48,6 @@ public class SecurityConfig {
 
         return configuration.getAuthenticationManager();
     }
-
-//    String[] a = {"/static/**"};
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//        return (web) -> web.ignoring().requestMatchers(a);
-//    }
-////    @Bean
-////    public WebSecurityCustomizer webSecurityCustomizer() {
-////        return (web) -> web.ignoring()
-////                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-////    }
-
 
     //exceptionhandling 코드 빠짐
     @Bean
@@ -88,11 +74,10 @@ public class SecurityConfig {
                 .accessDeniedHandler(jwtAccessDeniedHandler));
 
 
-
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/error/**", "/css/**", "/js/**", "/login", "/sign-up", "/register-page").permitAll()
-                .requestMatchers("/admin").hasRole("ADMIN")
+                .requestMatchers(WHITER_LIST).permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/reissue").permitAll()
                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                 .anyRequest().authenticated());
@@ -103,7 +88,7 @@ public class SecurityConfig {
 
         //세션 설정
         http.sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }

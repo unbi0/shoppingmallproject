@@ -40,10 +40,9 @@ public class CategoryController {
     @PatchMapping("/{categoryId}")
     public ResponseEntity<CategoryResponseDto> updateCategory(@RequestBody CategoryRequestDto categoryRequestDto,
                                                               @PathVariable Long categoryId) {
-        CategoryResponseDto category = categoryService.updateCategory(categoryId,
-                categoryRequestDto.getName());
 
-        return ResponseEntity.ok(category);
+        return ResponseEntity.ok(categoryService.updateCategory(categoryId,
+                categoryRequestDto.getName()));
     }
 
     @DeleteMapping("/{categoryId}")

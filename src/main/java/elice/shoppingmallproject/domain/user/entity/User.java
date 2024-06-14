@@ -1,6 +1,7 @@
 package elice.shoppingmallproject.domain.user.entity;
 
 import elice.shoppingmallproject.domain.address.entity.Address;
+import elice.shoppingmallproject.domain.user.dto.UserUpdateDto;
 import elice.shoppingmallproject.global.common.BaseTimeEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -36,21 +37,32 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    private Role role;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
 
 
-    public static User createUser(String username, String email, String password, Address address) {
+    public static User createUser(String username, String email, String password, Address address, Role role) {
         User user = new User();
         user.username = username;
         user.email = email;
         user.password = password;
         user.address = address;
-
+        user.role = role;
         return user;
+    }
+
+
+    public void updateUser(UserUpdateDto userUpdateDto) {
+        this.username = userUpdateDto.getUsername();
+        if (this.address != null) {
+            this.address.updateAddress(userUpdateDto.getAddress());
+        } else {
+            this.address = Address.createAddress(userUpdateDto.getAddress());
+        }
+
     }
 
     public void passwordEncode(BCryptPasswordEncoder bCryptPasswordEncoder) {

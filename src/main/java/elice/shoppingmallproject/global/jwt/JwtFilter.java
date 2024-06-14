@@ -60,7 +60,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         Long userId = jwtUtil.getUserId(accessToken);
         String email = jwtUtil.getEmail(accessToken);
-        Role role = Role.valueOf(jwtUtil.getRole(accessToken));
+        Role role = Role.fromKey(jwtUtil.getRole(accessToken));
 
         //여기서 email 과 role 만 세팅을 해도 괜찮을까?
         User user = User.builder()

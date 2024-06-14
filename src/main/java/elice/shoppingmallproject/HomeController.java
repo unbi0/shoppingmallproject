@@ -9,16 +9,7 @@ public class HomeController {
     @GetMapping("/")
     public String index() {
 
-        return "redirect:index.html";
+        return "index";
     }
 
-    @GetMapping("/login-form")
-    public String login() {
-        return "login";
-    }
-
-    @GetMapping("/register-form")
-    public String register() {
-        return "register";
-    }
 }

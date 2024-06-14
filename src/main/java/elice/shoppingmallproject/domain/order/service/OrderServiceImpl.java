@@ -10,6 +10,8 @@ import elice.shoppingmallproject.domain.order.exception.OrderNotFoundException;
 import elice.shoppingmallproject.domain.order.repository.OrderDetailRepository;
 import elice.shoppingmallproject.domain.order.repository.OrderRepository;
 import elice.shoppingmallproject.domain.order.entity.Orders;
+import elice.shoppingmallproject.domain.product.entity.ProductOption;
+import elice.shoppingmallproject.domain.product.repository.ProductOptionRepository;
 import elice.shoppingmallproject.global.util.UserUtil;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -25,6 +27,7 @@ public class OrderServiceImpl implements OrderService{
 
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final ProductOptionRepository productOptionRepository;
     private final UserUtil userUtil;
 
     // 관리자 : 주문 조회
@@ -34,9 +37,14 @@ public class OrderServiceImpl implements OrderService{
     }
 
     // 사용자 : 주문 조회
+//    @Override
+//    public List<Orders> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
+//        Long userId = userUtil.getAuthenticatedUser();
+//        return orderRepository.searchUserOrders(userId, orderId, startDate, endDate, orderStatus);
+//    }
+
     @Override
-    public List<Orders> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
-        Long userId = userUtil.getAuthenticatedUser();
+    public List<Orders> searchUserOrders(Long userId, Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
         return orderRepository.searchUserOrders(userId, orderId, startDate, endDate, orderStatus);
     }
 
@@ -48,11 +56,13 @@ public class OrderServiceImpl implements OrderService{
             throw new InvalidOrderException("선택된 상품이 없습니다. 상품을 선택해주세요.");
         }
 
-        int totalPrice = 0;
+        int totalPrice = orderRequestDto.getDeliveryFee();
         // 각각의 주문상세에서 수량과 가격 정보를 가져와서 totalPrice 계산
         for (OrderDetailRequestDto orderDetailRequestDto : orderRequestDto.getOrderDetailRequestDtoList()) {
+            ProductOption productOption = productOptionRepository.findById(orderDetailRequestDto.getProductOptionId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid product option ID: " + orderDetailRequestDto.getProductOptionId()));
             // 상품 가격
-            int productPrice = orderDetailRequestDto.getProductOption().getProduct().getPrice();
+            int productPrice = productOption.getProduct().getPrice();
             // 상품 수량
             int quantity = orderDetailRequestDto.getCount();
 
@@ -62,7 +72,8 @@ public class OrderServiceImpl implements OrderService{
 
         // 주문 생성
         Orders newOrder = Orders.builder()
-            .userId(userUtil.getAuthenticatedUser())
+//            .userId(userUtil.getAuthenticatedUser())
+            .userId(1L)
             .deliveryRequest(orderRequestDto.getDeliveryRequest())
             .recipientName(orderRequestDto.getRecipientName())
             .recipientTel(orderRequestDto.getRecipientTel())
@@ -76,12 +87,15 @@ public class OrderServiceImpl implements OrderService{
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (OrderDetailRequestDto orderDetailRequestDto : orderRequestDto.getOrderDetailRequestDtoList()) {
 
+            ProductOption productOption = productOptionRepository.findById(orderDetailRequestDto.getProductOptionId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid product option ID: " + orderDetailRequestDto.getProductOptionId()));
+
             // productOption -> Product 에서 가격 정보 가져와서 세팅
-            int price = orderDetailRequestDto.getProductOption().getProduct().getPrice();
+            int price = productOption.getProduct().getPrice();
 
             OrderDetail newOrderDetail = OrderDetail.builder()
                 .orders(newOrder)
-                .productOption(orderDetailRequestDto.getProductOption())
+                .productOption(productOption)
                 .count(orderDetailRequestDto.getCount())
                 .price(price)
                 .build();

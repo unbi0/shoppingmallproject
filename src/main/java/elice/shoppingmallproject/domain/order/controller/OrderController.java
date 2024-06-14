@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,9 +39,15 @@ public class OrderController {
     }
 
     // 사용자 : 주문 조회
+//    @GetMapping
+//    public ResponseEntity<List<Orders>> searchUserOrders(@RequestParam(required = false) Long orderId, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate, @RequestParam(required = false) OrderStatus orderStatus) {
+//        return ResponseEntity.ok(orderService.searchUserOrders(orderId, startDate, endDate, orderStatus));
+//    }
+
+    @CrossOrigin(origins = "http://127.0.0.1:5500")
     @GetMapping
-    public ResponseEntity<List<Orders>> searchUserOrders(@RequestParam(required = false) Long orderId, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate, @RequestParam(required = false) OrderStatus orderStatus) {
-        return ResponseEntity.ok(orderService.searchUserOrders(orderId, startDate, endDate, orderStatus));
+    public ResponseEntity<List<Orders>> searchUserOrders(@RequestParam Long userId, @RequestParam(required = false) Long orderId, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate, @RequestParam(required = false) OrderStatus orderStatus) {
+        return ResponseEntity.ok(orderService.searchUserOrders(userId, orderId, startDate, endDate, orderStatus));
     }
 
     // 주문 ID로 주문상세 조회

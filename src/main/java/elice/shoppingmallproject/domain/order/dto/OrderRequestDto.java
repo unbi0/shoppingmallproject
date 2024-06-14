@@ -17,6 +17,6 @@ public class OrderRequestDto {
     private String recipientTel;
     private String deliveryAddress;
     private String deliveryDetailAddress;
-    private int deliveryFee;
+    private int deliveryFee = 2000;
     private List<OrderDetailRequestDto> orderDetailRequestDtoList;
 }

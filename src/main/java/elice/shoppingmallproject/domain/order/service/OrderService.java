@@ -13,7 +13,8 @@ public interface OrderService {
     List<Orders> searchAllOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus);
 
     // 사용자 : 주문 조회
-    List<Orders> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus);
+//    List<Orders> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus);
+    List<Orders> searchUserOrders(Long userId, Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus);
 
     // 사용자 : 주문 생성
     Orders createOrder(OrderRequestDto orderRequestDto);

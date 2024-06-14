@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-@RestController
+@Controller
 @Slf4j
 public class ImageController {
 
@@ -24,10 +25,12 @@ public class ImageController {
         this.s3UploadService = s3UploadService;
     }
 
-    @GetMapping("/home")
-    public String home(){
-        return "hello world";
+    @GetMapping("/product/store")
+    public String inputProduct() {
+        // 필요한 경우 모델에 데이터 추가
+        return "inputProduct";
     }
+
 
     //S3에 imageUrl을 저장 후 url을 DTO로 받아와서 사용자에게 보여주기
     @PostMapping("/upload/image")
@@ -53,14 +56,6 @@ public class ImageController {
 
         return new ResponseEntity<>("File uploaded successfully: " + String.join(", ", imgPaths), HttpStatus.OK);
     }
-
-    /*
-    //S3로 이미지 여러개 보여주게 하기(메인화면)
-    @GetMapping("members/images")
-    public List<String> getProfileImages (){
-        List<String> profileImageList = s3UploadService.getFileList("profile");
-        return profileImageList;
-    }*/
 
     @DeleteMapping("/{image_id}/delete")
     public void deleteMovie(@PathVariable Long image_id) {

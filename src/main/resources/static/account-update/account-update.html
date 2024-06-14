@@ -3,10 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    <link rel="stylesheet" href="register.css">
+    <title>My Page</title>
+    <link rel="stylesheet" href="account-update.css">
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/my')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('email').value = data.email;
+                    document.getElementById('username').value = data.username;
+                    document.getElementById('postcode').value = data.address.postcode;
+                    document.getElementById('address').value = data.address.address;
+                    document.getElementById('detailAddress').value = data.address.detailAddress;
+                })
+                .catch(error => console.error('Error:', error));
+        });
         function daumPost() {
             new daum.Postcode({
                 oncomplete: function(data) {
@@ -22,17 +35,8 @@
                 }
             }).open();
         }
-
         function handleSubmit(event) {
             event.preventDefault();
-
-            const password = document.getElementById('cipherPassword').value;
-            const confirmPassword = document.getElementById('confirm').value;
-
-            if (password !== confirmPassword) {
-                alert('비밀번호가 일치하지 않습니다.');
-                return;
-            }
 
             const address = {
                 postcode: document.getElementById('postcode').value,
@@ -41,14 +45,12 @@
             };
 
             const data = {
-                email: document.getElementById('email').value,
-                password: password,
                 username: document.getElementById('username').value,
                 address: address
             };
 
-            fetch('/sign-up', {
-                method: 'POST',
+            fetch('/user', {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -56,10 +58,29 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        alert('회원가입이 완료되었습니다.');
-                        window.location.href = '/';
+                        alert('회원정보가 수정되었습니다.');
+                        location.href = '/index.html'; // 수정 후 메인 페이지로 리다이렉션
                     } else {
-                        alert('회원가입에 실패하였습니다.');
+                        alert('회원정보 수정에 실패하였습니다.');
+                    }
+                });
+        }
+
+        function handleDelete(event) {
+            event.preventDefault();
+
+            fetch('/user', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('회원 탈퇴가 완료되었습니다.');
+                        location.href = '/index.html'; // 탈퇴 후 메인 페이지로 리다이렉션
+                    } else {
+                        alert('회원 탈퇴에 실패하였습니다.');
                     }
                 });
         }
@@ -67,16 +88,16 @@
 </head>
 <body>
 <div class="container">
-    <h1>회원가입</h1>
+    <h1>내 정보 수정</h1>
     <form id="signupForm" onsubmit="handleSubmit(event)">
         <div class="form-group">
-            <input type="email" id="email" name="email" placeholder="이메일" required>
+            <input type="email" id="email" name="email" placeholder="이메일" readonly>
         </div>
         <div class="form-group">
-            <input type="password" id="cipherPassword" name="cipherPassword" placeholder="비밀번호" required>
+            <input type="password" id="cipherPassword" name="cipherPassword" placeholder="비밀번호">
         </div>
         <div class="form-group">
-            <input type="password" id="confirm" name="confirm" placeholder="비밀번호 확인" required>
+            <input type="password" id="confirm" name="confirm" placeholder="비밀번호 확인">
         </div>
         <div class="form-group">
             <input type="text" id="username" name="username" placeholder="이름" required>
@@ -92,8 +113,9 @@
             <input type="text" id="detailAddress" name="detailAddress" placeholder="상세 주소">
         </div>
         <div class="button-group">
-            <button type="submit">회원 가입</button>
-            <button type="button" onclick="location.href='/index.html'">가입 취소</button>
+            <button type="submit">회원정보수정</button>
+            <button type="button" onclick="location.href='/index.html'">수정 취소</button>
+            <button type="button" onclick="handleDelete(event)">회원 탈퇴</button>
         </div>
     </form>
 </div>

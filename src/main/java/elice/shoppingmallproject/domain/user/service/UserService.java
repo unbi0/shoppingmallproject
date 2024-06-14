@@ -49,7 +49,6 @@ public class UserService {
 
         User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new UserNotFoundException("조회된 유저가 없습니다."));
-
         return new UserResponseDto(user);
     }
 

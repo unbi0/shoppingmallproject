@@ -33,7 +33,7 @@ public class CartController {
 
     @GetMapping
     public List<CartResponseDTO> getCartItems(@RequestParam Long userId) {
-        return cartService.getCartItems(userId);
+        return cartService.getCartItems();
     }
 
     @PutMapping("/{cartId}")

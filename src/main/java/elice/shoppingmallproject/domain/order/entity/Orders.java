@@ -36,6 +36,7 @@ public class Orders extends BaseTimeEntity {
     private String deliveryRequest;
     private String recipientName;
     private String recipientTel;
+    private String postCode;
     private String deliveryAddress;
     private String deliveryDetailAddress;
     private int deliveryFee;
@@ -54,14 +55,13 @@ public class Orders extends BaseTimeEntity {
         this.orderStatus = newOrderStatus;
     }
 
-    public Orders updateOrder(String deliveryRequest, String recipientName, String recipientTel, String deliveryAddress, String deliveryDetailAddress, int deliveryFee, int totalPrice){
+    public Orders updateOrder(String deliveryRequest, String recipientName, String recipientTel, String postCode, String deliveryAddress, String deliveryDetailAddress){
         this.deliveryRequest = deliveryRequest;
         this.recipientName = recipientName;
         this.recipientTel = recipientTel;
+        this.postCode = postCode;
         this.deliveryAddress = deliveryAddress;
         this.deliveryDetailAddress = deliveryDetailAddress;
-        this.deliveryFee = deliveryFee;
-        this.totalPrice = totalPrice;
         return this;
     }
 }

@@ -2,6 +2,7 @@ package elice.shoppingmallproject.domain.order.service;
 
 import elice.shoppingmallproject.domain.order.dto.OrderDetailRequestDto;
 import elice.shoppingmallproject.domain.order.dto.OrderRequestDto;
+import elice.shoppingmallproject.domain.order.dto.OrderUpdateDto;
 import elice.shoppingmallproject.domain.order.entity.OrderDetail;
 import elice.shoppingmallproject.domain.order.entity.OrderStatus;
 import elice.shoppingmallproject.domain.order.exception.InvalidOrderException;
@@ -9,11 +10,14 @@ import elice.shoppingmallproject.domain.order.exception.OrderNotFoundException;
 import elice.shoppingmallproject.domain.order.repository.OrderDetailRepository;
 import elice.shoppingmallproject.domain.order.repository.OrderRepository;
 import elice.shoppingmallproject.domain.order.entity.Orders;
+import elice.shoppingmallproject.domain.product.entity.ProductOption;
+import elice.shoppingmallproject.domain.product.repository.ProductOptionRepository;
 import elice.shoppingmallproject.global.util.UserUtil;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +28,7 @@ public class OrderServiceImpl implements OrderService{
 
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final ProductOptionRepository productOptionRepository;
     private final UserUtil userUtil;
 
     // 관리자 : 주문 조회
@@ -32,10 +37,21 @@ public class OrderServiceImpl implements OrderService{
         return orderRepository.searchAllOrders(orderId, startDate, endDate, orderStatus);
     }
 
-    // 사용자 : 주문 조회
+    // 주문 ID로 주문 조회
     @Override
-    public List<Orders> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
-        Long userId = userUtil.getAuthenticatedUser();
+    public Optional<Orders> findOrderById(Long orderId) {
+        return orderRepository.findById(orderId);
+    }
+
+    // 사용자 : 주문 조회
+//    @Override
+//    public List<Orders> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
+//        Long userId = userUtil.getAuthenticatedUser();
+//        return orderRepository.searchUserOrders(userId, orderId, startDate, endDate, orderStatus);
+//    }
+
+    @Override
+    public List<Orders> searchUserOrders(Long userId, Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
         return orderRepository.searchUserOrders(userId, orderId, startDate, endDate, orderStatus);
     }
 
@@ -50,8 +66,10 @@ public class OrderServiceImpl implements OrderService{
         int totalPrice = 0;
         // 각각의 주문상세에서 수량과 가격 정보를 가져와서 totalPrice 계산
         for (OrderDetailRequestDto orderDetailRequestDto : orderRequestDto.getOrderDetailRequestDtoList()) {
+            ProductOption productOption = productOptionRepository.findById(orderDetailRequestDto.getProductOptionId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid product option ID: " + orderDetailRequestDto.getProductOptionId()));
             // 상품 가격
-            int productPrice = orderDetailRequestDto.getProductOption().getProduct().getPrice();
+            int productPrice = productOption.getProduct().getPrice();
             // 상품 수량
             int quantity = orderDetailRequestDto.getCount();
 
@@ -61,10 +79,12 @@ public class OrderServiceImpl implements OrderService{
 
         // 주문 생성
         Orders newOrder = Orders.builder()
-            .userId(userUtil.getAuthenticatedUser())
+//            .userId(userUtil.getAuthenticatedUser())
+            .userId(1L)
             .deliveryRequest(orderRequestDto.getDeliveryRequest())
             .recipientName(orderRequestDto.getRecipientName())
             .recipientTel(orderRequestDto.getRecipientTel())
+            .postCode((orderRequestDto.getPostCode()))
             .deliveryAddress(orderRequestDto.getDeliveryAddress())
             .deliveryDetailAddress(orderRequestDto.getDeliveryDetailAddress())
             .deliveryFee(orderRequestDto.getDeliveryFee())
@@ -75,12 +95,15 @@ public class OrderServiceImpl implements OrderService{
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (OrderDetailRequestDto orderDetailRequestDto : orderRequestDto.getOrderDetailRequestDtoList()) {
 
+            ProductOption productOption = productOptionRepository.findById(orderDetailRequestDto.getProductOptionId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid product option ID: " + orderDetailRequestDto.getProductOptionId()));
+
             // productOption -> Product 에서 가격 정보 가져와서 세팅
-            int price = orderDetailRequestDto.getProductOption().getProduct().getPrice();
+            int price = productOption.getProduct().getPrice();
 
             OrderDetail newOrderDetail = OrderDetail.builder()
                 .orders(newOrder)
-                .productOption(orderDetailRequestDto.getProductOption())
+                .productOption(productOption)
                 .count(orderDetailRequestDto.getCount())
                 .price(price)
                 .build();
@@ -112,32 +135,19 @@ public class OrderServiceImpl implements OrderService{
 
     // 사용자 : 주문 수정
     @Override
-    public Orders updateOrder(Long id, OrderRequestDto updatedOrderRequestDto) {
+    public Orders updateOrder(Long id, OrderUpdateDto orderUpdateDto) {
         // 주문이 존재하는지 확인
         Orders existingOrder = orderRepository.findById(id)
             .orElseThrow(() -> new OrderNotFoundException("주문 ID " + id + "를 찾을 수 없습니다"));
 
-        int totalPrice = 0;
-        // 각각의 주문상세에서 수량과 가격 정보를 가져와서 totalPrice 계산
-        for (OrderDetailRequestDto orderDetailRequestDto : updatedOrderRequestDto.getOrderDetailRequestDtoList()) {
-            // 상품 가격
-            int productPrice = orderDetailRequestDto.getProductOption().getProduct().getPrice();
-            // 상품 수량
-            int quantity = orderDetailRequestDto.getCount();
-
-            // 상품 가격 x 상품 수량의 총합
-            totalPrice += (productPrice * quantity);
-        }
-
         // 수정할 주문 정보
         Orders newOrders = existingOrder.updateOrder(
-            updatedOrderRequestDto.getDeliveryRequest(),
-            updatedOrderRequestDto.getRecipientName(),
-            updatedOrderRequestDto.getRecipientTel(),
-            updatedOrderRequestDto.getDeliveryAddress(),
-            updatedOrderRequestDto.getDeliveryDetailAddress(),
-            updatedOrderRequestDto.getDeliveryFee(),
-            totalPrice
+            orderUpdateDto.getDeliveryRequest(),
+            orderUpdateDto.getRecipientName(),
+            orderUpdateDto.getRecipientTel(),
+            orderUpdateDto.getPostCode(),
+            orderUpdateDto.getDeliveryAddress(),
+            orderUpdateDto.getDeliveryDetailAddress()
         );
 
         // 수정한 내용 DB 반영

@@ -30,7 +30,7 @@ public class OrderDetail {
     @JoinColumn(name = "order_id")
     private Orders orders;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "option_id")
     private ProductOption productOption;
 

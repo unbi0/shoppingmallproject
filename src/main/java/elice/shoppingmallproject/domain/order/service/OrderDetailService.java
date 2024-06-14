@@ -11,10 +11,4 @@ public interface OrderDetailService {
 
     // 주문 ID로 주문상세 조회
     List<OrderDetail> findOrderDetailByOrderId(Long orderId);
-
-    // 주문상세 삭제
-    void deleteOrderDetail(Long orderDetailId);
-
-    // 주문상세 수정
-    OrderDetail updateOrderDetail(Long orderDetailId, OrderDetailUpdateDto orderDetailUpdateDto);
 }

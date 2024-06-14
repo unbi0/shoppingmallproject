@@ -1,18 +1,24 @@
 package elice.shoppingmallproject.domain.order.service;
 
 import elice.shoppingmallproject.domain.order.dto.OrderRequestDto;
+import elice.shoppingmallproject.domain.order.dto.OrderUpdateDto;
 import elice.shoppingmallproject.domain.order.entity.OrderStatus;
 import elice.shoppingmallproject.domain.order.entity.Orders;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderService {
 
     // 관리자 : 주문 조회
     List<Orders> searchAllOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus);
 
+    // 주문 ID로 주문 조회
+    Optional<Orders> findOrderById(Long orderId);
+
     // 사용자 : 주문 조회
-    List<Orders> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus);
+//    List<Orders> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus);
+    List<Orders> searchUserOrders(Long userId, Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus);
 
     // 사용자 : 주문 생성
     Orders createOrder(OrderRequestDto orderRequestDto);
@@ -24,8 +30,5 @@ public interface OrderService {
     Orders updateOrderStatus(Long orderId, OrderStatus status);
 
     // 사용자 : 주문 수정
-    Orders updateOrder(Long orderId, OrderRequestDto updatedOrderRequestDto);
-
-
-
+    Orders updateOrder(Long orderId, OrderUpdateDto orderUpdateDto);
 }

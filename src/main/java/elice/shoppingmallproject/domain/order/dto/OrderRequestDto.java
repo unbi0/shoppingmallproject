@@ -1,6 +1,5 @@
 package elice.shoppingmallproject.domain.order.dto;
 
-import elice.shoppingmallproject.domain.order.entity.OrderDetail;
 import elice.shoppingmallproject.domain.order.entity.Orders;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -13,26 +12,12 @@ import lombok.NoArgsConstructor;
 public class OrderRequestDto {
 
     // 주문 생성 시 필요한 데이터
-    private Long userId;
     private String deliveryRequest;
     private String recipientName;
     private String recipientTel;
+    private String postCode;
     private String deliveryAddress;
     private String deliveryDetailAddress;
-    private int deliveryFee;
-    private int totalPrice;
+    private int deliveryFee = 2000;
     private List<OrderDetailRequestDto> orderDetailRequestDtoList;
-
-    public Orders toOrdersEntity() {
-        return Orders.builder()
-            .userId(this.userId)
-            .deliveryRequest(this.deliveryRequest)
-            .recipientName(this.recipientName)
-            .recipientTel(this.recipientTel)
-            .deliveryAddress(this.deliveryAddress)
-            .deliveryDetailAddress(this.deliveryDetailAddress)
-            .deliveryFee(this.deliveryFee)
-            .totalPrice(this.totalPrice)
-            .build();
-    }
 }

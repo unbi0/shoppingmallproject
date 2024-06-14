@@ -12,10 +12,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Date;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +33,7 @@ public class ReissueService {
     private final RefreshRepository refreshRepository;
     private final UserRepository userRepository;
 
-    public ResponseEntity<?> reissueToken(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> reissueToken(HttpServletRequest request, HttpServletResponse response) {
 
         String refreshToken = findRefreshToken(request);
         if (refreshToken == null) {
@@ -46,11 +46,10 @@ public class ReissueService {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-
         Refresh existToken = refreshRepository.findByToken(refreshToken);
         String email = existToken.getEmail();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Role role = user.getRole();
 
@@ -59,15 +58,16 @@ public class ReissueService {
         Refresh newRefreshToken = Refresh.createRefresh(email, Refresh.generateToken(), REFRESH_TOKEN_EXPIRATION_MS);
         refreshRepository.save(newRefreshToken);
 
-        String newAccess = jwtUtil.createJwt(user.getId(), ACCESS_TOKEN_HEADER, email, role, ACCESS_TOKEN_EXPIRATION_MS);
+        String newAccess = jwtUtil.createJwt(user.getId(), ACCESS_TOKEN_HEADER, email, role,
+                ACCESS_TOKEN_EXPIRATION_MS);
 
         response.addCookie(createCookie(REFRESH_TOKEN_HEADER, newRefreshToken.getToken()));
-        response.setHeader(ACCESS_TOKEN_HEADER, newAccess);
+        response.addCookie(createCookie(ACCESS_TOKEN_HEADER, newAccess));
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("Token reissued successfully", HttpStatus.OK);
     }
 
-    private static String findRefreshToken(HttpServletRequest request) {
+    private String findRefreshToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {

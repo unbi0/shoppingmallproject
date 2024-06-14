@@ -13,5 +13,4 @@ public class OrderDetailUpdateDto {
     // 주문상세 수정 시 필요한 데이터
     private ProductOption productOption;
     private int count;
-    private int price;
 }

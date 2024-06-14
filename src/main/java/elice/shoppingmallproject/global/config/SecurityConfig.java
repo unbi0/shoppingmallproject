@@ -2,6 +2,8 @@ package elice.shoppingmallproject.global.config;
 
 import elice.shoppingmallproject.domain.auth.repository.RefreshRepository;
 import elice.shoppingmallproject.global.jwt.CustomLogoutFilter;
+import elice.shoppingmallproject.global.jwt.JwtAccessDeniedHandler;
+import elice.shoppingmallproject.global.jwt.JwtAuthenticationEntryPoint;
 import elice.shoppingmallproject.global.jwt.JwtFilter;
 import elice.shoppingmallproject.global.jwt.JwtUtil;
 import elice.shoppingmallproject.global.jwt.LoginFilter;
@@ -26,13 +28,15 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private static final String[] WHITER_LIST = {"/error/**", "/css/**", "/js/**", "/", "/loginForm", "/registerForm", "/login", "/sign-up", "/register-page"};
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
     private final RefreshRepository refreshRepository;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
-
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -65,15 +69,18 @@ public class SecurityConfig {
                         .userService(customOAuth2UserService))
                 .successHandler(customSuccessHandler)
         );
+        http.exceptionHandling(ex -> ex
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler));
 
 
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/static/**","/error/**", "/css/**", "/js/**", "/login", "/sign-up", "/register-page").permitAll()
-                .requestMatchers("/admin").hasRole("ADMIN")
+                .requestMatchers(WHITER_LIST).permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/reissue").permitAll()
                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                .anyRequest().permitAll());
+                .anyRequest().authenticated());
 
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
@@ -81,7 +88,7 @@ public class SecurityConfig {
 
         //세션 설정
         http.sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }

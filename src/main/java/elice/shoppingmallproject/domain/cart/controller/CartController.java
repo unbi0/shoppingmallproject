@@ -1,5 +1,3 @@
-// CartController.java
-
 package elice.shoppingmallproject.domain.cart.controller;
 
 import java.util.List;

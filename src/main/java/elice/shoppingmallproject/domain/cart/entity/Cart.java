@@ -13,6 +13,10 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import elice.shoppingmallproject.domain.user.entity.User;
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Table(name = "cart")
 @Getter
@@ -25,10 +29,10 @@ public class Cart {
     private Long cartId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "option_id", nullable = false)
+    @Column(name = "option_id")
     private Long optionId;
 
     @Column(nullable = false)

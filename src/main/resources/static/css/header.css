@@ -1,0 +1,197 @@
+* {
+    list-style: none;
+    text-decoration: none;
+    border-collapse: collapse;
+    margin: 0px;
+    padding: 0px;
+    color: black;
+}
+
+.header {
+    display: flex;
+    width: 1280px;
+    margin: auto;
+    margin-top: 20px; /* 상단 간격 추가 */
+}
+
+.nav {
+    display: flex;
+    width: 300px;
+    justify-content: flex-start;
+    position: relative;
+}
+
+.Lognav {
+    display: flex;
+    width: calc(1280px - 300px);
+    justify-content: flex-end;
+}
+
+.nav > li {
+    margin-left: 10px;
+    position: relative;
+}
+
+.Lognav > li {
+    margin-left: 10px;
+}
+
+/* 드롭다운 메뉴 스타일 */
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown li {
+    padding: 8px 16px;
+    white-space: nowrap;
+}
+
+.dropdown li a {
+    color: black;
+    text-decoration: none;
+}
+
+.dropdown li:hover {
+    background-color: #ddd;
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* 검은색 배경 투명도 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #333; /* 모달 콘텐츠 배경색을 동일하게 설정 */
+    padding: 20px;
+    border: none; /* 박스 선 제거 */
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+    position: relative;
+    color: white; /* 텍스트 색상을 흰색으로 설정 */
+}
+
+.close {
+    color: white; /* 닫기 버튼 색상도 흰색으로 설정 */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #ccc;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 입력 상자와 설명 스타일 */
+#search-input {
+    background-color: transparent; /* 배경색 제거 */
+    border: none; /* 기본 테두리 제거 */
+    border-bottom: 2px solid white; /* 밑줄만 표시 */
+    color: white; /* 텍스트 색상 */
+    padding: 5px;
+    width: calc(100% - 40px); /* 입력 상자 너비 조정 */
+    margin-bottom: 10px;
+}
+
+#search-input:focus {
+    outline: none; /* 포커스 시 외곽선 제거 */
+    border-bottom: 2px solid #ccc; /* 포커스 시 밑줄 색상 변경 */
+}
+
+/* 설명 스타일 */
+#search-description {
+    color: white; /* 설명 텍스트 색상 */
+    margin-top: 10px;
+}
+
+/* 드롭다운 메뉴 활성화 */
+#shop-link:hover .dropdown {
+    display: block;
+}
+
+/* 상품 목록 스타일 */
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* 왼쪽 정렬 */
+    padding: 20px;
+    padding-left: 85px; /* 왼쪽 간격 추가 */
+    padding-right: 85px; /* 오른쪽 간격 추가 */
+    margin-top: 40px; /* 상단 간격 추가 */
+    min-height: 200px; /* 최소 높이 설정 */
+    position: relative; /* 중앙 정렬을 위해 relative 설정 */
+}
+
+.product-item {
+    position: relative;
+    width: calc(20% - 20px); /* 고정 너비 설정 (5개씩 정렬되도록) */
+    margin: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    box-sizing: border-box;
+    margin-bottom: 30px; /* 상품 간의 아래 간격 추가 */
+    cursor: pointer; /* 커서 스타일 변경 */
+}
+
+.product-item img {
+    max-width: 100%;
+    height: auto;
+}
+
+.product-item h3 {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+.product-item p {
+    margin: 5px 0;
+}
+
+/* 상품 설명 스타일 */
+.description {
+    display: none; /* 기본적으로 숨김 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* 중앙에 메시지를 표시하기 위한 스타일 */
+.no-results {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 1.5em;
+    color: #555;
+}

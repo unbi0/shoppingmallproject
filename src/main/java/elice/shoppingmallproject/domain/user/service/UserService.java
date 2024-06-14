@@ -36,7 +36,7 @@ public class UserService {
         Address address = Address.createAddress(userSignUpDto.getAddress());
 
         User user = User.createUser(userSignUpDto.getUsername(), userSignUpDto.getEmail(),
-                userSignUpDto.getPassword(), address);
+                userSignUpDto.getPassword(), address, Role.USER);
 
         user.passwordEncode(bCryptPasswordEncoder);
 

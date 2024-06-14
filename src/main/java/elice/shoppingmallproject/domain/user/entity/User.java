@@ -37,20 +37,20 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    private Role role;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
 
 
-    public static User createUser(String username, String email, String password, Address address) {
+    public static User createUser(String username, String email, String password, Address address, Role role) {
         User user = new User();
         user.username = username;
         user.email = email;
         user.password = password;
         user.address = address;
-
+        user.role = role;
         return user;
     }
 

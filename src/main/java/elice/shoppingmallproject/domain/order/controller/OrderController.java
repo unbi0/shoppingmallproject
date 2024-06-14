@@ -11,6 +11,7 @@ import elice.shoppingmallproject.domain.order.service.OrderDetailService;
 import elice.shoppingmallproject.domain.order.service.OrderService;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
@@ -38,13 +40,18 @@ public class OrderController {
         return ResponseEntity.ok(orderService.searchAllOrders(orderId, startDate, endDate, orderStatus));
     }
 
+    // 주문 ID로 주문 조회
+    @GetMapping("/{orderId}")
+    public ResponseEntity<Optional<Orders>> findOrderById(@PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.findOrderById(orderId));
+    }
+
     // 사용자 : 주문 조회
 //    @GetMapping
 //    public ResponseEntity<List<Orders>> searchUserOrders(@RequestParam(required = false) Long orderId, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate, @RequestParam(required = false) OrderStatus orderStatus) {
 //        return ResponseEntity.ok(orderService.searchUserOrders(orderId, startDate, endDate, orderStatus));
 //    }
 
-    @CrossOrigin(origins = "http://127.0.0.1:5500")
     @GetMapping
     public ResponseEntity<List<Orders>> searchUserOrders(@RequestParam Long userId, @RequestParam(required = false) Long orderId, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate, @RequestParam(required = false) OrderStatus orderStatus) {
         return ResponseEntity.ok(orderService.searchUserOrders(userId, orderId, startDate, endDate, orderStatus));

@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,12 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public List<Orders> searchAllOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
         return orderRepository.searchAllOrders(orderId, startDate, endDate, orderStatus);
+    }
+
+    // 주문 ID로 주문 조회
+    @Override
+    public Optional<Orders> findOrderById(Long orderId) {
+        return orderRepository.findById(orderId);
     }
 
     // 사용자 : 주문 조회
@@ -56,7 +63,7 @@ public class OrderServiceImpl implements OrderService{
             throw new InvalidOrderException("선택된 상품이 없습니다. 상품을 선택해주세요.");
         }
 
-        int totalPrice = orderRequestDto.getDeliveryFee();
+        int totalPrice = 0;
         // 각각의 주문상세에서 수량과 가격 정보를 가져와서 totalPrice 계산
         for (OrderDetailRequestDto orderDetailRequestDto : orderRequestDto.getOrderDetailRequestDtoList()) {
             ProductOption productOption = productOptionRepository.findById(orderDetailRequestDto.getProductOptionId())
@@ -77,6 +84,7 @@ public class OrderServiceImpl implements OrderService{
             .deliveryRequest(orderRequestDto.getDeliveryRequest())
             .recipientName(orderRequestDto.getRecipientName())
             .recipientTel(orderRequestDto.getRecipientTel())
+            .postCode((orderRequestDto.getPostCode()))
             .deliveryAddress(orderRequestDto.getDeliveryAddress())
             .deliveryDetailAddress(orderRequestDto.getDeliveryDetailAddress())
             .deliveryFee(orderRequestDto.getDeliveryFee())
@@ -137,6 +145,7 @@ public class OrderServiceImpl implements OrderService{
             orderUpdateDto.getDeliveryRequest(),
             orderUpdateDto.getRecipientName(),
             orderUpdateDto.getRecipientTel(),
+            orderUpdateDto.getPostCode(),
             orderUpdateDto.getDeliveryAddress(),
             orderUpdateDto.getDeliveryDetailAddress()
         );

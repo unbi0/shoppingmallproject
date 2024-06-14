@@ -35,12 +35,16 @@ public class UserController {
     }
 
     // 관리자만 가능
-    @GetMapping("admin/users")
+    @GetMapping("api/admin/users")
     public ResponseEntity<UserManagementDto> getUsers() {
         return ResponseEntity.ok(userService.getUsers());
     }
 
 
+    /*
+     * 주소를 수정할 때 기존 주소는 DB 에 남겨지고 새로운 Address 가 생겨남
+     * 기존 주소를 덮어쓰는 방법을 찾자
+     * */
     @PutMapping("/user")
     public ResponseEntity<String> updateUser(@RequestBody UserUpdateDto userUpdateDto) {
         userService.updateUser(userUpdateDto);

@@ -33,4 +33,15 @@ public class ProductOption {
         option.setStock(stock);
         return option;
     }
+
+    //재고가 감소하는 기능 재고숫자를 OrderDetail에서 count로 예상
+    public void decreaseStock(int count) {
+        if (this.stock < count) {
+            throw new IllegalArgumentException("재고가 부족합니다. 사이즈: " + this.optionSize + "재고수량: " + this.stock);
+        }
+        this.stock -= count;
+    }
+
+
+
 }

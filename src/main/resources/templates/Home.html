@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>홈</title>
+    <link rel="stylesheet" type="text/css" href="/css/home.css">
+</head>
+<body>
+<div class="wrap">
+    <div class="intro">
+        <div class="header">
+            <ul class="nav">
+                <li id="home-link"><a href="#">HOME</a></li>
+                <li id="shop-link"><a href="#">SHOP</a>
+                    <ul class="dropdown" id="shop-dropdown"></ul>
+                </li>
+                <li><a href="#" id="search-link">SEARCH</a></li>
+            </ul>
+
+            <ul class="Lognav">
+                <li><a href="#">LOGIN</a></li>
+                <li><a href="#">ACCOUNT</a></li>
+                <li><a href="#">BAG(0)</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- 검색 모달 -->
+<div id="search-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <input type="text" id="search-input" class="underline-input" placeholder="검색어를 입력하세요">
+        <p id="search-description">엔터를 누르면 검색이 됩니다.</p>
+        <div id="search-results"></div> <!-- 검색 결과를 표시할 영역 -->
+    </div>
+</div>
+
+<div class="product-list" id="product-list"></div> <!-- 상품 목록을 표시할 영역 -->
+
+<script src="/js/home.js"></script>
+</body>
+</html>

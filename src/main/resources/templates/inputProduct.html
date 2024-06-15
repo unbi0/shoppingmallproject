@@ -9,7 +9,7 @@
 <body>
 <div class="container">
     <h2>상품등록</h2>
-    <form id="productForm" enctype="multipart/form-data" action="/your-controller-endpoint" method="post">
+    <form id="productForm" enctype="multipart/form-data" method="post">
         <label for="productName">상품 이름</label>
         <input type="text" id="productName" name="productName">
 
@@ -60,18 +60,18 @@
         const form = document.getElementById('productForm');
         const formData = new FormData(form);
 
-        fetch('/inputproduct', {
+        fetch('/upload/images', {
             method: 'POST',
             body: formData
         })
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
-                // Handle success actions (e.g., display a success message)
+                alert('File uploaded and product saved successfully.'); // Display success message
             })
             .catch(error => {
                 console.error('Error:', error);
-                // Handle error actions (e.g., display an error message)
+                alert('An error occurred. Please try again.'); // Display error message
             });
     });
 </script>

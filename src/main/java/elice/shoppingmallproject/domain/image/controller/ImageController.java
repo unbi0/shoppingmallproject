@@ -31,7 +31,6 @@ public class ImageController {
         return "inputProduct";
     }
 
-
     //S3에 imageUrl을 저장 후 url을 DTO로 받아와서 사용자에게 보여주기
     @PostMapping("/upload/image")
     public ResponseEntity<String> saveImage(ImageDto imageDto, Model model) throws IOException {

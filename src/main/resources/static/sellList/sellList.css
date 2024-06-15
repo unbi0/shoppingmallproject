@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.product-list {
+    margin: 20px;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.product-item img {
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+}
+
+.product-item div {
+    flex-grow: 1;
+}
+
+.product-item button {
+    margin-left: 10px;
+}
+
+.register-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+}
+
+form {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+form input[type="text"], form input[type="number"], form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+}
+
+form button {
+    padding: 10px 20px;
+}

@@ -1,5 +1,6 @@
 package elice.shoppingmallproject.domain.cart.entity;
 
+import elice.shoppingmallproject.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,6 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 import elice.shoppingmallproject.domain.user.entity.User;
 import lombok.Getter;
@@ -45,6 +48,6 @@ public class Cart {
         this.optionId = optionId;
         this.quantity = quantity;
         this.user = user;
-
+        
     }
 }

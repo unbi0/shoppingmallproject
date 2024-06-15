@@ -1,12 +1,16 @@
 package elice.shoppingmallproject.domain.cart.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class CartResponseDTO {
+
     private Long cartId;
     private Long optionId;
     private Long userId;
     private int quantity;
-
-    // Getters and Setters
 
     public Long getCartId() {
         return cartId;

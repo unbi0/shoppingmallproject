@@ -46,27 +46,27 @@ public class CartService {
 
     public CartResponseDTO updateCartItem(Long cartId, int quantity) {
         Long userId = userUtil.getAuthenticatedUser();
-        Cart cart = cartRepository.findById(cartId).orElse(null);
-        if (cart != null && cart.getUser().getId().equals(userId)) {
+        Cart cart = cartRepository.findByCartIdAndUserId(cartId, userId);
+        
             cart.setQuantity(quantity);
             cart = cartRepository.save(cart);
-        }
+        
         return toCartResponseDTO(cart);
     }
 
     public void deleteCartItem(Long cartId) {
         Long userId = userUtil.getAuthenticatedUser();
         Cart cart = cartRepository.findByCartIdAndUserId(cartId, userId);
-        cartRepository.delete(cart);
-
+            cartRepository.delete(cart);
+        
     }
 
     public void deleteAllCartItems() {
         Long userId = userUtil.getAuthenticatedUser();
         List<Cart> userCarts = cartRepository.findByUserId(userId);
-        cartRepository.deleteAll(userCarts);
-
-
+        cartRepository.deleteAll(userCarts); 
+        
+        
     }
 
     private CartResponseDTO toCartResponseDTO(Cart cart) {

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 수정</title>
+    <link rel="stylesheet" href="../static/reviseProduct/reviseProduct.css">
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <span>상품수정 - 관리자</span>
+    </div>
+    <h2>상품수정</h2>
+    <form id="productForm">
+        <label for="productName">상품 이름</label>
+        <input type="text" id="productName" name="productName">
+
+        <label for="category">카테고리</label>
+        <input type="text" id="category" name="category">
+
+        <label for="description">상품 설명</label>
+        <textarea id="description" name="description" rows="4"></textarea>
+
+        <label for="price">가격</label>
+        <input type="number" id="price" name="price">
+
+        <div class="sizes">
+            <div>
+                <label>사이즈 S</label>
+                <input type="number" name="stockS">
+            </div>
+            <div>
+                <label>사이즈 M</label>
+                <input type="number" name="stockM">
+            </div>
+        </div>
+
+        <div class="sizes">
+            <div>
+                <label>사이즈 L</label>
+                <input type="number" name="stockL">
+            </div>
+            <div>
+                <label>사이즈 XL</label>
+                <input type="number" name="stockXL">
+            </div>
+        </div>
+
+        <label for="details">세부정보</label>
+        <textarea id="details" name="details" rows="4"></textarea>
+
+        <label for="productImage">제품 사진</label>
+        <input type="file" id="productImage" name="productImage" accept="image/*">
+        <small>사진파일 (png, jpg, jpeg)</small>
+
+        <button type="submit">수정완료</button>
+    </form>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

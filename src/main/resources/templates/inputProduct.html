@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 등록</title>
     <link rel="stylesheet" href="/inputProduct/inputProduct.css">
+    <script src="/inputProduct/inputProduct.js"></script>
 </head>
 <body>
 <div class="container">
@@ -53,27 +54,5 @@
         <button type="submit">등록완료</button>
     </form>
 </div>
-<script>
-    document.getElementById('productForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the form from submitting the default way
-
-        const form = document.getElementById('productForm');
-        const formData = new FormData(form);
-
-        fetch('/upload/images', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                alert('File uploaded and product saved successfully.'); // Display success message
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.'); // Display error message
-            });
-    });
-</script>
 </body>
 </html>

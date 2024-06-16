@@ -74,11 +74,11 @@ public class S3UploadService {
             objectMetadata.setContentType(file.getContentType());
 
             try(InputStream inputStream = file.getInputStream()) {
-                amazonS3Client.putObject(new PutObjectRequest(bucket+"/post/image", fileName, inputStream, objectMetadata)
+                amazonS3Client.putObject(new PutObjectRequest(bucket+"/post/images", fileName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
 
-                imgUrlList.add(amazonS3Client.getUrl(bucket+"/post/image", fileName).toString());
-                String url = amazonS3Client.getUrl(bucket+"/post/image", fileName).toString();
+                imgUrlList.add(amazonS3Client.getUrl(bucket+"/post/images", fileName).toString());
+                String url = amazonS3Client.getUrl(bucket+"/post/images", fileName).toString();
 
                 Image image = createImage(2L,url,fileName);
                 imageDao.saveImg(image);

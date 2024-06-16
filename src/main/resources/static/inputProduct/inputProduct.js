@@ -8,6 +8,7 @@ document.getElementById('productForm').addEventListener('submit', function(event
         method: 'POST',
         body: formData
     })
+        //컨트롤에서 리턴 값으로 string으로 줄꺼면 .test()로
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);

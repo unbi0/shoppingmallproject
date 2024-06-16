@@ -7,6 +7,7 @@ import java.util.Optional;
 public interface ImageDao {
     Image saveImg(Image image);
     void deleteImg(Long image_id);
-
-    Image findById(Long imageId);
+    Image findByImageId(Long image_id);
+    Image findByProductId(Long product_id);
+    Long getProductCount(Long product_id);
 }

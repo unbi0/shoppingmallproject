@@ -28,9 +28,17 @@ public class ImageDaoImpl implements ImageDao{
     }
 
     @Override
-    public Image findById(Long imageId) {
-        return imageRepository.getReferenceById(imageId);
+    public Image findByImageId(Long image_id) {
+        return imageRepository.getReferenceById(image_id);
     }
 
+    @Override
+    public Image findByProductId(Long product_id) {
+        return imageRepository.getReferenceById(product_id);
+    }
 
+    @Override
+    public Long getProductCount(Long product_id) {
+        return imageRepository.countByProductId(product_id);
+    }
 }

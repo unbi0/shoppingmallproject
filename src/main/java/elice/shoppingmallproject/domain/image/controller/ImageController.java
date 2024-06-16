@@ -56,6 +56,14 @@ public class ImageController {
         return new ResponseEntity<>("File uploaded successfully: " + String.join(", ", imgPaths), HttpStatus.OK);
     }
 
+    @PostMapping("/images/{productId}")
+    public ResponseEntity<String> getImages(@PathVariable String productId){
+
+
+
+        return ResponseEntity.ok().body("");
+    }
+
     @DeleteMapping("/{image_id}/delete")
     public void deleteMovie(@PathVariable Long image_id) {
         log.debug("debug log={}",image_id);

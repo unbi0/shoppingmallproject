@@ -123,10 +123,25 @@ public class S3UploadService {
         return fileName.substring(fileName.lastIndexOf("."));
     }
 
+    //product_id로 이미지 url 가져오기
+    public List<String> getImageUrl(Long product_id){
+        Image product_img = imageDao.findByProductId(product_id);
+        List<String> imgUrlList = new ArrayList<>();
+
+        if (product_img != null) {
+
+            imgUrlList.add(product_img.getUrl());
+        }else {
+            throw new IllegalArgumentException("Image not found with id: " + product_id);
+        }
+
+        return imgUrlList;
+    }
+
     //S3와 DB에서 이미지 삭제
     public void deleteImage(Long image_id){
         // Retrieve the Image entity from the database using the image_id
-        Image image = imageDao.findById(image_id);
+        Image image = imageDao.findByImageId(image_id);
 
         if (image != null) {
             // Get the file_name from the Image entity

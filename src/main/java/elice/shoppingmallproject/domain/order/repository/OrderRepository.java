@@ -11,8 +11,10 @@ import org.springframework.data.repository.query.Param;
 public interface OrderRepository extends JpaRepository<Orders, Long> {
     @Query("SELECT o FROM Orders o WHERE o.userId = :userId " +
         "AND (:orderId IS NULL OR o.id = :orderId) " +
-        "AND (o.createAt BETWEEN :startDate AND :endDate) " +
-        "AND (:orderStatus IS NULL OR o.orderStatus = :orderStatus)")
+        "AND (:startDate IS NULL OR o.createAt >= :startDate)" +
+        "AND (:endDate IS NULL OR o.createAt <= :endDate)" +
+        "AND (:orderStatus IS NULL OR o.orderStatus = :orderStatus)" +
+        "ORDER BY o.createAt DESC")
     List<Orders> searchUserOrders(@Param("userId") Long userId,
         @Param("orderId") Long orderId,
         @Param("startDate") LocalDateTime startDate,
@@ -20,8 +22,10 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
         @Param("orderStatus") OrderStatus orderStatus);
 
     @Query("SELECT o FROM Orders o WHERE (:orderId IS NULL OR o.id = :orderId) " +
-        "AND (o.createAt BETWEEN :startDate AND :endDate) " +
-        "AND (:orderStatus IS NULL OR o.orderStatus = :orderStatus)")
+        "AND (:startDate IS NULL OR o.createAt >= :startDate)" +
+        "AND (:endDate IS NULL OR o.createAt <= :endDate)" +
+        "AND (:orderStatus IS NULL OR o.orderStatus = :orderStatus)" +
+        "ORDER BY o.createAt DESC")
     List<Orders> searchAllOrders(@Param("orderId") Long orderId,
         @Param("startDate") LocalDateTime startDate,
         @Param("endDate") LocalDateTime endDate,

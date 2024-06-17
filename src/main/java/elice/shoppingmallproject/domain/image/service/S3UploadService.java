@@ -36,10 +36,6 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
     
-    public String getThumbnailPath(String path) {
-        return amazonS3Client.getUrl(bucket, path).toString();
-    }
-    
     public ImageDto uploadFile(MultipartFile multipartFile) throws IOException {
         String originalFilename = multipartFile.getOriginalFilename();
         String fileName =  createFileName(originalFilename);
@@ -53,7 +49,7 @@ public class S3UploadService {
         String url = amazonS3Client.getUrl(bucket, fileName).toString();
 
 
-        Image image = createImage(1L, url, fileName);
+        Image image = createImage(url, fileName);
 
         //이 Entity는 DB를 거쳐 왔으므로 image_id가 생성되어있음
         Image savedImage = imageDao.saveImg(image);
@@ -89,9 +85,8 @@ public class S3UploadService {
         return imgUrlList;
     }
 
-    private  Image createImage(Long product_id, String url, String fileName){
-        Image image = Image.builder()
-                .product_id(product_id) //임의의 값 1L로 설정
+    private  Image createImage(String url, String fileName){
+        Image image = Image.builder()//임의의 값 1L로 설정
                 .url(url)
                 .file_name(fileName)
                 .build();

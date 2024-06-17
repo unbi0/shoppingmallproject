@@ -37,7 +37,6 @@ public class OrderServiceImpl implements OrderService{
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ProductOptionRepository productOptionRepository;
-    private final ProductOption productOption;
     private final UserUtil userUtil;
 
     // 관리자 : 주문 조회
@@ -148,9 +147,6 @@ public class OrderServiceImpl implements OrderService{
             int productPrice = productOption.getProduct().getPrice();
             // 상품 수량
             int quantity = orderDetailRequestDto.getCount();
-
-            // 재고 감소
-            productOption.decreaseStock(quantity);
 
             // 상품 가격 x 상품 수량의 총합
             totalPrice += (productPrice * quantity);

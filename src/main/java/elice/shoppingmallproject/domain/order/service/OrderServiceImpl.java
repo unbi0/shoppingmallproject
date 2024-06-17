@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,16 +37,16 @@ public class OrderServiceImpl implements OrderService{
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ProductOptionRepository productOptionRepository;
+    private final ProductOption productOption;
     private final UserUtil userUtil;
 
     // 관리자 : 주문 조회
     @Override
-    public List<OrderListDto> searchAllOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
+    public Page<OrderListDto> searchAllOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus, int page, int size) {
 //        return orderRepository.searchAllOrders(orderId, startDate, endDate, orderStatus);
-        List<Orders> orders = orderRepository.searchAllOrders(orderId, startDate, endDate, orderStatus);
-        return orders.stream()
-            .map(this::mapToOrderListDto)
-            .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Orders> ordersPage = orderRepository.searchAllOrders(orderId, startDate, endDate, orderStatus, pageable);
+        return ordersPage.map(this::mapToOrderListDto);
     }
 
     // 사용자 : 주문 조회
@@ -54,12 +57,11 @@ public class OrderServiceImpl implements OrderService{
 //    }
 
     @Override
-    public List<OrderListDto> searchUserOrders(Long userId, Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
+    public Page<OrderListDto> searchUserOrders(Long userId, Long orderId, LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
 //        return orderRepository.searchUserOrders(userId, orderId, startDate, endDate, orderStatus);
-        List<Orders> orders = orderRepository.searchUserOrders(userId, orderId, startDate, endDate, orderStatus);
-        return orders.stream()
-            .map(this::mapToOrderListDto)
-            .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Orders> ordersPage = orderRepository.searchUserOrders(userId, orderId, startDate, endDate, pageable);
+        return ordersPage.map(this::mapToOrderListDto);
     }
 
     // 주문 ID로 주문 조회
@@ -146,6 +148,9 @@ public class OrderServiceImpl implements OrderService{
             int productPrice = productOption.getProduct().getPrice();
             // 상품 수량
             int quantity = orderDetailRequestDto.getCount();
+
+            // 재고 감소
+            productOption.decreaseStock(quantity);
 
             // 상품 가격 x 상품 수량의 총합
             totalPrice += (productPrice * quantity);

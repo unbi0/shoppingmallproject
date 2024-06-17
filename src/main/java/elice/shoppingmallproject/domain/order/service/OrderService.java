@@ -10,18 +10,19 @@ import elice.shoppingmallproject.domain.order.entity.Orders;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
 
 public interface OrderService {
 
     // 관리자 : 주문 조회
-    List<OrderListDto> searchAllOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus);
+    Page<OrderListDto> searchAllOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus, int page, int size);
 
     // 주문 ID로 주문 조회
     Optional<OrderResponseDto> findOrderById(Long orderId);
 
     // 사용자 : 주문 조회
 //    List<Orders> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus);
-    List<OrderListDto> searchUserOrders(Long userId, Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus);
+    Page<OrderListDto> searchUserOrders(Long userId, Long orderId, LocalDateTime startDate, LocalDateTime endDate, int page, int size);
 
     // 사용자 : 주문 생성
     Orders createOrder(OrderRequestDto orderRequestDto);

@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,8 +39,13 @@ public class OrderController {
 
     // 관리자 : 주문 조회
     @GetMapping("/admin")
-    public ResponseEntity<List<OrderListDto>> searchAllOrders(@RequestParam(required = false) Long orderId, @RequestParam(required = false) LocalDateTime startDate, @RequestParam(required = false) LocalDateTime endDate, @RequestParam(required = false) OrderStatus orderStatus) {
-        return ResponseEntity.ok(orderService.searchAllOrders(orderId, startDate, endDate, orderStatus));
+    public Page<OrderListDto> searchAllOrders(@RequestParam(required = false) Long orderId,
+        @RequestParam(required = false) LocalDateTime startDate,
+        @RequestParam(required = false) LocalDateTime endDate,
+        @RequestParam(required = false) OrderStatus orderStatus,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "20") int size) {
+        return orderService.searchAllOrders(orderId, startDate, endDate, orderStatus, page, size);
     }
 
     // 주문 ID로 주문 조회
@@ -56,21 +62,26 @@ public class OrderController {
 
     // 사용자 : 주문 조회
     @GetMapping
-    public ResponseEntity<List<OrderListDto>> searchUserOrders(@RequestParam Long userId, @RequestParam(required = false) Long orderId, @RequestParam(required = false) LocalDateTime startDate, @RequestParam(required = false) LocalDateTime endDate, @RequestParam(required = false) OrderStatus orderStatus) {
-        return ResponseEntity.ok(orderService.searchUserOrders(userId, orderId, startDate, endDate, orderStatus));
+    public Page<OrderListDto> searchUserOrders(@RequestParam Long userId,
+        @RequestParam(required = false) Long orderId,
+        @RequestParam(required = false) LocalDateTime startDate,
+        @RequestParam(required = false) LocalDateTime endDate,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "20") int size) {
+        return orderService.searchUserOrders(userId, orderId, startDate, endDate, page, size);
     }
 
-    // 주문 ID로 주문상세 조회
-    @GetMapping("/{orderId}/detail")
-    public ResponseEntity<List<OrderDetail>> getOrderDetailByOrderId(@PathVariable Long orderId){
-        return ResponseEntity.ok(orderDetailService.findOrderDetailByOrderId(orderId));
-    }
-
-    // 모든 주문상세 조회
-    @GetMapping("/detail")
-    public ResponseEntity<List<OrderDetail>> getAllOrderDetail(){
-        return ResponseEntity.ok(orderDetailService.findAllOrderDetail());
-    }
+//    // 주문 ID로 주문상세 조회
+//    @GetMapping("/{orderId}/detail")
+//    public ResponseEntity<List<OrderDetail>> getOrderDetailByOrderId(@PathVariable Long orderId){
+//        return ResponseEntity.ok(orderDetailService.findOrderDetailByOrderId(orderId));
+//    }
+//
+//    // 모든 주문상세 조회
+//    @GetMapping("/detail")
+//    public ResponseEntity<List<OrderDetail>> getAllOrderDetail(){
+//        return ResponseEntity.ok(orderDetailService.findAllOrderDetail());
+//    }
 
     // 사용자 : 주문 생성 + 주문상세 생성
     @PostMapping

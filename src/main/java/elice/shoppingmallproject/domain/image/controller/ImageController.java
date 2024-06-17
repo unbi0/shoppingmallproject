@@ -57,11 +57,11 @@ public class ImageController {
     }
 
     @PostMapping("/images/{productId}")
-    public ResponseEntity<String> getImages(@PathVariable String productId){
+    public ResponseEntity<String> getImages(@PathVariable Long productId){
 
+        List<String> productImg =  s3UploadService.getImageUrl(productId);
 
-
-        return ResponseEntity.ok().body("");
+        return ResponseEntity.ok().body(String.join(", ",productImg));
     }
 
     @DeleteMapping("/{image_id}/delete")

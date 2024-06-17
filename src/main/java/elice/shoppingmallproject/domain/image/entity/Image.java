@@ -21,8 +21,9 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long image_id;
 
-    
-    private Long product_id;
+    @ManyToOne
+    private Product product;
+    //연관관계메서드
 
     @NotNull
     private String url;

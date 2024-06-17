@@ -125,16 +125,17 @@ public class S3UploadService {
 
     //product_id로 이미지 url 가져오기
     public List<String> getImageUrl(Long product_id){
-        Image product_img = imageDao.findByProductId(product_id);
+        List<Image> product_image = imageDao.findAllByProductId(product_id);
+
         List<String> imgUrlList = new ArrayList<>();
 
-        if (product_img != null) {
-
-            imgUrlList.add(product_img.getUrl());
-        }else {
-            throw new IllegalArgumentException("Image not found with id: " + product_id);
+        for(Image img : product_image) {
+            if (img != null) {
+                imgUrlList.add(img.getUrl());
+            } else {
+                throw new IllegalArgumentException("Image not found with id: " + product_id);
+            }
         }
-
         return imgUrlList;
     }
 

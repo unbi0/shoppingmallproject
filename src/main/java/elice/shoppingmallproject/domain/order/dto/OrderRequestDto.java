@@ -1,6 +1,5 @@
 package elice.shoppingmallproject.domain.order.dto;
 
-import elice.shoppingmallproject.domain.order.entity.Orders;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;

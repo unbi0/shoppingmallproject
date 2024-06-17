@@ -17,8 +17,6 @@ public class OrderListDto {
     private List<String> productName;
     private OrderStatus orderStatus;
 
-//    private String userName;
-
     private String recipientName;
     private String postCode;
     private String deliveryAddress;

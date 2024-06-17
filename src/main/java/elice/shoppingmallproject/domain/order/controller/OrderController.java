@@ -1,23 +1,19 @@
 package elice.shoppingmallproject.domain.order.controller;
 
-import elice.shoppingmallproject.domain.order.dto.OrderDetailUpdateDto;
 import elice.shoppingmallproject.domain.order.dto.OrderListDto;
 import elice.shoppingmallproject.domain.order.dto.OrderRequestDto;
 import elice.shoppingmallproject.domain.order.dto.OrderResponseDto;
 import elice.shoppingmallproject.domain.order.dto.OrderStatusUpdateDto;
 import elice.shoppingmallproject.domain.order.dto.OrderUpdateDto;
-import elice.shoppingmallproject.domain.order.entity.OrderDetail;
 import elice.shoppingmallproject.domain.order.entity.OrderStatus;
 import elice.shoppingmallproject.domain.order.entity.Orders;
 import elice.shoppingmallproject.domain.order.service.OrderDetailService;
 import elice.shoppingmallproject.domain.order.service.OrderService;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5500")
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
@@ -55,12 +50,6 @@ public class OrderController {
     }
 
     // 사용자 : 주문 조회
-//    @GetMapping
-//    public ResponseEntity<List<Orders>> searchUserOrders(@RequestParam(required = false) Long orderId, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate, @RequestParam(required = false) OrderStatus orderStatus) {
-//        return ResponseEntity.ok(orderService.searchUserOrders(orderId, startDate, endDate, orderStatus));
-//    }
-
-    // 사용자 : 주문 조회
     @GetMapping
     public Page<OrderListDto> searchUserOrders(
         @RequestParam(required = false) Long orderId,
@@ -70,18 +59,6 @@ public class OrderController {
         @RequestParam(defaultValue = "20") int size) {
         return orderService.searchUserOrders(orderId, startDate, endDate, page, size);
     }
-
-//    // 주문 ID로 주문상세 조회
-//    @GetMapping("/{orderId}/detail")
-//    public ResponseEntity<List<OrderDetail>> getOrderDetailByOrderId(@PathVariable Long orderId){
-//        return ResponseEntity.ok(orderDetailService.findOrderDetailByOrderId(orderId));
-//    }
-//
-//    // 모든 주문상세 조회
-//    @GetMapping("/detail")
-//    public ResponseEntity<List<OrderDetail>> getAllOrderDetail(){
-//        return ResponseEntity.ok(orderDetailService.findAllOrderDetail());
-//    }
 
     // 사용자 : 주문 생성 + 주문상세 생성
     @PostMapping

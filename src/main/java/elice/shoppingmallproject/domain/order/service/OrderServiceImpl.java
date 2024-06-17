@@ -42,33 +42,18 @@ public class OrderServiceImpl implements OrderService{
     // 관리자 : 주문 조회
     @Override
     public Page<OrderListDto> searchAllOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus, int page, int size) {
-//        return orderRepository.searchAllOrders(orderId, startDate, endDate, orderStatus);
         Pageable pageable = PageRequest.of(page, size);
         Page<Orders> ordersPage = orderRepository.searchAllOrders(orderId, startDate, endDate, orderStatus, pageable);
         return ordersPage.map(this::mapToOrderListDto);
     }
 
-    // 사용자 : 주문 조회
-//    @Override
-//    public List<Orders> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
-//        Long userId = userUtil.getAuthenticatedUser();
-//        return orderRepository.searchUserOrders(userId, orderId, startDate, endDate, orderStatus);
-//    }
-
     @Override
     public Page<OrderListDto> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
-//        return orderRepository.searchUserOrders(userId, orderId, startDate, endDate, orderStatus);
         Long userId = userUtil.getAuthenticatedUser();
         Pageable pageable = PageRequest.of(page, size);
         Page<Orders> ordersPage = orderRepository.searchUserOrders(userId, orderId, startDate, endDate, pageable);
         return ordersPage.map(this::mapToOrderListDto);
     }
-
-    // 주문 ID로 주문 조회
-//    @Override
-//    public Optional<Orders> findOrderById(Long orderId) {
-//        return orderRepository.findById(orderId);
-//    }
 
     // Orders 엔티티를 OrderListDto로 매핑하는 메서드
     private OrderListDto mapToOrderListDto(Orders order) {
@@ -156,7 +141,6 @@ public class OrderServiceImpl implements OrderService{
         // 주문 생성
         Orders newOrder = Orders.builder()
             .userId(userUtil.getAuthenticatedUser())
-//            .userId(1L)
             .deliveryRequest(orderRequestDto.getDeliveryRequest())
             .recipientName(orderRequestDto.getRecipientName())
             .recipientTel(orderRequestDto.getRecipientTel())
@@ -174,7 +158,6 @@ public class OrderServiceImpl implements OrderService{
             ProductOption productOption = productOptionRepository.findById(orderDetailRequestDto.getProductOptionId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid product option ID: " + orderDetailRequestDto.getProductOptionId()));
 
-            // productOption -> Product 에서 가격 정보 가져와서 세팅
             int price = productOption.getProduct().getPrice();
 
             OrderDetail newOrderDetail = OrderDetail.builder()

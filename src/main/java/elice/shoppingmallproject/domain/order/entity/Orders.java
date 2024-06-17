@@ -1,6 +1,5 @@
 package elice.shoppingmallproject.domain.order.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import elice.shoppingmallproject.global.common.BaseTimeEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

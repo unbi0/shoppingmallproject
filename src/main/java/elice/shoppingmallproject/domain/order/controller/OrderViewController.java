@@ -9,31 +9,31 @@ public class OrderViewController {
     // 주문서 작성 페이지
     @GetMapping("/order")
     public String orderView() {
-        return "order";
+        return "/order/order";
     }
 
     // 사용자 주문 관리 페이지
     @GetMapping("/order-user")
     public String userOrderView() {
-        return "order-user";
+        return "/order/order-user";
     }
 
     // 관리자 주문 관리 페이지
     @GetMapping("/order-admin")
     public String adminOrderView() {
-        return "order-admin";
+        return "/order/order-admin";
     }
 
     // 주문 수정 페이지
-    @GetMapping("/order-edit")
+    @GetMapping("/order/{orderId}/edit")
     public String orderEditView() {
-        return "order-edit";
+        return "/order/order-edit";
     }
 
     // 주문 상세 페이지
     @GetMapping("/order/{orderId}")
     public String orderDetailView() {
-        return "order-detail";
+        return "/order/order-detail";
     }
 
 }

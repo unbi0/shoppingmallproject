@@ -62,13 +62,13 @@ public class OrderController {
 
     // 사용자 : 주문 조회
     @GetMapping
-    public Page<OrderListDto> searchUserOrders(@RequestParam Long userId,
+    public Page<OrderListDto> searchUserOrders(
         @RequestParam(required = false) Long orderId,
         @RequestParam(required = false) LocalDateTime startDate,
         @RequestParam(required = false) LocalDateTime endDate,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "20") int size) {
-        return orderService.searchUserOrders(userId, orderId, startDate, endDate, page, size);
+        return orderService.searchUserOrders(orderId, startDate, endDate, page, size);
     }
 
 //    // 주문 ID로 주문상세 조회

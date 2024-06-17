@@ -56,8 +56,9 @@ public class OrderServiceImpl implements OrderService{
 //    }
 
     @Override
-    public Page<OrderListDto> searchUserOrders(Long userId, Long orderId, LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
+    public Page<OrderListDto> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
 //        return orderRepository.searchUserOrders(userId, orderId, startDate, endDate, orderStatus);
+        Long userId = userUtil.getAuthenticatedUser();
         Pageable pageable = PageRequest.of(page, size);
         Page<Orders> ordersPage = orderRepository.searchUserOrders(userId, orderId, startDate, endDate, pageable);
         return ordersPage.map(this::mapToOrderListDto);
@@ -154,8 +155,8 @@ public class OrderServiceImpl implements OrderService{
 
         // 주문 생성
         Orders newOrder = Orders.builder()
-//            .userId(userUtil.getAuthenticatedUser())
-            .userId(1L)
+            .userId(userUtil.getAuthenticatedUser())
+//            .userId(1L)
             .deliveryRequest(orderRequestDto.getDeliveryRequest())
             .recipientName(orderRequestDto.getRecipientName())
             .recipientTel(orderRequestDto.getRecipientTel())

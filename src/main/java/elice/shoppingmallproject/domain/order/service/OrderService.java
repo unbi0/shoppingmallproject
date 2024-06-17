@@ -22,7 +22,7 @@ public interface OrderService {
 
     // 사용자 : 주문 조회
 //    List<Orders> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus);
-    Page<OrderListDto> searchUserOrders(Long userId, Long orderId, LocalDateTime startDate, LocalDateTime endDate, int page, int size);
+    Page<OrderListDto> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, int page, int size);
 
     // 사용자 : 주문 생성
     Orders createOrder(OrderRequestDto orderRequestDto);

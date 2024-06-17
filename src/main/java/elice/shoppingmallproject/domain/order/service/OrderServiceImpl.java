@@ -134,6 +134,9 @@ public class OrderServiceImpl implements OrderService{
             // 상품 수량
             int quantity = orderDetailRequestDto.getCount();
 
+            // 재고 감소 기능
+            productOption.decreaseStock(quantity);
+
             // 상품 가격 x 상품 수량의 총합
             totalPrice += (productPrice * quantity);
         }

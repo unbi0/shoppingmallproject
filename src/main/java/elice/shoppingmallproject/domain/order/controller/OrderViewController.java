@@ -13,13 +13,13 @@ public class OrderViewController {
     }
 
     // 사용자 주문 관리 페이지
-    @GetMapping("/order-user")
+    @GetMapping("/user/orders")
     public String userOrderView() {
         return "/order/order-user";
     }
 
     // 관리자 주문 관리 페이지
-    @GetMapping("/order-admin")
+    @GetMapping("/admin/orders")
     public String adminOrderView() {
         return "/order/order-admin";
     }

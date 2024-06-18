@@ -5,36 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>제품 상세 페이지</title>
     <link rel="stylesheet" href="/css/productDetails.css">
-    <script src="/js/productDetails.js"></script>
+    <script defer src="/js/productDetails.js"></script>
 </head>
-  <body data-product-id="${productId}"> <!-- productId를 data 속성으로 전달 -->
-  <div class="product-detail-page">
+<body data-product-id="${productId}">
+<div class="product-detail-page">
     <div class="product-images">
-    <img id="product-image-1" alt="상품 이미지" class="product-image">
-  </div>
-  <div class="product-info">
-      <h1 id="product-name" class="product-name"></h1>
-      <div class="size-selector">
-        <label>SIZE</label>
-      <div class="sizes">
-        <button class="size-btn" data-size="S">S</button>
-        <button class="size-btn" data-size="M">M</button>
-        <button class="size-btn" data-size="L">L</button>
-        <button class="size-btn" data-size="XL">XL</button>
-      </div>
+        <!-- 상품 이미지가 여러개이면, 여러 이미지가 나오도록 추가하도록 수정하기-->
+        <img id="product-image-1" src="${productImageUrl}" alt="상품 이미지" class="product-image">
     </div>
-    <div class="quantity-selector">
-      <button id="decrease-quantity">-</button>
-      <span id="quantity">1</span>
-      <button id="increase-quantity">+</button>
+    <div class="product-info">
+        <h1 id="product-name" class="product-name">${productName}</h1>
+        <div class="size-selector">
+            <label>SIZE</label>
+            <div class="sizes">
+                <button class="size-btn" data-size="S">S</button>
+                <button class="size-btn" data-size="M">M</button>
+                <button class="size-btn" data-size="L">L</button>
+                <button class="size-btn" data-size="XL">XL</button>
+            </div>
+            <div id="selected-size-quantity" class="selected-size-quantity" style="display:none;">
+                <button id="selected-size" class="selected-size-btn" disabled>S</button>
+                <div id="quantity-controls" class="quantity-selector">
+                    <button id="decrease-quantity">-</button>
+                    <span id="quantity">1</span>
+                    <button id="increase-quantity">+</button>
+                </div>
+                <span id="product-price" class="price">${productPrice}원</span>
+            </div>
+        </div>
+        <div class="buttons">
+            <button id="buy-now">구매하기</button>
+            <button id="add-to-cart">장바구니</button>
+        </div>
+        <div class="product-details">상품 상세정보</div>
     </div>
-    <div id="product-price" class="price"></div>
-    <div class="buttons">
-      <button id="buy-now">구매하기</button>
-      <button id="add-to-cart">장바구니</button>
-    </div>
-    <div class="product-details">상품 상세정보</div>
-  </div>
-  </div>
+</div>
 </body>
 </html>

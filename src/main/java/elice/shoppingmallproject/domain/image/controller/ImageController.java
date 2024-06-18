@@ -1,28 +1,27 @@
 package elice.shoppingmallproject.domain.image.controller;
 
-import elice.shoppingmallproject.domain.image.dto.ImageDto;
 import elice.shoppingmallproject.domain.image.service.S3UploadService;
+import elice.shoppingmallproject.domain.product.dto.ProductDTO;
+import elice.shoppingmallproject.domain.product.entity.Product;
+import elice.shoppingmallproject.domain.product.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
 
 @Controller
 @Slf4j
 public class ImageController {
 
     private final S3UploadService s3UploadService;
+    private final ProductService productService;
 
     @Autowired
-    public ImageController(S3UploadService s3UploadService) {
+    public ImageController(S3UploadService s3UploadService, ProductService productService) {
         this.s3UploadService = s3UploadService;
+        this.productService = productService;
     }
 
     @GetMapping("/product/store")
@@ -31,30 +30,26 @@ public class ImageController {
         return "inputProduct";
     }
 
-//    @PostMapping("/upload/images")
-//    public ResponseEntity<String> saveImages(@RequestPart("imgUrl") List<MultipartFile> multipartFiles) throws IOException {
-//
-//        if (multipartFiles == null) {
-//            throw new IllegalArgumentException("multipartFiles cannot be null");
-//        }
-//
-//        List<String> imgPaths = s3UploadService.uploadFiles(multipartFiles);
-//
-//        return new ResponseEntity<>("File uploaded successfully: " + String.join(", ", imgPaths), HttpStatus.OK);
-//    }
-
-//    @PostMapping("/images/{productId}")
-//    public ResponseEntity<String> getImages(@PathVariable Long productId){
-//
-//        List<String> productImg =  s3UploadService.getImageUrl(productId);
-//
-//        return ResponseEntity.ok().body(String.join(", ",productImg));
-//    }
-
-    @DeleteMapping("/{image_id}/delete")
-    public void deleteMovie(@PathVariable Long image_id) {
-        log.debug("debug log={}",image_id);
-        s3UploadService.deleteImage(image_id);
+    @GetMapping("/product/details")
+    public String productDetails() {
+        // 필요한 경우 모델에 데이터 추가
+        return "productDetails";
     }
+
+    @GetMapping("/product/details/{productId}")
+    public String productDetails(@PathVariable("productId") Long productId, Model model) {
+        // 제품 ID를 이용해 제품 정보를 가져옴 (예: 데이터베이스에서 조회)
+        ProductDTO product = productService.findById(productId);
+
+        // 모델에 데이터 추가
+        model.addAttribute("productId", product.getProductId());
+        model.addAttribute("productName", product.getName());
+        model.addAttribute("productImageUrl", product.getImageUrl());
+        model.addAttribute("productPrice", product.getPrice());
+
+        return "productDetails";
+    }
+
+
 }
 

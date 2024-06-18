@@ -29,7 +29,6 @@ public class ProductController {
         return ResponseEntity.ok("CREATE");
     }
 
-
     //<관리지 페이지> 수정하기
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateProduct(@RequestPart("imgUrl") List<MultipartFile> multipartFiles, @PathVariable Long id,

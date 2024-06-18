@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // body의 data-product-id 속성에서 productId를 가져옴
     const productId = document.body.dataset.productId;
 
-    fetch(`/api/product/${productId}`)
+    fetch(`/images${productId}`)
         .then(response => response.json())
         .then(product => {
             if (!product) {

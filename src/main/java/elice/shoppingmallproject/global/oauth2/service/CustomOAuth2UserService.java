@@ -48,13 +48,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         oAuth2UserDto.setUserId(user.getId());
 
-        Auth auth = Auth.builder()
-                .provider(Provider.valueOf(oAuth2UserDto.getProvider().toUpperCase()))
-                .providerId(oAuth2UserDto.getProviderId())
-                .user(user)
-                .build();
+        Auth auth = authRepository.findByUserAndProvider(user, Provider.valueOf(oAuth2UserDto.getProvider().toUpperCase()))
+                .orElseGet(() -> createNewAuth(user, oAuth2UserDto));
 
-        authRepository.save(auth);
+
 
         return new CustomOAuth2User(oAuth2UserDto);
 
@@ -67,6 +64,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .role(Role.USER)
                 .build();
         return userRepository.save(user);
+    }
+
+    private Auth createNewAuth(User user, OAuth2UserDto oAuth2UserDto) {
+        Auth auth = Auth.builder()
+                .provider(Provider.valueOf(oAuth2UserDto.getProvider().toUpperCase()))
+                .providerId(oAuth2UserDto.getProviderId())
+                .user(user)
+                .build();
+        return authRepository.save(auth);
     }
 
 }

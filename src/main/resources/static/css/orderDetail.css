@@ -1,0 +1,52 @@
+.delivery-status{
+  font-size: 12px;
+  font-weight: bold;
+  color: #2D77BC;
+}
+.thumb2{
+  padding: 5px;
+}
+.delivery-info{
+  display: flex; 
+  flex-direction: column; 
+  padding: 0 10px; 
+  font-size: 12px; 
+  gap: 15px;
+}
+.delivery-info p{
+  color: gray;
+  padding-bottom: 3px;
+}
+.info-title{
+  font-size: 14px; 
+  font-weight: bold; 
+  margin-bottom: 5px;
+}
+.price-info2 {
+  padding: 5px 0;
+  font-size: 15px;
+  font-weight: bold;
+}
+.orderBtn {
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-weight: bold;
+  color: white;
+}
+
+.orderEditBtn {
+  background-color: rgb(128, 128, 255);
+}
+
+.orderEditBtn:hover {
+  background-color: blue;
+}
+
+.orderDelBtn {
+  background-color: rgb(255, 128, 128);
+}
+
+.orderDelBtn:hover {
+  background-color: red;
+}

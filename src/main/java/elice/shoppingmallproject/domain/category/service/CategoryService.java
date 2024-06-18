@@ -39,7 +39,7 @@ public class CategoryService {
     }
 
     public List<CategoryResponseDto> getCategories() {
-        List<Category> categories = categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAllByCreateAt();
 
         List<CategoryResponseDto> result = categories.stream()
                 .map(CategoryResponseDto::new)

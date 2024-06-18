@@ -6,8 +6,8 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import elice.shoppingmallproject.domain.image.dao.ImageDaoImpl;
-import elice.shoppingmallproject.domain.image.dto.ImageDto;
 import elice.shoppingmallproject.domain.image.entity.Image;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -35,63 +34,39 @@ public class S3UploadService {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-    
-    public ImageDto uploadFile(MultipartFile multipartFile) throws IOException {
-        String originalFilename = multipartFile.getOriginalFilename();
-        String fileName =  createFileName(originalFilename);
 
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(multipartFile.getSize());
-        metadata.setContentType(multipartFile.getContentType());
+    public List<Image> uploadFiles(List<MultipartFile> multipartFile) {
 
-        //S3에 파일 업로드
-        amazonS3Client.putObject(bucket, fileName, multipartFile.getInputStream(), metadata);
-        String url = amazonS3Client.getUrl(bucket, fileName).toString();
+        List<Image> savedImage = new ArrayList<>();
 
-
-        Image image = createImage(url, fileName);
-
-        //이 Entity는 DB를 거쳐 왔으므로 image_id가 생성되어있음
-        Image savedImage = imageDao.saveImg(image);
-
-        //savedEntity가 필드 값들을 전부 다 제대로 가지고 있는지 확인하는 Log 작성
-
-        return savedImage.toDto();
-    }
-
-    public List<String> uploadFiles(List<MultipartFile> multipartFile) {
-        List<String> imgUrlList = new ArrayList<>();
-
-        // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
         for (MultipartFile file : multipartFile) {
             String fileName = createFileName(file.getOriginalFilename());
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
             objectMetadata.setContentType(file.getContentType());
 
-            try(InputStream inputStream = file.getInputStream()) {
-                amazonS3Client.putObject(new PutObjectRequest(bucket+"/post/images", fileName, inputStream, objectMetadata)
+            try (InputStream inputStream = file.getInputStream()) {
+                amazonS3Client.putObject(new PutObjectRequest(bucket + "/post/images", fileName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
 
-                imgUrlList.add(amazonS3Client.getUrl(bucket+"/post/images", fileName).toString());
-                String url = amazonS3Client.getUrl(bucket+"/post/images", fileName).toString();
+                String url = amazonS3Client.getUrl(bucket + "/post/images", fileName).toString();
 
-                Image image = createImage(2L,url,fileName);
-                imageDao.saveImg(image);
-            } catch(IOException e) {
+                Image image = createImage(url, fileName);
+
+                savedImage.add(image);
+            } catch (IOException e) {
                 throw new RuntimeException("Failed to upload file: " + file.getOriginalFilename(), e);
             }
         }
-        return imgUrlList;
+        return savedImage;
     }
 
     private  Image createImage(String url, String fileName){
-        Image image = Image.builder()//임의의 값 1L로 설정
-                .url(url)
-                .file_name(fileName)
-                .build();
 
-        return image;
+        return Image.builder()
+                .url(url)
+                .fileName(fileName)
+                .build();
     }
 
     // 이미지파일명 중복 방지
@@ -118,36 +93,19 @@ public class S3UploadService {
         return fileName.substring(fileName.lastIndexOf("."));
     }
 
-    //product_id로 이미지 url 가져오기
-    public List<String> getImageUrl(Long product_id){
-        List<Image> product_image = imageDao.findAllByProductId(product_id);
-
-        List<String> imgUrlList = new ArrayList<>();
-
-        for(Image img : product_image) {
-            if (img != null) {
-                imgUrlList.add(img.getUrl());
-            } else {
-                throw new IllegalArgumentException("Image not found with id: " + product_id);
-            }
-        }
-        return imgUrlList;
-    }
-
-    //S3와 DB에서 이미지 삭제
+    //S3에서 이미지 삭제
+    @Transactional
     public void deleteImage(Long image_id){
         // Retrieve the Image entity from the database using the image_id
         Image image = imageDao.findByImageId(image_id);
 
         if (image != null) {
             // Get the file_name from the Image entity
-            String keyName = image.getFile_name();
+            String keyName = image.getFileName();
 
             // Delete the image from the S3 bucket
             amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, keyName));
 
-            // Delete the image record from the database
-            imageDao.deleteImg(image_id);
         }else {
             throw new IllegalArgumentException("Image not found with id: " + image_id);
         }

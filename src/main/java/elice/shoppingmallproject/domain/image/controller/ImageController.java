@@ -31,45 +31,30 @@ public class ImageController {
         return "inputProduct";
     }
 
-    //S3에 imageUrl을 저장 후 url을 DTO로 받아와서 사용자에게 보여주기
-    @PostMapping("/upload/image")
-    public ResponseEntity<String> saveImage(ImageDto imageDto, Model model) throws IOException {
+//    @PostMapping("/upload/images")
+//    public ResponseEntity<String> saveImages(@RequestPart("imgUrl") List<MultipartFile> multipartFiles) throws IOException {
+//
+//        if (multipartFiles == null) {
+//            throw new IllegalArgumentException("multipartFiles cannot be null");
+//        }
+//
+//        List<String> imgPaths = s3UploadService.uploadFiles(multipartFiles);
+//
+//        return new ResponseEntity<>("File uploaded successfully: " + String.join(", ", imgPaths), HttpStatus.OK);
+//    }
 
-        ImageDto img = s3UploadService.uploadFile(imageDto.getImage());
-
-        String imageUrl = img.getUrl();
-
-        model.addAttribute("imageUrl",imageUrl);
-
-        return new ResponseEntity<>("File uploaded successfully: ",HttpStatus.OK);
-    }
-
-    @PostMapping("/upload/images")
-    public ResponseEntity<String> saveImages(@RequestPart("imgUrl") List<MultipartFile> multipartFiles) throws IOException {
-
-        if (multipartFiles == null) {
-            throw new IllegalArgumentException("multipartFiles cannot be null");
-        }
-
-        List<String> imgPaths = s3UploadService.uploadFiles(multipartFiles);
-
-        return new ResponseEntity<>("File uploaded successfully: " + String.join(", ", imgPaths), HttpStatus.OK);
-    }
-
-    @PostMapping("/images/{productId}")
-    public ResponseEntity<String> getImages(@PathVariable Long productId){
-
-        List<String> productImg =  s3UploadService.getImageUrl(productId);
-
-        return ResponseEntity.ok().body(String.join(", ",productImg));
-    }
+//    @PostMapping("/images/{productId}")
+//    public ResponseEntity<String> getImages(@PathVariable Long productId){
+//
+//        List<String> productImg =  s3UploadService.getImageUrl(productId);
+//
+//        return ResponseEntity.ok().body(String.join(", ",productImg));
+//    }
 
     @DeleteMapping("/{image_id}/delete")
     public void deleteMovie(@PathVariable Long image_id) {
         log.debug("debug log={}",image_id);
         s3UploadService.deleteImage(image_id);
     }
-
-
 }
 

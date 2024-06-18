@@ -28,7 +28,13 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String[] WHITER_LIST = {"/error/**", "/css/**", "/js/**", "/", "/loginForm", "/registerForm", "/login", "/sign-up", "/register-page"};
+    private static final String[] WHITER_LIST = {
+            "/error/**", "/css/**", "/js/**", "/",
+            "/loginForm", "/registerForm", "account", "my-page", //USER VIEW
+            "/login", "/sign-up", // USER API
+            "api/product", "api/product/category/**", "/api/product/search", // PRODUCT API
+
+    };
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
@@ -48,8 +54,8 @@ public class SecurityConfig {
 
         return configuration.getAuthenticationManager();
     }
-
-    //exceptionhandling 코드 빠짐
+//eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJlbWFpbCI6ImFkbWluQGVsaWNlLmNvbSIsInJvbGUiOiJST0xFX0FETUlOIiwiaWF0IjoxNzE4NjE4OTQ0LCJleHAiOjE3MTg2MTkwNDR9.GXYx5JvV5waivBXAFf4oYJ_dot_DQk-aFhJ4lzLXVZI
+//UuF8ewLobPOnkGoubRSFCFB4woY2FJi2
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -80,7 +86,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/reissue").permitAll()
                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                .anyRequest().authenticated());
+                .anyRequest().permitAll());
 
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);

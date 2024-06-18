@@ -8,6 +8,8 @@ import elice.shoppingmallproject.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,16 +37,11 @@ public class UserController {
     }
 
     // 관리자만 가능
-    @GetMapping("api/admin/users")
+    @GetMapping("/admin/users")
     public ResponseEntity<UserManagementDto> getUsers() {
         return ResponseEntity.ok(userService.getUsers());
     }
 
-
-    /*
-     * 주소를 수정할 때 기존 주소는 DB 에 남겨지고 새로운 Address 가 생겨남
-     * 기존 주소를 덮어쓰는 방법을 찾자
-     * */
     @PutMapping("/user")
     public ResponseEntity<String> updateUser(@RequestBody UserUpdateDto userUpdateDto) {
         userService.updateUser(userUpdateDto);
@@ -58,4 +55,18 @@ public class UserController {
 
         return ResponseEntity.ok("Success delete");
     }
+
+    @GetMapping("/loginCheck")
+    public ResponseEntity<Void> isLogin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(
+                authentication.getPrincipal())) {
+            return ResponseEntity.noContent().build(); // HTTP 204
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // HTTP 401
+    }
+
 }
+
+
+

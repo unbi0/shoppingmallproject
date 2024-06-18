@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let selectedSize = null;
     let quantity = 1; // 기본 수량을 1로 설정
+    let productPrice = 0;
+    let totalPrice = 0;
 
     // Get productId from data attribute
     const productId = document.querySelector('.product-detail-page').getAttribute('data-product-id');
@@ -28,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('product-image-1').src = product.imageUrl;
             document.getElementById('product-price').textContent = product.price + '원';
             document.querySelector('.product-details').textContent = product.details;
+            productPrice = product.price;
         })
         .catch(error => {
             console.error('Error fetching product:', error);
@@ -49,16 +52,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    function updatePrice() {
+        if(quantity < 1) {
+            totalPrice = 0;
+        }
+
+        totalPrice = productPrice * quantity;
+        document.getElementById('product-price').textContent = totalPrice + '원';
+    }
+
     decreaseQuantityButton.addEventListener('click', function() {
         if (quantity > 1) {
             quantity--;
             quantityElement.textContent = quantity;
+            updatePrice();
         }
     });
 
     increaseQuantityButton.addEventListener('click', function() {
         quantity++;
         quantityElement.textContent = quantity;
+        updatePrice();
     });
 
     buyNowButton.addEventListener('click', function() {

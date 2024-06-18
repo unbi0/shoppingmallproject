@@ -1,5 +1,7 @@
 package elice.shoppingmallproject.domain.cart.entity;
 
+import elice.shoppingmallproject.domain.product.entity.Product;
+import elice.shoppingmallproject.domain.product.entity.ProductOption;
 import elice.shoppingmallproject.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,16 +13,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
-
-import elice.shoppingmallproject.domain.user.entity.User;
-import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "cart")
+@Table(name = "장바구니")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Cart {
 
     @Id
@@ -32,22 +32,26 @@ public class Cart {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "option_id")
-    private Long optionId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "option_id")
+    private ProductOption productOption;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Column(nullable = false)
     private int quantity;
 
-    // 롬복의 @NoArgsConstructor, @AllArgsConstructor로 대체됨
-
-    // 생성자
-    public Cart() {
+    // 총 가격을 계산하는 메서드 추가
+    public double getTotalPrice() {
+        return this.product.getPrice() * this.quantity;
     }
 
-    public Cart(Long optionId, User user, int quantity) {
-        this.optionId = optionId;
-        this.quantity = quantity;
+    public Cart(ProductOption productOption, Product product, User user, int quantity) {
+        this.productOption = productOption;
+        this.product = product;
         this.user = user;
-        
+        this.quantity = quantity;
     }
 }

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Item Detail</title>
+</head>
+<body>
+<h1>Cart Item Detail</h1>
+<table>
+    <tr>
+        <th>Option ID</th>
+        <td th:text="${cartItem.optionId}">Option ID</td>
+    </tr>
+    <tr>
+        <th>Quantity</th>
+        <td th:text="${cartItem.quantity}">Quantity</td>
+    </tr>
+</table>
+<a href="/carts">Back to Cart</a>
+</body>
+</html>

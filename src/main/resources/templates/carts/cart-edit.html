@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Cart Item</title>
+</head>
+<body>
+<h1>Edit Cart Item</h1>
+<form action="/carts/edit" method="post">
+    <input type="hidden" name="cartId" th:value="${cartItem.cartId}">
+    <label for="optionId">Option ID:</label>
+    <input type="text" id="optionId" name="optionId" th:value="${cartItem.optionId}"><br><br>
+    <label for="quantity">Quantity:</label>
+    <input type="text" id="quantity" name="quantity" th:value="${cartItem.quantity}"><br><br>
+    <input type="submit" value="Update Cart">
+</form>
+<a href="/carts">Back to Cart</a>
+</body>
+</html>

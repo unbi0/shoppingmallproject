@@ -1,7 +1,11 @@
 package elice.shoppingmallproject.domain.order.service;
 
+import elice.shoppingmallproject.domain.order.dto.OrderDetailDto;
 import elice.shoppingmallproject.domain.order.dto.OrderDetailRequestDto;
+import elice.shoppingmallproject.domain.order.dto.OrderListDto;
 import elice.shoppingmallproject.domain.order.dto.OrderRequestDto;
+import elice.shoppingmallproject.domain.order.dto.OrderResponseDto;
+import elice.shoppingmallproject.domain.order.dto.OrderStatusUpdateDto;
 import elice.shoppingmallproject.domain.order.dto.OrderUpdateDto;
 import elice.shoppingmallproject.domain.order.entity.OrderDetail;
 import elice.shoppingmallproject.domain.order.entity.OrderStatus;
@@ -18,7 +22,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,26 +41,79 @@ public class OrderServiceImpl implements OrderService{
 
     // 관리자 : 주문 조회
     @Override
-    public List<Orders> searchAllOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
-        return orderRepository.searchAllOrders(orderId, startDate, endDate, orderStatus);
+    public Page<OrderListDto> searchAllOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Orders> ordersPage = orderRepository.searchAllOrders(orderId, startDate, endDate, orderStatus, pageable);
+        return ordersPage.map(this::mapToOrderListDto);
+    }
+
+    @Override
+    public Page<OrderListDto> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
+        Long userId = userUtil.getAuthenticatedUser();
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Orders> ordersPage = orderRepository.searchUserOrders(userId, orderId, startDate, endDate, pageable);
+        return ordersPage.map(this::mapToOrderListDto);
+    }
+
+    // Orders 엔티티를 OrderListDto로 매핑하는 메서드
+    private OrderListDto mapToOrderListDto(Orders order) {
+        return new OrderListDto(
+            order.getId(),
+            order.getCreateAt(),
+            order.getOrderDetailList().stream()
+                .map(orderDetail -> orderDetail.getProductOption().getProduct().getName())
+                .collect(Collectors.toList()),
+            order.getOrderStatus(),
+//            order.getUser().getUsername(),
+            order.getRecipientName(),
+            order.getPostCode(),
+            order.getDeliveryAddress(),
+            order.getDeliveryDetailAddress(),
+            order.getRecipientTel(),
+            order.getDeliveryRequest(),
+            order.getOrderDetailList().stream()
+                .mapToInt(OrderDetail::getCount)
+                .sum(),
+            order.getDeliveryFee(),
+            order.getTotalPrice()
+        );
     }
 
     // 주문 ID로 주문 조회
     @Override
-    public Optional<Orders> findOrderById(Long orderId) {
-        return orderRepository.findById(orderId);
-    }
+    public Optional<OrderResponseDto> findOrderById(Long orderId) {
+        return orderRepository.findById(orderId)
+            .map(order -> {
+                List<OrderDetailDto> orderDetailDtoList = order.getOrderDetailList().stream()
+                    .map(orderDetail -> new OrderDetailDto(
+                        orderDetail.getProductOption().getProduct().getProductId(),
+                        orderDetail.getProductOption().getProduct().getName(),
+                        orderDetail.getPrice(),
+                        orderDetail.getProductOption().getOptionSize(),
+                        orderDetail.getCount()
+                    ))
+                    .collect(Collectors.toList());
 
-    // 사용자 : 주문 조회
-//    @Override
-//    public List<Orders> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
-//        Long userId = userUtil.getAuthenticatedUser();
-//        return orderRepository.searchUserOrders(userId, orderId, startDate, endDate, orderStatus);
-//    }
+                int totalPrice = order.getOrderDetailList().stream()
+                    .mapToInt(orderDetail -> orderDetail.getCount() * orderDetail.getPrice())
+                    .sum();
 
-    @Override
-    public List<Orders> searchUserOrders(Long userId, Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus) {
-        return orderRepository.searchUserOrders(userId, orderId, startDate, endDate, orderStatus);
+                return OrderResponseDto.builder()
+                    .orderStatus(order.getOrderStatus())
+                    .recipientName(order.getRecipientName())
+                    .createAt(order.getCreateAt())
+                    .orderId(order.getId())
+                    .orderDetailDtoList(orderDetailDtoList)
+                    .postCode(order.getPostCode())
+                    .deliveryAddress(order.getDeliveryAddress())
+                    .deliveryDetailAddress(order.getDeliveryDetailAddress())
+                    .recipientTel(order.getRecipientTel())
+                    .deliveryRequest(order.getDeliveryRequest())
+                    .totalPrice(totalPrice)
+                    .deliveryFee(order.getDeliveryFee())
+                    .totalAmount(totalPrice + order.getDeliveryFee())
+                    .build();
+            });
     }
 
     // 사용자 : 주문 생성
@@ -73,14 +134,16 @@ public class OrderServiceImpl implements OrderService{
             // 상품 수량
             int quantity = orderDetailRequestDto.getCount();
 
+            // 재고 감소 기능
+            productOption.decreaseStock(quantity);
+
             // 상품 가격 x 상품 수량의 총합
             totalPrice += (productPrice * quantity);
         }
 
         // 주문 생성
         Orders newOrder = Orders.builder()
-//            .userId(userUtil.getAuthenticatedUser())
-            .userId(1L)
+            .userId(userUtil.getAuthenticatedUser())
             .deliveryRequest(orderRequestDto.getDeliveryRequest())
             .recipientName(orderRequestDto.getRecipientName())
             .recipientTel(orderRequestDto.getRecipientTel())
@@ -98,7 +161,6 @@ public class OrderServiceImpl implements OrderService{
             ProductOption productOption = productOptionRepository.findById(orderDetailRequestDto.getProductOptionId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid product option ID: " + orderDetailRequestDto.getProductOptionId()));
 
-            // productOption -> Product 에서 가격 정보 가져와서 세팅
             int price = productOption.getProduct().getPrice();
 
             OrderDetail newOrderDetail = OrderDetail.builder()
@@ -123,19 +185,21 @@ public class OrderServiceImpl implements OrderService{
 
     // 관리자 : 주문 상태 수정
     @Override
-    public Orders updateOrderStatus(Long id, OrderStatus newOrderStatus) {
+    public void updateOrderStatus(Long id, OrderStatusUpdateDto orderStatusUpdateDto) {
+
+        OrderStatus newStatus = orderStatusUpdateDto.getOrderStatus();
         // 주문이 존재하는지 확인
         Orders existingOrder = orderRepository.findById(id)
             .orElseThrow(() -> new OrderNotFoundException("주문 ID " + id + "를 찾을 수 없습니다"));
 
-        existingOrder.updateOrderStatus(newOrderStatus);
+        existingOrder.updateOrderStatus(newStatus);
 
-        return orderRepository.save(existingOrder);
+        orderRepository.save(existingOrder);
     }
 
     // 사용자 : 주문 수정
     @Override
-    public Orders updateOrder(Long id, OrderUpdateDto orderUpdateDto) {
+    public void updateOrder(Long id, OrderUpdateDto orderUpdateDto) {
         // 주문이 존재하는지 확인
         Orders existingOrder = orderRepository.findById(id)
             .orElseThrow(() -> new OrderNotFoundException("주문 ID " + id + "를 찾을 수 없습니다"));
@@ -151,6 +215,6 @@ public class OrderServiceImpl implements OrderService{
         );
 
         // 수정한 내용 DB 반영
-        return orderRepository.save(newOrders);
+        orderRepository.save(newOrders);
     }
 }

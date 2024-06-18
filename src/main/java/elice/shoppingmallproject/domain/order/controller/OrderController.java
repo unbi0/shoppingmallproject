@@ -1,20 +1,19 @@
 package elice.shoppingmallproject.domain.order.controller;
 
-import elice.shoppingmallproject.domain.order.dto.OrderDetailUpdateDto;
+import elice.shoppingmallproject.domain.order.dto.OrderListDto;
 import elice.shoppingmallproject.domain.order.dto.OrderRequestDto;
+import elice.shoppingmallproject.domain.order.dto.OrderResponseDto;
 import elice.shoppingmallproject.domain.order.dto.OrderStatusUpdateDto;
 import elice.shoppingmallproject.domain.order.dto.OrderUpdateDto;
-import elice.shoppingmallproject.domain.order.entity.OrderDetail;
 import elice.shoppingmallproject.domain.order.entity.OrderStatus;
 import elice.shoppingmallproject.domain.order.entity.Orders;
 import elice.shoppingmallproject.domain.order.service.OrderDetailService;
 import elice.shoppingmallproject.domain.order.service.OrderService;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5500")
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
@@ -36,37 +34,30 @@ public class OrderController {
 
     // 관리자 : 주문 조회
     @GetMapping("/admin")
-    public ResponseEntity<List<Orders>> searchAllOrders(@RequestParam(required = false) Long orderId, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate, @RequestParam(required = false) OrderStatus orderStatus) {
-        return ResponseEntity.ok(orderService.searchAllOrders(orderId, startDate, endDate, orderStatus));
+    public Page<OrderListDto> searchAllOrders(@RequestParam(required = false) Long orderId,
+        @RequestParam(required = false) LocalDateTime startDate,
+        @RequestParam(required = false) LocalDateTime endDate,
+        @RequestParam(required = false) OrderStatus orderStatus,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "20") int size) {
+        return orderService.searchAllOrders(orderId, startDate, endDate, orderStatus, page, size);
     }
 
     // 주문 ID로 주문 조회
     @GetMapping("/{orderId}")
-    public ResponseEntity<Optional<Orders>> findOrderById(@PathVariable Long orderId) {
+    public ResponseEntity<Optional<OrderResponseDto>> findOrderById(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.findOrderById(orderId));
     }
 
     // 사용자 : 주문 조회
-//    @GetMapping
-//    public ResponseEntity<List<Orders>> searchUserOrders(@RequestParam(required = false) Long orderId, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate, @RequestParam(required = false) OrderStatus orderStatus) {
-//        return ResponseEntity.ok(orderService.searchUserOrders(orderId, startDate, endDate, orderStatus));
-//    }
-
     @GetMapping
-    public ResponseEntity<List<Orders>> searchUserOrders(@RequestParam Long userId, @RequestParam(required = false) Long orderId, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate, @RequestParam(required = false) OrderStatus orderStatus) {
-        return ResponseEntity.ok(orderService.searchUserOrders(userId, orderId, startDate, endDate, orderStatus));
-    }
-
-    // 주문 ID로 주문상세 조회
-    @GetMapping("/{orderId}/detail")
-    public ResponseEntity<List<OrderDetail>> getOrderDetailByOrderId(@PathVariable Long orderId){
-        return ResponseEntity.ok(orderDetailService.findOrderDetailByOrderId(orderId));
-    }
-
-    // 모든 주문상세 조회
-    @GetMapping("/detail")
-    public ResponseEntity<List<OrderDetail>> getAllOrderDetail(){
-        return ResponseEntity.ok(orderDetailService.findAllOrderDetail());
+    public Page<OrderListDto> searchUserOrders(
+        @RequestParam(required = false) Long orderId,
+        @RequestParam(required = false) LocalDateTime startDate,
+        @RequestParam(required = false) LocalDateTime endDate,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "20") int size) {
+        return orderService.searchUserOrders(orderId, startDate, endDate, page, size);
     }
 
     // 사용자 : 주문 생성 + 주문상세 생성
@@ -77,22 +68,20 @@ public class OrderController {
 
     // 사용자 : 주문 수정
     @PutMapping("/{orderId}")
-    public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId, @RequestBody OrderUpdateDto orderUpdateDto) {
-        return ResponseEntity.ok(orderService.updateOrder(orderId, orderUpdateDto));
+    public void updateOrder(@PathVariable Long orderId, @RequestBody OrderUpdateDto orderUpdateDto) {
+        orderService.updateOrder(orderId, orderUpdateDto);
     }
 
     // 관리자 : 주문 상태 수정
     @PutMapping("/status/{orderId}")
-    public ResponseEntity<Orders> updateOrderStatus(@PathVariable Long orderId, @RequestBody OrderStatusUpdateDto orderStatusUpdateDto) {
-        OrderStatus newStatus = orderStatusUpdateDto.getOrderStatus();
-        return ResponseEntity.ok(orderService.updateOrderStatus(orderId, newStatus));
+    public void updateOrderStatus(@PathVariable Long orderId, @RequestBody OrderStatusUpdateDto orderStatusUpdateDto) {
+        orderService.updateOrderStatus(orderId, orderStatusUpdateDto);
     }
 
     // 사용자 : 주문 삭제
     @DeleteMapping("/{orderId}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId) {
+    public void deleteOrder(@PathVariable Long orderId) {
         orderService.deleteOrder(orderId);
-        return ResponseEntity.ok().build();
     }
 
 }

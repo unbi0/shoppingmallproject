@@ -1,12 +1,15 @@
 package elice.shoppingmallproject.domain.product.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import elice.shoppingmallproject.domain.product.dto.ProductDTO;
 import elice.shoppingmallproject.domain.product.dto.ProductFormDTO;
 import elice.shoppingmallproject.domain.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -14,20 +17,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private final ObjectMapper objectMapper;
 
-
-    //<관리지 페이지> 상품 등록
     @PostMapping("/create")
-    public ResponseEntity<String> createProduct(@RequestBody ProductFormDTO productFormDTO) {
-        productService.addProduct(productFormDTO);
+    public ResponseEntity<String> createProduct(@RequestParam String productJson,
+                                                @RequestParam List<MultipartFile> files) throws IOException {
+        ProductFormDTO productFormDTO = objectMapper.readValue(productJson, ProductFormDTO.class);
+
+    productService.addProduct(productFormDTO, files);
+
         return ResponseEntity.ok("CREATE");
     }
 
 
     //<관리지 페이지> 수정하기
     @PatchMapping("/{id}")
-    public ResponseEntity<String> updateProduct(@PathVariable Long id, @RequestBody ProductFormDTO productFormDTO) {
-        productService.updateProduct(id, productFormDTO);
+    public ResponseEntity<String> updateProduct(@RequestPart("imgUrl") List<MultipartFile> multipartFiles, @PathVariable Long id,
+                                                @RequestBody ProductFormDTO productFormDTO) {
+        productService.updateProduct(id, productFormDTO, multipartFiles);
         return ResponseEntity.ok("UPDATE");
     }
 
@@ -38,7 +45,6 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.ok("DELETE");
     }
-
 
 
     //전체 상품을 내림차순으로 조회
@@ -57,23 +63,17 @@ public class ProductController {
     }
 
     //<메인 페이지> 검색 (이름,제품설명,세부사항,카테고리에 포함된 단어)
-    //클라이언트 GET /product/search?keyword=example 요청
     @GetMapping("/search")
     public ResponseEntity<List<ProductDTO>> searchProducts(@RequestParam String keyword) {
         List<ProductDTO> productDTOList = productService.searchProducts(keyword);
         return ResponseEntity.ok(productDTOList);
     }
 
-
-    //상품 단일 상세페이지
+    //상품 단일 상세페이지 + 관련 이미지 여러개 추가
     @GetMapping("/{id}")
-    public ResponseEntity<ProductFormDTO> findById(@PathVariable Long id) {
-        ProductFormDTO productFormDTO = productService.findById(id);
-        return ResponseEntity.ok(productFormDTO);
+    public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
+        ProductDTO productDTO = productService.findById(id);
+        return ResponseEntity.ok(productDTO);
     }
-
-
-
 }
-
 

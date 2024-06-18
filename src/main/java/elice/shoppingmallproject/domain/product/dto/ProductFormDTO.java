@@ -13,7 +13,6 @@ import java.util.List;
 @Setter
 public class ProductFormDTO {
 
-
     private Long categoryId;
 
     private String name;
@@ -26,7 +25,6 @@ public class ProductFormDTO {
 
     private String details;
 
-
     public static ProductFormDTO fromProduct(Product product) {
         ProductFormDTO productFormDTO = new ProductFormDTO();
         productFormDTO.setCategoryId(product.getCategory().getId());
@@ -35,19 +33,16 @@ public class ProductFormDTO {
         productFormDTO.setDetails(product.getDetails());
 
         List<ProductOptionDTO> optionDTOs = new ArrayList<>();
+
         for (ProductOption option : product.getOptions()) {
             ProductOptionDTO optionDTO = new ProductOptionDTO();
             optionDTO.setOptionSize(option.getOptionSize());
             optionDTO.setStock(option.getStock());
             optionDTOs.add(optionDTO);
         }
+
         productFormDTO.setOptions(optionDTOs);
 
         return productFormDTO;
     }
-
-
-
 }
-
-

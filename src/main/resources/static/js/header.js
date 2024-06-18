@@ -1,13 +1,12 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     const modal = document.getElementById("search-modal");
     const searchLink = document.getElementById("search-link");
-    const homeLink = document.getElementById("home-link"); // HOME 링크
-    const span = document.getElementsByClassName("close")[0];
+    const homeLink = document.getElementById("home-link");
     const searchInput = document.getElementById("search-input");
-    const searchResults = document.getElementById("search-results");
     const shopLink = document.getElementById("shop-link");
     const shopDropdown = document.getElementById("shop-dropdown");
-    const productList = document.getElementById("product-list");
+    const loginLink = document.getElementById("loginLink"); // 수정된 부분: loginLink의 id가 "loginLink"임을 확인
+    const logNav = document.querySelector(".Lognav");
 
     modal.style.display = "none"; // 페이지 로드 시 모달을 숨김
 
@@ -16,15 +15,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         searchInput.value = ""; // 검색창 초기화
     }
 
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == modal) {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target.className === 'close') {
             modal.style.display = "none";
         }
-    }
+    });
 
     searchInput.addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
@@ -35,13 +30,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     function performSearch() {
         const keyword = searchInput.value;
-        // 검색 시 /home으로 이동하면서 검색어 전달
-        location.href = `/home?keyword=${encodeURIComponent(keyword)}`;
+        location.href = `/?keyword=${encodeURIComponent(keyword)}`;
     }
 
-    // SHOP 링크에 마우스를 올릴 때 카테고리를 로드하고 표시
     shopLink.onmouseover = function() {
-        if (shopDropdown.childElementCount === 0) { // 이미 로드된 경우 다시 로드하지 않음
+        if (shopDropdown.childElementCount === 0) {
+            shopDropdown.innerHTML = "<li>로딩 중...</li>";
             fetch('/category')
                 .then(response => {
                     if (!response.ok) {
@@ -51,22 +45,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 })
                 .then(data => {
                     console.log('Categories Data:', data);
-                    shopDropdown.innerHTML = ""; // 이전 내용 지우기
-                    // 카테고리 데이터를 categoryId 기준으로 내림차순 정렬
+                    shopDropdown.innerHTML = "";
                     data.sort((a, b) => b.categoryId - a.categoryId);
                     data.forEach(category => {
                         const categoryItem = document.createElement("li");
                         categoryItem.innerHTML = `<a href="#" data-id="${category.categoryId}">${category.name}</a>`;
                         shopDropdown.appendChild(categoryItem);
                     });
-                    // 카테고리 클릭 이벤트 리스너 추가
                     const categoryLinks = shopDropdown.querySelectorAll('a');
                     categoryLinks.forEach(link => {
                         link.addEventListener('click', function(event) {
                             event.preventDefault();
                             const categoryId = this.getAttribute('data-id');
-                            // 카테고리 클릭 시 /home으로 이동하면서 카테고리 ID 전달
-                            location.href = `/home?category=${categoryId}`;
+                            location.href = `/?category=${categoryId}`;
                         });
                     });
                 })
@@ -77,61 +68,66 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     }
 
-    // HOME 링크 클릭 시 홈 페이지로 이동
     homeLink.onclick = function(event) {
         event.preventDefault();
-        location.href = "/home"; // 홈 페이지로 이동
+        location.href = "/";
     }
 
-    // 페이지 로드 시 모든 상품을 로드
-    /*loadProducts();  -----------------------------------------------------------------> 주석을 빼면 처음에 전체상품 표시 */
+    // 로그인 상태 확인
+    fetch('/loginCheck')
+        .then(response => {
+            if (response.status === 204) {
+                updateLoginLinkToLogout();
+                checkUserRole();
+            }
+        })
+        .catch(error => {
+            console.error('Error checking login status:', error);
+        });
 
-    function loadProducts() {
-        fetch('/api/product')
-            .then(response => response.json())
-            .then(data => {
-                displayProducts(data);
+    function updateLoginLinkToLogout() {
+        loginLink.textContent = 'LOGOUT';
+        loginLink.removeEventListener('click', redirectToLogin);
+        loginLink.addEventListener('click', handleLogout);
+    }
+
+    function handleLogout(event) {
+        event.preventDefault();
+        fetch('/logout', { method: 'POST' })
+            .then(() => {
+                loginLink.textContent = 'LOGIN';
+                loginLink.removeEventListener('click', handleLogout);
+                loginLink.addEventListener('click', redirectToLogin);
+                const adminPageLink = document.getElementById('admin-page-link');
+                if (adminPageLink) {
+                    adminPageLink.remove();
+                }
             })
             .catch(error => {
-                console.error('Error:', error);
-                productList.innerHTML = "<p>상품을 불러오는 중 오류가 발생했습니다.</p>";
+                console.error('Error during logout:', error);
             });
     }
 
-    function loadProductsByCategory(categoryId) {
-        fetch(`/api/product/category/${categoryId}`)
+    function redirectToLogin(event) {
+        event.preventDefault();
+        location.href = '/loginForm';
+    }
+
+    function checkUserRole() {
+        fetch('/my')
             .then(response => response.json())
             .then(data => {
-                displayProducts(data);
+                if (data.role === 'ADMIN') {
+                    const adminPageLink = document.createElement('li');
+                    adminPageLink.id = 'admin-page-link';
+                    adminPageLink.innerHTML = '<a href="/admin">ADMIN PAGE</a>';
+                    logNav.appendChild(adminPageLink);
+                }
             })
             .catch(error => {
-                console.error('Error:', error);
-                productList.innerHTML = "<p>카테고리 상품을 불러오는 중 오류가 발생했습니다.</p>";
+                console.error('Error fetching user role:', error);
             });
     }
 
-    function displayProducts(products) {
-        productList.innerHTML = ""; // 이전 결과 지우기
-        if (products.length > 0) {
-            products.forEach(product => {
-                const productDiv = document.createElement("div");
-                productDiv.className = "product-item";
-                productDiv.innerHTML = `
-                    <img src="${product.imageUrl ? product.imageUrl : 'default_image.png'}" alt="${product.name}">
-                    <h3>${product.name}</h3>
-                    <p>${product.price} 원</p>
-                `;
-                productDiv.addEventListener('click', () => {
-                    window.location.href = `/product/${product.productId}`;
-                });
-                productList.appendChild(productDiv);
-            });
-        } else {
-            productList.innerHTML = "<p>상품이 없습니다.</p>";
-        }
-    }
-
-    function displayNoResults() {
-        productList.innerHTML = '<div class="no-results">검색 결과가 없습니다.</div>';
-    }
+    loginLink.addEventListener('click', redirectToLogin);
 });

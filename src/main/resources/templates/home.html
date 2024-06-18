@@ -1,29 +1,26 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>홈</title>
+    <link rel="stylesheet" type="text/css" href="/css/header.css">
     <link rel="stylesheet" type="text/css" href="/css/home.css">
 </head>
 <body>
-<div class="wrap">
-    <div class="intro">
-        <div class="header">
-            <ul class="nav">
-                <li id="home-link"><a href="#">HOME</a></li>
-                <li id="shop-link"><a href="#">SHOP</a>
-                    <ul class="dropdown" id="shop-dropdown"></ul>
-                </li>
-                <li><a href="#" id="search-link">SEARCH</a></li>
-            </ul>
+<div class="header">
+    <ul class="nav">
+        <li id="home-link"><a href="#">HOME</a></li>
+        <li id="shop-link"><a href="#">SHOP</a>
+            <ul class="dropdown" id="shop-dropdown"></ul>
+        </li>
+        <li><a href="#" id="search-link">SEARCH</a></li>
+    </ul>
 
-            <ul class="Lognav">
-                <li><a href="#">LOGIN</a></li>
-                <li><a href="#">ACCOUNT</a></li>
-                <li><a href="#">BAG(0)</a></li>
-            </ul>
-        </div>
-    </div>
+    <ul class="Lognav">
+        <li><a href="/loginForm" id="loginLink">LOGIN</a></li>
+        <li><a href="/account">ACCOUNT</a></li>
+        <li><a href="#">BAG(0)</a></li>
+    </ul>
 </div>
 
 <!-- 검색 모달 -->
@@ -36,8 +33,11 @@
     </div>
 </div>
 
-<div class="product-list" id="product-list"></div> <!-- 상품 목록을 표시할 영역 -->
+<main>
+    <div class="product-list" id="product-list"></div>
+</main>
 
+<script src="/js/header.js"></script>
 <script src="/js/home.js"></script>
 </body>
 </html>

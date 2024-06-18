@@ -45,12 +45,12 @@ function fetchOrder() {
       console.log(data);
       updateView(data);
     })
-    .catch((error) =>
+    .catch((error) =>{
     console.error("Error fetching orders:", error)
     alert('주문을 조회할 수 없습니다. 다시 시도해주세요.');
               // 에러 페이지로 리디렉션
      window.history.back(); // 예시: 에러 페이지로 리디렉션
-    );
+    });
 }
 
 function updateView(data) {
@@ -188,7 +188,7 @@ function handleOrderUpdate() {
           if (response.ok) {
             alert("주문이 수정되었습니다.");
             // 주문 목록 페이지로 이동하거나 페이지를 새로고침
-            location.reload();
+            window.location.href = `/order/${orderId}`;
           } else {
             alert("주문 취소에 실패했습니다.");
           }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -53,28 +53,6 @@
         <button type="submit">등록완료</button>
     </form>
 </div>
-<script>
-    document.getElementById('productForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the form from submitting the default way
-
-        const form = document.getElementById('productForm');
-        const formData = new FormData(form);
-
-        fetch('/upload/images', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                alert('File uploaded and product saved successfully.'); // Display success message
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.'); // Display error message
-            });
-    });
-</script>
-
+<script src = "/js/inputProduct.js"></script>
 </body>
 </html>

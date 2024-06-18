@@ -7,14 +7,14 @@
     <link rel="stylesheet" href="/css/productDetails.css">
     <script defer src="/js/productDetails.js"></script>
 </head>
-<body data-product-id="${productId}">
-<div class="product-detail-page">
+<body>
+<!-- data-product-id 속성에 실제 제품 ID를 하드코딩하거나 서버 사이드 렌더링으로 대체 -->
+<div class="product-detail-page" data-product-id="1">
     <div class="product-images">
-        <!-- 상품 이미지가 여러개이면, 여러 이미지가 나오도록 추가하도록 수정하기-->
-        <img id="product-image-1" src="${productImageUrl}" alt="상품 이미지" class="product-image">
+        <img id="product-image-1" alt="상품 이미지" class="product-image">
     </div>
     <div class="product-info">
-        <h1 id="product-name" class="product-name">${productName}</h1>
+        <h1 id="product-name" class="product-name"></h1>
         <div class="size-selector">
             <label>SIZE</label>
             <div class="sizes">
@@ -30,7 +30,7 @@
                     <span id="quantity">1</span>
                     <button id="increase-quantity">+</button>
                 </div>
-                <span id="product-price" class="price">${productPrice}원</span>
+                <span id="product-price" class="price"></span>
             </div>
         </div>
         <div class="buttons">

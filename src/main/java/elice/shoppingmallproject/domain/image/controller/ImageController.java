@@ -2,10 +2,10 @@ package elice.shoppingmallproject.domain.image.controller;
 
 import elice.shoppingmallproject.domain.image.service.S3UploadService;
 import elice.shoppingmallproject.domain.product.dto.ProductDTO;
-import elice.shoppingmallproject.domain.product.entity.Product;
 import elice.shoppingmallproject.domain.product.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,26 +30,17 @@ public class ImageController {
         return "inputProduct";
     }
 
-    @GetMapping("/product/details")
-    public String productDetails() {
-        // 필요한 경우 모델에 데이터 추가
+    @GetMapping("/productdetail/{productId}")
+    public String productDetailsPage(@PathVariable Long productId, Model model) {
+        model.addAttribute("productId", productId);
         return "productDetails";
     }
 
-    @GetMapping("/product/details/{productId}")
-    public String productDetails(@PathVariable("productId") Long productId, Model model) {
-        // 제품 ID를 이용해 제품 정보를 가져옴 (예: 데이터베이스에서 조회)
-        ProductDTO product = productService.findById(productId);
-
-        // 모델에 데이터 추가
-        model.addAttribute("productId", product.getProductId());
-        model.addAttribute("productName", product.getName());
-        model.addAttribute("productImageUrl", product.getImageUrl());
-        model.addAttribute("productPrice", product.getPrice());
-
-        return "productDetails";
+    @GetMapping("product/{productId}")
+    public ResponseEntity<ProductDTO> productDetails(@PathVariable("productId") Long productId) {
+        ProductDTO productDTO = productService.findById(productId);
+        return ResponseEntity.ok(productDTO);
     }
-
 
 }
 

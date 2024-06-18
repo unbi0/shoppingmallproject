@@ -42,6 +42,11 @@ public class CartController {
     public CartResponseDTO updateCartItem(@PathVariable Long cartId, @RequestBody int quantity) {
         return cartService.updateCartItem(cartId, quantity);
     }
+    
+    @GetMapping("/total") // 총 가격을 반환하는 메서드 추가
+    public double getTotalPrice() {
+        return cartService.getTotalPrice();
+    }
 
     @DeleteMapping("/{cartId}")
     public void deleteCartItem(@PathVariable Long cartId) {

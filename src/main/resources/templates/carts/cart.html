@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/cart.js" defer></script> <!-- cart.js 파일을 불러와서 비동기로 실행 -->
+</head>
+<body>
+    <h1>Shopping Cart</h1> <!-- 페이지 제목 -->
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Product Name</th>
+                <th>Size</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="cart-container">
+            <!-- 장바구니 아이템들이 cart.js에서 렌더링 됩니다. -->
+        </tbody>
+    </table>
+    <div id="total-price-container">
+        <!-- 총 가격이 cart.js에서 계산되어 표시됩니다. -->
+    </div>
+    <button onclick="clearCart()">Delete All</button> <!-- 전체 장바구니 비우기 버튼 -->
+    <a href="/">Continue Shopping</a> <!-- 쇼핑 계속하기 링크 -->
+</body>
+</html>

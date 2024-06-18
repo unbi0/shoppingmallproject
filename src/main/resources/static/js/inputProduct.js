@@ -4,7 +4,7 @@ document.getElementById('productForm').addEventListener('submit', function(event
     const form = document.getElementById('productForm');
     const formData = new FormData(form);
 
-    fetch('/upload/images', {
+    fetch('/api/product/create', {
         method: 'POST',
         body: formData
     })

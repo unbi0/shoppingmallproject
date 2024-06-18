@@ -1,0 +1,96 @@
+.address-btn {
+  padding: 7px 10px;
+  background-color: #6274B1;
+  color: white;
+  border: none;
+  font-size: 12px;
+}
+
+.submit-btn {
+  padding: 12px 0;
+  background-color: #6274B1;
+  color: white;
+  border: none;
+  font-size: 12px;
+}
+
+.address-btn:hover,
+.submit-btn:hover {
+  background-color: #3a4670;
+}
+
+.product-list {
+  margin: 10px 0;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  font-size: 12px;
+}
+
+.product-list-wrap {
+  display: flex;
+}
+
+.product-list-wrap:not(:first-child) {
+  border-top: 1px solid #C0C0C0;
+}
+
+.thumb {
+  padding: 15px 15px 15px 0;
+}
+
+.delivery-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.post-info {
+  display: flex;
+  gap: 10px;
+}
+
+.tel-form{
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.tel-form select, 
+.tel-form input{
+  flex: 1;
+}
+
+.email-form{
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.email-form select, 
+.email-form input{
+  flex: 1;
+}
+
+.email-form span{
+  font-size: 10px;
+}
+
+.total-box {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  padding: 10px 20px;
+}
+
+.price-info {
+  padding: 5px 0;
+  font-size: 12px;
+}
+
+.price-name {
+  float: left;
+}
+
+.price {
+  float: right;
+}

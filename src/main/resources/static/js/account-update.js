@@ -51,7 +51,7 @@ function handleSubmit(event) {
         .then(response => {
             if (response.ok) {
                 alert('회원정보가 수정되었습니다.');
-                location.href = '/index.html'; // 수정 후 메인 페이지로 리다이렉션
+                location.href = '/'; // 수정 후 메인 페이지로 리다이렉션
             } else {
                 alert('회원정보 수정에 실패하였습니다.');
             }
@@ -70,7 +70,7 @@ function handleDelete(event) {
         .then(response => {
             if (response.ok) {
                 alert('회원 탈퇴가 완료되었습니다.');
-                location.href = '/index.html'; // 탈퇴 후 메인 페이지로 리다이렉션
+                location.href = '/'; // 탈퇴 후 메인 페이지로 리다이렉션
             } else {
                 alert('회원 탈퇴에 실패하였습니다.');
             }

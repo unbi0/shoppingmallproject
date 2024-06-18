@@ -1,18 +1,15 @@
 package elice.shoppingmallproject.domain.product.repository;
 
 
-import java.util.List;
-
+import elice.shoppingmallproject.domain.product.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
-import elice.shoppingmallproject.domain.product.entity.Product;
+import java.util.List;
 
-@Repository
+
 public interface ProductRepository extends JpaRepository<Product, Long> {
-
     @Query("SELECT p FROM Product p ORDER BY p.productId DESC")
     List<Product> findAllByOrderByProductIdDesc();
 
@@ -25,5 +22,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "OR LOWER(p.details) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(p.category.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Product> searchProducts(@Param("keyword") String keyword);
+
 
 }

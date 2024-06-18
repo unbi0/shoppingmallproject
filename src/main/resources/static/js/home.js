@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     <p>${product.price} 원</p>
                 `;
                 productDiv.addEventListener('click', () => {
-                    window.location.href = `/product/${product.productId}`;
+                    window.location.href = `/productdetail/${product.productId}`;
                 });
                 productList.appendChild(productDiv);
             });

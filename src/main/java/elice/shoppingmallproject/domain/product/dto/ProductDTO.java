@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductDTO extends BaseTimeEntity {
+public class ProductDTO {
     private Long productId;
 
     private String name;

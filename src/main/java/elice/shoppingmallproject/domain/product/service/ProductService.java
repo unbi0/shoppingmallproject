@@ -19,10 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 
 @Service
@@ -181,9 +178,9 @@ public class ProductService {
     }
 
     // 상품 단일 조회
-    public ProductFormDTO findById(Long id) {
+    public ProductDTO findById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Product not found for this id: " + id));
-        return ProductFormDTO.fromProduct(product);
+                .orElseThrow(() -> new NoSuchElementException("Product with id " + id + " not found"));
+        return ProductDTO.toProductDTO(product);
     }
 }

@@ -63,19 +63,17 @@ public class ProductController {
     }
 
     //<메인 페이지> 검색 (이름,제품설명,세부사항,카테고리에 포함된 단어)
-    //클라이언트 GET /product/search?keyword=example 요청
     @GetMapping("/search")
     public ResponseEntity<List<ProductDTO>> searchProducts(@RequestParam String keyword) {
         List<ProductDTO> productDTOList = productService.searchProducts(keyword);
         return ResponseEntity.ok(productDTOList);
     }
 
-
-    //상품 단일 상세페이지
+    //상품 단일 상세페이지 + 관련 이미지 여러개 추가
     @GetMapping("/{id}")
-    public ResponseEntity<ProductFormDTO> findById(@PathVariable Long id) {
-        ProductFormDTO productFormDTO = productService.findById(id);
-        return ResponseEntity.ok(productFormDTO);
+    public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
+        ProductDTO productDTO = productService.findById(id);
+        return ResponseEntity.ok(productDTO);
     }
 }
 

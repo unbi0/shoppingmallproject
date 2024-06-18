@@ -16,5 +16,5 @@ public class OrderDetailDto {
     private int price;
     private String optionSize;
     private int count;
-    private List<Image> imageUrl;
+//    private List<Image> imageUrl;
 }

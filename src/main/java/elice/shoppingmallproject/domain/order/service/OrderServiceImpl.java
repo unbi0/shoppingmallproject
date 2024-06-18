@@ -90,8 +90,8 @@ public class OrderServiceImpl implements OrderService{
                         orderDetail.getProductOption().getProduct().getName(),
                         orderDetail.getPrice(),
                         orderDetail.getProductOption().getOptionSize(),
-                        orderDetail.getCount(),
-                        orderDetail.getProductOption().getProduct().getImages()
+                        orderDetail.getCount()
+//                        orderDetail.getProductOption().getProduct().getImages()
                     ))
                     .collect(Collectors.toList());
 

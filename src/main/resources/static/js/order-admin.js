@@ -108,7 +108,7 @@ function updateOrderList(data) {
           order.productName
         ).join(", ")}</p>
         <chip class="chip gray-chip" style="margin-left: 5px;">
-          <a href="./order/${order.orderId}">주문상세</a>
+          <a href="/order/${order.orderId}">주문상세</a>
         </chip>
       </div>
       <div style="width: 100px; display: flex; justify-content: center;">

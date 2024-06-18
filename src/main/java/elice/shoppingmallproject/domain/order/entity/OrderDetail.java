@@ -26,7 +26,7 @@ public class OrderDetail {
     @Column(name = "order_detail_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "order_id")
     private Orders orders;
 

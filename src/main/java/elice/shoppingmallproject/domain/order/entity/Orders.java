@@ -1,12 +1,12 @@
 package elice.shoppingmallproject.domain.order.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import elice.shoppingmallproject.global.common.BaseTimeEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,9 +46,8 @@ public class Orders extends BaseTimeEntity {
     @Builder.Default
     private OrderStatus orderStatus = OrderStatus.PLACED;
 
-    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Builder.Default
-    @JsonIgnore
     private List<OrderDetail> orderDetailList = new ArrayList<>();
 
     public void updateOrderStatus(OrderStatus newOrderStatus) {

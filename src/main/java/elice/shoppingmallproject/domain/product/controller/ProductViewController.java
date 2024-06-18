@@ -6,11 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ProductViewController {
 
 
-    @GetMapping("/home")
-    public String home() {
-        return "/Home";
-    }
-
     @GetMapping("/category/create")
     public String category() {
         return "product/category";

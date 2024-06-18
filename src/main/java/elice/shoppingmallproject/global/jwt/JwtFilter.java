@@ -36,11 +36,11 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             jwtUtil.isExpired(accessToken);
         } catch (ExpiredJwtException e) {
-            PrintWriter writer = response.getWriter();
-            writer.print("access token expired");
-
-            //response status code
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            PrintWriter writer = response.getWriter();
+            writer.write("{\"error\": \"access token expired\"}");
+            writer.flush();
             return;
         }
 
@@ -62,7 +62,6 @@ public class JwtFilter extends OncePerRequestFilter {
         String email = jwtUtil.getEmail(accessToken);
         Role role = Role.fromKey(jwtUtil.getRole(accessToken));
 
-        //여기서 email 과 role 만 세팅을 해도 괜찮을까?
         User user = User.builder()
                 .id(userId)
                 .email(email)

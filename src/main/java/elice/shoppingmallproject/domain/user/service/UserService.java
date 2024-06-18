@@ -1,5 +1,6 @@
 package elice.shoppingmallproject.domain.user.service;
 
+import elice.shoppingmallproject.domain.address.dto.AddressResponseDto;
 import elice.shoppingmallproject.domain.address.entity.Address;
 import elice.shoppingmallproject.domain.user.dto.UserDetail;
 import elice.shoppingmallproject.domain.user.dto.UserManagementDto;
@@ -8,7 +9,6 @@ import elice.shoppingmallproject.domain.user.dto.UserSignUpDto;
 import elice.shoppingmallproject.domain.user.dto.UserUpdateDto;
 import elice.shoppingmallproject.domain.user.entity.Role;
 import elice.shoppingmallproject.domain.user.entity.User;
-import elice.shoppingmallproject.domain.user.exception.DuplicateEmailException;
 import elice.shoppingmallproject.domain.user.exception.UserNotFoundException;
 import elice.shoppingmallproject.domain.user.repository.UserRepository;
 import elice.shoppingmallproject.global.util.UserUtil;
@@ -18,11 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import elice.shoppingmallproject.domain.address.entity.Address;
-import elice.shoppingmallproject.domain.user.dto.UserSignUpDto;
-import elice.shoppingmallproject.domain.user.entity.User;
-import elice.shoppingmallproject.domain.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
@@ -55,7 +50,11 @@ public class UserService {
 
         User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new UserNotFoundException("조회된 유저가 없습니다."));
-        return new UserResponseDto(user);
+
+        Address address = user.getAddress();
+        AddressResponseDto addressResponseDto = (address != null) ? new AddressResponseDto(address) : null;
+
+        return new UserResponseDto(user, addressResponseDto);
     }
 
     // 시큐리티에서 이미 지금 로그인한 유저가 Admin 인 것을 인증했기때문에 굳이 인증할 필요 없음
@@ -76,11 +75,7 @@ public class UserService {
         return new UserManagementDto(totalUserCount, adminCount, userDetails);
 
     }
-/*
-* 내 정보 수정, 회원 탈퇴같은 경우 어차피 현재 로그인 중인 user 를 갖고와서
-* 내 정보를 수정하고, 회원 탈퇴를 하기 때문에
-* 별도의 검증을 하는 로직은 필요없나?
-* */
+
     // 내 정보 수정
     public void updateUser(UserUpdateDto userUpdateDto) {
         Long loginUserId = userUtil.getAuthenticatedUser();

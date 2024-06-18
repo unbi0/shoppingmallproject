@@ -80,18 +80,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.addCookie(createCookie(REFRESH_TOKEN_COOKIE_NAME, refresh.getToken()));
         response.setStatus(HttpStatus.OK.value());
 
-        // 응답 본문에 추가 정보로 토큰 반환
-       /*
-        Map<String, String> tokens = new HashMap<>();
-        tokens.put("accessToken", accessToken);
-        tokens.put("refreshToken", refreshToken);
-        */
-
-        /*
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        */
-
     }
 
     @Override

@@ -43,18 +43,19 @@ input[type="password"] {
 
 button,
 a.google-login,
+a.signup-link,
 a.naver-login {
     display: block;
     width: 100%;
     padding: 0.75rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.1rem;
     text-align: center;
-    border: none;
     border-radius: 4px;
     font-size: 1rem;
     cursor: pointer;
     text-decoration: none;
     box-sizing: border-box;
+    border: 1px solid #ccc;
 }
 
 .login-button {
@@ -63,7 +64,6 @@ a.naver-login {
 }
 
 .signup-link {
-    margin-bottom: 1rem;
     color: #333;
     cursor: pointer;
 }

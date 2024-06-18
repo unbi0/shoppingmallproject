@@ -21,8 +21,18 @@ public class UserViewController {
         return "admin/admin";
     }
 
-    @GetMapping("/admin/users")
+    @GetMapping("/admin/usersPage")
     public String adminUsersPage() {
         return "admin-users/admin-users";
+    }
+
+    @GetMapping("/account")
+    public String accountPage() {
+        return "account/account";
+    }
+
+    @GetMapping("/my-page")
+    public String myPage() {
+        return "account-update/account-update";
     }
 }

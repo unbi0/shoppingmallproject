@@ -1,80 +1,98 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     const sizeButtons = document.querySelectorAll('.size-btn');
+    const selectedSizeQuantity = document.getElementById('selected-size-quantity');
+    const selectedSizeButton = document.getElementById('selected-size');
+    const quantityControls = document.getElementById('quantity-controls');
     const quantityElement = document.getElementById('quantity');
     const decreaseQuantityButton = document.getElementById('decrease-quantity');
     const increaseQuantityButton = document.getElementById('increase-quantity');
     const buyNowButton = document.getElementById('buy-now');
     const addToCartButton = document.getElementById('add-to-cart');
 
-    let selectedSize = 'S';
-    let quantity = 1;
+    let selectedSize = null;
+    let quantity = 1; // 기본 수량을 1로 설정
 
-    // body의 data-product-id 속성에서 productId를 가져옴
-    const productId = document.body.dataset.productId;
+    // Get productId from data attribute
+    const productId = document.querySelector('.product-detail-page').getAttribute('data-product-id');
+    console.log('Product ID:', productId); // Product ID 확인
 
-    fetch(`/images${productId}`)
+    fetch(`/product/${productId}`)
         .then(response => response.json())
         .then(product => {
+            console.log('Product data:', product); // 데이터 확인을 위해 콘솔에 출력
             if (!product) {
                 console.error('No product found');
                 return;
             }
             document.getElementById('product-name').textContent = product.name;
             document.getElementById('product-image-1').src = product.imageUrl;
-            document.getElementById('product-image-2').src = product.imageUrl;
             document.getElementById('product-price').textContent = product.price + '원';
+            document.querySelector('.product-details').textContent = product.details;
         })
         .catch(error => {
             console.error('Error fetching product:', error);
         });
 
     sizeButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // 클릭된 버튼이 이미 선택된 상태라면 선택을 해제
+        button.addEventListener('click', function() {
             if (button.classList.contains('selected')) {
                 button.classList.remove('selected');
-                button.style.backgroundColor = ''; // 기본 배경색으로 되돌림
                 selectedSize = null;
+                selectedSizeQuantity.style.display = 'none';
             } else {
-                // 다른 버튼들의 선택을 해제하고 클릭된 버튼을 선택
-                sizeButtons.forEach(btn => {
-                    btn.classList.remove('selected');
-                    btn.style.backgroundColor = ''; // 기본 배경색으로 되돌림
-                });
+                sizeButtons.forEach(btn => btn.classList.remove('selected'));
                 button.classList.add('selected');
-                button.style.backgroundColor = 'yellow';
-                selectedSize = button.dataset.size;
+                selectedSize = button.getAttribute('data-size');
+                selectedSizeButton.textContent = selectedSize;
+                selectedSizeQuantity.style.display = 'flex';
             }
         });
     });
 
-    decreaseQuantityButton.addEventListener('click', () => {
+    decreaseQuantityButton.addEventListener('click', function() {
         if (quantity > 1) {
             quantity--;
             quantityElement.textContent = quantity;
         }
     });
 
-    increaseQuantityButton.addEventListener('click', () => {
+    increaseQuantityButton.addEventListener('click', function() {
         quantity++;
         quantityElement.textContent = quantity;
     });
 
-    buyNowButton.addEventListener('click', () => {
+    buyNowButton.addEventListener('click', function() {
         if (!selectedSize) {
             alert('사이즈를 선택해주세요.');
             return;
         }
-        alert(`Proceeding to buy ${quantity} item(s) of size ${selectedSize}`);
-        // Implement the redirection to purchase page
+        const productDetails = {
+            id: productId,
+            size: selectedSize,
+            quantity: quantity,
+            price: document.getElementById('product-price').textContent,
+            imageUrl: document.getElementById('product-image-1').src
+        };
+
+        localStorage.setItem("productData", JSON.stringify(productDetails));
+        window.location.href = `/order`;
     });
 
-    addToCartButton.addEventListener('click', () => {
+    addToCartButton.addEventListener('click', function() {
         if (!selectedSize) {
             alert('사이즈를 선택해주세요.');
             return;
         }
-        alert(`Added ${quantity} item(s) of size ${selectedSize} to cart`);
-        // Implement adding to cart functionality
+        //localstore
+        const productDetails = {
+            id: productId,
+            size: selectedSize,
+            quantity: quantity,
+            price: document.getElementById('product-price').textContent,
+            imageUrl: document.getElementById('product-image-1').src
+        };
+
+        localStorage.setItem("productData", JSON.stringify(productDetails));
+        window.location.href = `/cart/view`;
     });
 });

@@ -12,222 +12,231 @@
 </head>
 
 <body>
-  <h2 style="margin-top: 40px; margin-bottom: 40px;">주문서 작성</h2>
-  <div class="page">
-    <div class="layout">
-      <h3>상품 정보</h3>
-      <div class="product-list" style="margin-bottom: 30px;">
-        <div class="product-list-wrap">
-          <img class="thumb" src="//nomanual-shop.com/web/product/tiny/202302/b02de95d8e0986fa806430903b9c5c60.jpg"
-            alt="">
-          <div class="product-info">
-            <span style="font-weight: bold;">상품 이름</span>
-            <span style="color: gray;">KRW 4,000</span>
-            <span></span>
-            <span>[옵션 : XL]</span>
-            <span>수량 : 2</span>
-          </div>
+<h2 style="margin-top: 40px; margin-bottom: 40px;">주문서 작성</h2>
+<div class="page">
+  <div class="layout">
+    <h3>상품 정보</h3>
+    <div class="product-list" style="margin-bottom: 30px;">
+      <div class="product-list-wrap">
+        <img class="thumb"
+             src="//nomanual-shop.com/web/product/tiny/202302/b02de95d8e0986fa806430903b9c5c60.jpg"
+             alt="">
+        <div class="product-info">
+          <span style="font-weight: bold;">상품 이름</span>
+          <span style="color: gray;">KRW 4,000</span>
+          <span></span>
+          <span>[옵션 : XL]</span>
+          <span>수량 : 2</span>
         </div>
-
-        <div class="product-list-wrap">
-          <img class="thumb" src="//nomanual-shop.com/web/product/tiny/202403/fe1df3c9de8b2ee038169486ff6a83d6.jpg"
-            alt="">
-          <div class="product-info">
-            <span style="font-weight: bold;">상품 이름</span>
-            <span style="color: gray;">KRW 4,000</span>
-            <span></span>
-            <span>[옵션 : XL]</span>
-            <span>수량 : 2</span>
-          </div>
-        </div>
-
-      </div>
-      <h3>주문 정보</h3>
-      <hr style="margin-bottom: 15px;">
-      <form class="delivery-form" style="margin-bottom: 30px;">
-        <input id="info-name" placeholder="이름">
-        <div class="post-info">
-          <input id="info-postCode" readonly="readonly" onclick="execDaumPostcode()" style="flex: 1;" placeholder="우편 번호">
-          <button type="button" class="address-btn" onclick="execDaumPostcode()">우편번호 찾기</button>
-        </div>
-        <input id="info-address" readonly="readonly" onclick="execDaumPostcode()" placeholder="주소">
-        <input id="info-detailAddress" placeholder="상세 주소">
-        <div class="email-form">
-          <input id="emailPart1" readonly="readonly" type="text">
-          <span>@</span>
-          <input id="emailPart2" readonly="readonly" type="text">
-        </div>
-      </form>
-
-      <h3>배송 정보</h3>
-      <hr>
-      <div style="margin: 15px 0;">
-        <label>
-          <input type="radio" name="delivery-info-option" value="same" onclick="copyOrderInfo()">
-          주문자 정보와 통일
-        </label>
-        <label style="margin-left: 10px;">
-          <input type="radio" name="delivery-info-option" value="new" onclick="clearDeliveryInfo()">
-          새로운 배송지
-        </label>
       </div>
 
-      <form class="delivery-form" style="margin-bottom: 30px;">
-        <input id="form-recipientName" placeholder="받으시는 분">
-        <div class="post-info">
-          <input id="form-postCode" readonly="readonly" onclick="execDaumPostcode2()" style="flex: 1;" placeholder="우편 번호">
-          <button type="button" class="address-btn" onclick="execDaumPostcode2()">우편번호 찾기</button>
+      <div class="product-list-wrap">
+        <img class="thumb"
+             src="//nomanual-shop.com/web/product/tiny/202403/fe1df3c9de8b2ee038169486ff6a83d6.jpg"
+             alt="">
+        <div class="product-info">
+          <span style="font-weight: bold;">상품 이름</span>
+          <span style="color: gray;">KRW 4,000</span>
+          <span></span>
+          <span>[옵션 : XL]</span>
+          <span>수량 : 2</span>
         </div>
-        <input id="form-address" readonly="readonly" onclick="execDaumPostcode2()" placeholder="주소">
-        <input id="form-detailAddress" placeholder="상세 주소">
-        <div class="tel-form">
-          <select>
-            <option value="010">010</option>
-            <option value="011">011</option>
-            <option value="011">016</option>
-            <option value="011">017</option>
-            <option value="011">018</option>
-            <option value="011">019</option>
-          </select>
-          <span>-</span>
-          <input>
-          <span>-</span>
-          <input>
-        </div>
-        <textarea placeholder="배송메시지"></textarea>
-      </form>
-
-      <div class="total-box">
-        <div class="price-info">
-          <div class="price-name">상품금액</div>
-          <div class="price">KRW 46,000</div>
-        </div>
-        <div class="price-info">
-          <div class="price-name">배송비</div>
-          <div class="price">+KRW 4,000</div>
-        </div>
-        <div class="total-info">
-          <div class="price-name">결제 금액</div>
-          <div class="price">KRW 50,000</div>
-        </div>
-        <button class="submit-btn">주문하기</button>
       </div>
 
     </div>
+    <h3>주문 정보</h3>
+    <hr style="margin-bottom: 15px;">
+    <form class="delivery-form" style="margin-bottom: 30px;">
+      <input id="info-name" placeholder="이름">
+      <div class="post-info">
+        <input id="info-postCode" readonly="readonly" onclick="execDaumPostcode()" style="flex: 1;"
+               placeholder="우편 번호">
+        <button type="button" class="address-btn" onclick="execDaumPostcode()">우편번호 찾기</button>
+      </div>
+      <input id="info-address" readonly="readonly" onclick="execDaumPostcode()" placeholder="주소">
+      <input id="info-detailAddress" placeholder="상세 주소">
+      <div class="email-form">
+        <input id="emailPart1" readonly="readonly" type="text">
+        <span>@</span>
+        <input id="emailPart2" readonly="readonly" type="text">
+      </div>
+    </form>
+
+    <h3>배송 정보</h3>
+    <hr>
+    <div style="margin: 15px 0;">
+      <label>
+        <input type="radio" name="delivery-info-option" value="same" onclick="copyOrderInfo()">
+        주문자 정보와 통일
+      </label>
+      <label style="margin-left: 10px;">
+        <input type="radio" name="delivery-info-option" value="new" onclick="clearDeliveryInfo()">
+        새로운 배송지
+      </label>
+    </div>
+
+    <form class="delivery-form" style="margin-bottom: 30px;">
+      <input id="form-recipientName" placeholder="받으시는 분">
+      <div class="post-info">
+        <input id="form-postCode" readonly="readonly" onclick="execDaumPostcode2()" style="flex: 1;"
+               placeholder="우편 번호">
+        <button type="button" class="address-btn" onclick="execDaumPostcode2()">우편번호 찾기</button>
+      </div>
+      <input id="form-address" readonly="readonly" onclick="execDaumPostcode2()" placeholder="주소">
+      <input id="form-detailAddress" placeholder="상세 주소">
+      <div class="tel-form">
+        <select>
+          <option value="010">010</option>
+          <option value="011">011</option>
+          <option value="011">016</option>
+          <option value="011">017</option>
+          <option value="011">018</option>
+          <option value="011">019</option>
+        </select>
+        <span>-</span>
+        <input>
+        <span>-</span>
+        <input>
+      </div>
+      <textarea placeholder="배송메시지"></textarea>
+    </form>
+
+    <div class="total-box">
+      <div class="price-info">
+        <div class="price-name">상품금액</div>
+        <div class="price">KRW 46,000</div>
+      </div>
+      <div class="price-info">
+        <div class="price-name">배송비</div>
+        <div class="price">+KRW 4,000</div>
+      </div>
+      <div class="total-info">
+        <div class="price-name">결제 금액</div>
+        <div class="price">KRW 50,000</div>
+      </div>
+      <button class="submit-btn">주문하기</button>
+    </div>
+
   </div>
+</div>
 
-  <script>
+<script>
 
-    document.addEventListener("DOMContentLoaded", (event) => {
-      fetchMy();
-      fetchCart();
-    });
-    function execDaumPostcode() {
-      daum.postcode.load(function () {
-        new daum.Postcode({
-          oncomplete: function (data) {
+  document.addEventListener("DOMContentLoaded", (event) => {
+    fetchMy();
+    fetchCart();
+  });
+  function execDaumPostcode() {
+    daum.postcode.load(function () {
+      new daum.Postcode({
+        oncomplete: function (data) {
 
-            var addr = '';
+          var addr = '';
 
-            if (data.userSelectedType === 'R') {
-              addr = data.roadAddress;
-            } else {
-              addr = data.jibunAddress;
-            }
-
-            document.getElementById('info-postCode').value = data.zonecode;
-            document.getElementById('info-address').value = addr;
-            document.getElementById("info-detailAddress").focus();
+          if (data.userSelectedType === 'R') {
+            addr = data.roadAddress;
+          } else {
+            addr = data.jibunAddress;
           }
-        }).open();
-      })
-    }
 
-    // 우편번호 찾기 기능
-    function execDaumPostcode2() {
-      daum.postcode.load(function () {
-        new daum.Postcode({
-          oncomplete: function (data) {
+          document.getElementById('info-postCode').value = data.zonecode;
+          document.getElementById('info-address').value = addr;
+          document.getElementById("info-detailAddress").focus();
+        }
+      }).open();
+    })
+  }
 
-            var addr = '';
+  // 우편번호 찾기 기능
+  function execDaumPostcode2() {
+    daum.postcode.load(function () {
+      new daum.Postcode({
+        oncomplete: function (data) {
 
-            if (data.userSelectedType === 'R') {
-              addr = data.roadAddress;
-            } else {
-              addr = data.jibunAddress;
-            }
+          var addr = '';
 
-            document.getElementById('form-postCode').value = data.zonecode;
-            document.getElementById('form-address').value = addr;
-            document.getElementById("form-detailAddress").focus();
+          if (data.userSelectedType === 'R') {
+            addr = data.roadAddress;
+          } else {
+            addr = data.jibunAddress;
           }
-        }).open();
-      })
-    }
 
-    function fetchMy(){
-  fetch(`http://localhost:8080/my`, {
-        method: "GET"
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data)
-        document.getElementById('info-name').value = data.username;
-        document.getElementById('info-postCode').value = data.address.postcode;
-        document.getElementById('info-address').value = data.address.address;
-        document.getElementById("info-detailAddress").value = data.address.detailAddress;
-        populateEmailForm(data.email);
-      })
-      .catch((error) => console.error("Error fetching orders:", error))
+          document.getElementById('form-postCode').value = data.zonecode;
+          document.getElementById('form-address').value = addr;
+          document.getElementById("form-detailAddress").focus();
+        }
+      }).open();
+    })
+  }
+
+  function fetchMy(){
+fetch(`http://localhost:8080/my`, {
+      method: "GET"
+    }
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data)
+
+      // 주소가 없는 경우 빈 객체로 대체
+    const address = data.address || {};
+
+    document.getElementById('info-name').value = data.username || "";
+    document.getElementById('info-postCode').value = address.postcode || "";
+    document.getElementById('info-address').value = address.address || "";
+    document.getElementById("info-detailAddress").value = address.detailAddress || "";
+
+    populateEmailForm(data.email || "");
+    })
+    .catch((error) => console.error("Error fetching orders:", error))
 }
 
 function fetchCart(){
-  fetch(`http://localhost:8080/cart`, {
-        method: "GET"
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data)
-      })
-      .catch((error) => console.error("Error fetching orders:", error))
+fetch(`http://localhost:8080/cart`, {
+      method: "GET"
+    }
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data)
+    })
+    .catch((error) => console.error("Error fetching orders:", error))
 }
 
-   function populateEmailForm(email) {
-      const emailParts = email.split('@');
-      if (emailParts.length === 2) {
-        document.getElementById('emailPart1').value = emailParts[0];
-        document.getElementById('emailPart2').value = emailParts[1];
-      } else {
-        console.error('Invalid email format');
-      }
+ function populateEmailForm(email) {
+    const emailParts = email.split('@');
+    if (emailParts.length === 2) {
+      document.getElementById('emailPart1').value = emailParts[0];
+      document.getElementById('emailPart2').value = emailParts[1];
+    } else {
+      console.error('Invalid email format');
     }
+  }
 
 function copyOrderInfo() {
-      document.getElementById('form-recipientName').value = document.getElementById('info-name').value;
-      document.getElementById('form-postCode').value = document.getElementById('info-postCode').value;
-      document.getElementById('form-address').value = document.getElementById('info-address').value;
-      document.getElementById('form-detailAddress').value = document.getElementById('info-detailAddress').value;
-    }
+    document.getElementById('form-recipientName').value = document.getElementById('info-name').value;
+    document.getElementById('form-postCode').value = document.getElementById('info-postCode').value;
+    document.getElementById('form-address').value = document.getElementById('info-address').value;
+    document.getElementById('form-detailAddress').value = document.getElementById('info-detailAddress').value;
+  }
 
-    function clearDeliveryInfo() {
-      document.getElementById('form-recipientName').value = '';
-      document.getElementById('form-postCode').value = '';
-      document.getElementById('form-address').value = '';
-      document.getElementById('form-detailAddress').value = '';
-    }
-    // 주문정보
-    // address DB에서 유저ID에 맞게 주소 불러와서 세팅
-    // user DB에서 유저ID에 맞게 (이름, 전화번호, 이메일) 불러와서 세팅
+  function clearDeliveryInfo() {
+    document.getElementById('form-recipientName').value = '';
+    document.getElementById('form-postCode').value = '';
+    document.getElementById('form-address').value = '';
+    document.getElementById('form-detailAddress').value = '';
+  }
+  // 주문정보
+  // address DB에서 유저ID에 맞게 주소 불러와서 세팅
+  // user DB에서 유저ID에 맞게 (이름, 전화번호, 이메일) 불러와서 세팅
 
-    // 배송정보
-    // 주문자 정보와 통일 => 주문정보 그대로 세팅
-    // 새로운 배송지 => 사용자 작성
+  // 배송정보
+  // 주문자 정보와 통일 => 주문정보 그대로 세팅
+  // 새로운 배송지 => 사용자 작성
 
-    // 주문하기 누르면 form 제출
-    // 주문 + 주문상세 생성
-  </script>
+  // 주문하기 누르면 form 제출
+  // 주문 + 주문상세 생성
+</script>
 </body>
 
 </html>

@@ -19,7 +19,7 @@ public class OrderViewController {
     }
 
     // 관리자 주문 관리 페이지
-    @GetMapping("/order-admin")
+    @GetMapping("/admin/order")
     public String adminOrderView() {
         return "/order/order-admin";
     }

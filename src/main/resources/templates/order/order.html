@@ -17,31 +17,31 @@
   <div class="layout">
     <h3>상품 정보</h3>
     <div id="product-list" class="product-list" style="margin-bottom: 30px;">
-      <div class="product-list-wrap">
-        <img class="thumb"
-             src="//nomanual-shop.com/web/product/tiny/202302/b02de95d8e0986fa806430903b9c5c60.jpg"
-             alt="">
-        <div class="product-info">
-          <span style="font-weight: bold;">상품 이름</span>
-          <span style="color: gray;">KRW 4,000</span>
-          <span></span>
-          <span>[옵션 : XL]</span>
-          <span>수량 : 2</span>
-        </div>
-      </div>
+<!--      <div class="product-list-wrap">-->
+<!--        <img class="thumb"-->
+<!--             src="//nomanual-shop.com/web/product/tiny/202302/b02de95d8e0986fa806430903b9c5c60.jpg"-->
+<!--             alt="">-->
+<!--        <div class="product-info">-->
+<!--          <span style="font-weight: bold;">상품 이름</span>-->
+<!--          <span style="color: gray;">KRW 4,000</span>-->
+<!--          <span></span>-->
+<!--          <span>[옵션 : XL]</span>-->
+<!--          <span>수량 : 2</span>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <div class="product-list-wrap">
-        <img class="thumb"
-             src="//nomanual-shop.com/web/product/tiny/202403/fe1df3c9de8b2ee038169486ff6a83d6.jpg"
-             alt="">
-        <div class="product-info">
-          <span style="font-weight: bold;">상품 이름</span>
-          <span style="color: gray;">KRW 4,000</span>
-          <span></span>
-          <span>[옵션 : XL]</span>
-          <span>수량 : 2</span>
-        </div>
-      </div>
+<!--      <div class="product-list-wrap">-->
+<!--        <img class="thumb"-->
+<!--             src="//nomanual-shop.com/web/product/tiny/202403/fe1df3c9de8b2ee038169486ff6a83d6.jpg"-->
+<!--             alt="">-->
+<!--        <div class="product-info">-->
+<!--          <span style="font-weight: bold;">상품 이름</span>-->
+<!--          <span style="color: gray;">KRW 4,000</span>-->
+<!--          <span></span>-->
+<!--          <span>[옵션 : XL]</span>-->
+<!--          <span>수량 : 2</span>-->
+<!--        </div>-->
+<!--      </div>-->
 
     </div>
     <h3>주문 정보</h3>
@@ -107,17 +107,17 @@
     <div class="total-box">
       <div class="price-info">
         <div class="price-name">상품금액</div>
-        <div class="price">KRW 46,000</div>
+        <div class="price" id="totalPrice">KRW 46,000</div>
       </div>
       <div class="price-info">
         <div class="price-name">배송비</div>
-        <div class="price">+KRW 4,000</div>
+        <div class="price">+KRW 2,000</div>
       </div>
       <div class="total-info">
         <div class="price-name">결제 금액</div>
-        <div class="price">KRW 50,000</div>
+        <div class="price" id="totalAmount">KRW 50,000</div>
       </div>
-      <button class="submit-btn">주문하기</button>
+      <button class="submit-btn" onclick="createOrder()">주문하기</button>
     </div>
 
   </div>
@@ -127,7 +127,8 @@
 
   document.addEventListener("DOMContentLoaded", (event) => {
     fetchMy();
-    fetchCart();
+    //fetchCart();
+    viewProductInfo();
   });
   function execDaumPostcode() {
     daum.postcode.load(function () {
@@ -218,49 +219,65 @@ fetch(`/my`, {
 
 // 상품 정보 리스트 세팅
 function viewProductInfo() {
-  const productsData = localStorage.getItem("productList");
+  const productsData = JSON.parse(localStorage.getItem("productList"));
 
-  productsData.forEach((product) => {
+  let totalPrice = 0;
 
-    const productInfoList = document.getElementById("product-list");
+  if(Array.isArray(productsData)){
+    productsData.forEach((product) => {
 
-    const productInfoElement = `
-      <div class="product-list-wrap">
-        <img class="thumb"
-             src="${product.imageUrl}"
-             alt="">
-        <div class="product-info">
-          <span style="font-weight: bold;">${product.name}</span>
-          <span style="color: gray;">KRW ${product.price}</span>
-          <span></span>
-          <span>[옵션 : ${product.optionSize}]</span>
-          <span>수량 : ${product.count}</span>
+      const productInfoList = document.getElementById("product-list");
+
+      const productInfoElement = `
+        <div class="product-list-wrap">
+          <img class="thumb"
+               src="${product.imageUrl}"
+               alt="">
+          <div class="product-info">
+            <span style="font-weight: bold;">${product.name}</span>
+            <span style="color: gray;">KRW ${product.price}</span>
+            <span></span>
+            <span>[옵션 : ${product.optionSize}]</span>
+            <span>수량 : ${product.count}</span>
+          </div>
         </div>
-      </div>
-    `;
+      `;
 
-    const productElementDiv = document.createElement("div");
-    productElementDiv.classList.add("product-item");
-    productElementDiv.innerHTML = productInfoElement;
-    productInfoList.appendChild(productElementDiv);
-  });
+      const productElementDiv = document.createElement("div");
+      productElementDiv.classList.add("product-list-wrap");
+      productElementDiv.innerHTML = productInfoElement;
+      productInfoList.appendChild(productElementDiv);
+
+      totalPrice += product.price * product.count;
+    });
+  }else{
+    console.error("상품정보가 없습니다.");
+  }
+  document.getElementById("totalPrice").textContent = `KRW ${totalPrice.toLocaleString()}`;
+  document.getElementById("totalAmount").textContent = `KRW ${(totalPrice+2000).toLocaleString()}`;
+
 }
 
 function createOrder(){
 
   let orderDetailList = [];
 
-  const productsData = localStorage.getItem("productList");
+  const productsData = JSON.parse(localStorage.getItem("productList"));
 
-  productsData.forEach((product) => {
+  if(Array.isArray(productsData)){
+    productsData.forEach((product) => {
 
-    const orderDetailInit = {
-      "productOptionId": product.productOptionId,
-      "count": product.count
-    }
+      const orderDetailInit = {
+        "productOptionId": product.productOptionId,
+        "count": product.count
+      }
 
-    orderDetailList.add(orderDetailInit);
-  })
+      orderDetailList.push(orderDetailInit);
+    })
+  }else{
+    console.error("상품정보가 없습니다.");
+    return false;
+  }
 
   const part1 = document.getElementById("tel1").value;
   const part2 = document.getElementById("tel2").value;
@@ -294,6 +311,7 @@ function createOrder(){
     .then((data) => {
       console.log(data)
       alert("주문이 완료되었습니다.");
+      window.location.href = "/user/order";
     })
     .catch((error) => {
       console.error("Error fetching orders:", error);
@@ -324,9 +342,8 @@ function validateForm() {
   const postCode = document.getElementById("form-postCode").value;
   const deliveryAddress = document.getElementById("form-address").value;
   const deliveryDetailAddress = document.getElementById("form-detailAddress").value;
-  const orderDetailRequestDtoList = orderDetailList;
 
-  const isFormValid = deliveryRequest && recipientName && tel2 && tel3 && postCode && deliveryAddress && deliveryDetailAddress && orderDetailRequestDtoList;
+  const isFormValid = deliveryRequest && recipientName && tel2 && tel3 && postCode && deliveryAddress && deliveryDetailAddress;
   const isPhoneValid = validatePhoneNumber();
 
   if (!isFormValid) {

@@ -2,6 +2,7 @@ package elice.shoppingmallproject.domain.cart.controller;
 
 import java.util.List;
 
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,9 @@ public class CartController {
 
     @PostMapping
     public CartResponseDTO addToCart(@RequestBody CartCreateDTO cartCreateDTO) {
+        // Null 체크 추가
+        Assert.notNull(cartCreateDTO, "CartCreateDTO must not be null");
+        Assert.notNull(cartCreateDTO.getOptionId(), "Option ID must not be null");
         return cartService.addCart(cartCreateDTO);
     }
 
@@ -42,8 +46,8 @@ public class CartController {
     public CartResponseDTO updateCartItem(@PathVariable Long cartId, @RequestBody int quantity) {
         return cartService.updateCartItem(cartId, quantity);
     }
-    
-    @GetMapping("/total") // 총 가격을 반환하는 메서드 추가
+
+    @GetMapping("/total")
     public double getTotalPrice() {
         return cartService.getTotalPrice();
     }

@@ -147,9 +147,9 @@
     position: relative;
     width: calc(20% - 20px); /* 고정 너비 설정 (5개씩 정렬되도록) */
     margin: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    background-color: transparent; /* 배경색을 투명으로 설정 */
+    border: none; /* 박스 선 제거 */
+    border-radius: 5px; /* 여전히 모서리는 둥글게 설정 */
     padding: 10px;
     text-align: center;
     box-sizing: border-box;

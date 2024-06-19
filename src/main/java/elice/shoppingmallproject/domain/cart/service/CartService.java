@@ -29,6 +29,9 @@ public class CartService {
 
     public CartResponseDTO addCart(CartCreateDTO cartCreateDTO) {
         Long userId = userUtil.getAuthenticatedUser();
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("조회된 유저가 없습니다."));
         ProductOption productOption = productOptionRepository.findById(cartCreateDTO.getOptionId())
@@ -38,9 +41,12 @@ public class CartService {
         cart = cartRepository.save(cart);
         return toCartResponseDTO(cart);
     }
-    
+
     public List<CartResponseDTO> getCartItems() {
         Long userId = userUtil.getAuthenticatedUser();
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
         List<Cart> cartItems = cartRepository.findByUserId(userId);
         return cartItems.stream()
                 .map(this::toCartResponseDTO)
@@ -49,6 +55,9 @@ public class CartService {
 
     public CartResponseDTO updateCartItem(Long cartId, int quantity) {
         Long userId = userUtil.getAuthenticatedUser();
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
         Cart cart = cartRepository.findByCartIdAndUserId(cartId, userId);
 
         if (cart != null) {
@@ -63,6 +72,9 @@ public class CartService {
 
     public void deleteCartItem(Long cartId) {
         Long userId = userUtil.getAuthenticatedUser();
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
         Cart cart = cartRepository.findByCartIdAndUserId(cartId, userId);
 
         if (cart != null) {
@@ -74,6 +86,9 @@ public class CartService {
 
     public void deleteAllCartItems() {
         Long userId = userUtil.getAuthenticatedUser();
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
         List<Cart> userCarts = cartRepository.findByUserId(userId);
         cartRepository.deleteAll(userCarts);
     }
@@ -81,6 +96,9 @@ public class CartService {
     // 총 가격 계산 메서드 추가
     public double getTotalPrice() {
         Long userId = userUtil.getAuthenticatedUser();
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
         List<Cart> cartItems = cartRepository.findByUserId(userId);
         return cartItems.stream()
                 .mapToDouble(cart -> cart.getProduct().getPrice() * cart.getQuantity())
@@ -94,11 +112,6 @@ public class CartService {
 
         ProductOption productOption = cart.getProductOption(); // 즉시 로딩 사용
         Product product = productOption.getProduct(); // 즉시 로딩 사용
-        // 이미지 URL 가져오기
-        //String productImageUrl = null;
-        //if (product.getImages() != null && !product.getImages().isEmpty()) {
-        //    productImageUrl = product.getImages().get(0).getUrl();
-        //}
 
         CartResponseDTO cartResponseDTO = new CartResponseDTO();
         cartResponseDTO.setCartId(cart.getCartId());
@@ -107,7 +120,6 @@ public class CartService {
         cartResponseDTO.setQuantity(cart.getQuantity());
         cartResponseDTO.setProductName(product.getName());
         cartResponseDTO.setProductPrice(product.getPrice());
-        // cartResponseDTO.setProductImageUrl(productImageUrl);
         cartResponseDTO.setProductSize(productOption.getOptionSize()); // 상품 사이즈 추가
 
         return cartResponseDTO;

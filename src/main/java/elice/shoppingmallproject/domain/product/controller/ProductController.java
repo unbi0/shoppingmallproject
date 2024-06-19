@@ -53,7 +53,6 @@ public class ProductController {
         return ResponseEntity.ok(productDTOList);
     }
 
-
     //카테고리별 상품 내림차순으로 조회
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ProductDTO>> findAllByCategoryDesc(@PathVariable Long categoryId) {

@@ -1,5 +1,6 @@
 package elice.shoppingmallproject.domain.order.service;
 
+import elice.shoppingmallproject.domain.cart.service.CartService;
 import elice.shoppingmallproject.domain.order.dto.OrderDetailDto;
 import elice.shoppingmallproject.domain.order.dto.OrderDetailRequestDto;
 import elice.shoppingmallproject.domain.order.dto.OrderListDto;
@@ -37,6 +38,7 @@ public class OrderServiceImpl implements OrderService{
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ProductOptionRepository productOptionRepository;
+//    private final CartService cartService;
     private final UserUtil userUtil;
 
     // 관리자 : 주문 조회
@@ -91,6 +93,7 @@ public class OrderServiceImpl implements OrderService{
                         orderDetail.getPrice(),
                         orderDetail.getProductOption().getOptionSize(),
                         orderDetail.getCount()
+//                        orderDetail.getProductOption().getProduct().getImages().get(0).getUrl()
                     ))
                     .collect(Collectors.toList());
 
@@ -174,6 +177,9 @@ public class OrderServiceImpl implements OrderService{
         }
         orderDetailRepository.saveAll(orderDetails);
 
+        // 장바구니 비우기
+//        cartService.deleteAllCartItems();
+
         return orderRepository.save(newOrder);
     }
 
@@ -193,6 +199,8 @@ public class OrderServiceImpl implements OrderService{
             .orElseThrow(() -> new OrderNotFoundException("주문 ID " + id + "를 찾을 수 없습니다"));
 
         existingOrder.updateOrderStatus(newStatus);
+
+
 
         orderRepository.save(existingOrder);
     }

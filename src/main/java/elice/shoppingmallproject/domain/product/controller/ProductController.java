@@ -24,7 +24,7 @@ public class ProductController {
                                                 @RequestParam List<MultipartFile> files) throws IOException {
         ProductFormDTO productFormDTO = objectMapper.readValue(productJson, ProductFormDTO.class);
 
-    productService.addProduct(productFormDTO, files);
+        productService.addProduct(productFormDTO, files);
 
         return ResponseEntity.ok("CREATE");
     }

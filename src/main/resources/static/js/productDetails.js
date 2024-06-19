@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const productId = document.querySelector('.product-detail-page').getAttribute('data-product-id');
     console.log('Product ID:', productId); // Product ID 확인
 
-    fetch(`/product/${productId}`)
+    fetch(`/api/product/${productId}`)
         .then(response => response.json())
         .then(product => {
             console.log('Product data:', product); // 데이터 확인을 위해 콘솔에 출력

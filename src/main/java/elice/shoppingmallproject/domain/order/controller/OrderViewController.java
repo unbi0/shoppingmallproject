@@ -13,7 +13,7 @@ public class OrderViewController {
     }
 
     // 사용자 주문 관리 페이지
-    @GetMapping("/order-user")
+    @GetMapping("/user/order")
     public String userOrderView() {
         return "/order/order-user";
     }

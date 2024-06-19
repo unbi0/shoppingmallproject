@@ -49,7 +49,7 @@ function fetchOrder(reset = false) {
     size: size,
   });
 
-  fetch(`http://localhost:8080/orders/admin?${params.toString()}`)
+  fetch(`/admin/orders?${params.toString()}`)
     .then((response) => response.json())
     .then((data) => {
       if (reset) {
@@ -108,7 +108,7 @@ function updateOrderList(data) {
           order.productName
         ).join(", ")}</p>
         <chip class="chip gray-chip" style="margin-left: 5px;">
-          <a href="./order/${order.orderId}">주문상세</a>
+          <a href="/order/${order.orderId}">주문상세</a>
         </chip>
       </div>
       <div style="width: 100px; display: flex; justify-content: center;">
@@ -160,7 +160,7 @@ function changeOrderStatus(event, orderId) {
   }
 
   // API 요청 보내기
-  fetch(`http://localhost:8080/orders/status/${orderId}`, {
+  fetch(`/orders/status/${orderId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

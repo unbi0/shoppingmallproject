@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
 
@@ -33,7 +32,7 @@ public class OrderController {
     private final OrderDetailService orderDetailService;
 
     // 관리자 : 주문 조회
-    @GetMapping("/admin")
+    @GetMapping("/admin/orders")
     public Page<OrderListDto> searchAllOrders(@RequestParam(required = false) Long orderId,
         @RequestParam(required = false) LocalDateTime startDate,
         @RequestParam(required = false) LocalDateTime endDate,
@@ -44,13 +43,13 @@ public class OrderController {
     }
 
     // 주문 ID로 주문 조회
-    @GetMapping("/{orderId}")
+    @GetMapping("/orders/{orderId}")
     public ResponseEntity<Optional<OrderResponseDto>> findOrderById(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.findOrderById(orderId));
     }
 
     // 사용자 : 주문 조회
-    @GetMapping
+    @GetMapping("/orders")
     public Page<OrderListDto> searchUserOrders(
         @RequestParam(required = false) Long orderId,
         @RequestParam(required = false) LocalDateTime startDate,
@@ -61,25 +60,25 @@ public class OrderController {
     }
 
     // 사용자 : 주문 생성 + 주문상세 생성
-    @PostMapping
+    @PostMapping("/orders")
     public ResponseEntity<Orders> createOrder(@RequestBody OrderRequestDto orderRequestDto) {
         return ResponseEntity.ok(orderService.createOrder(orderRequestDto));
     }
 
     // 사용자 : 주문 수정
-    @PutMapping("/{orderId}")
+    @PutMapping("/orders/{orderId}")
     public void updateOrder(@PathVariable Long orderId, @RequestBody OrderUpdateDto orderUpdateDto) {
         orderService.updateOrder(orderId, orderUpdateDto);
     }
 
     // 관리자 : 주문 상태 수정
-    @PutMapping("/status/{orderId}")
+    @PutMapping("/orders/status/{orderId}")
     public void updateOrderStatus(@PathVariable Long orderId, @RequestBody OrderStatusUpdateDto orderStatusUpdateDto) {
         orderService.updateOrderStatus(orderId, orderStatusUpdateDto);
     }
 
     // 사용자 : 주문 삭제
-    @DeleteMapping("/{orderId}")
+    @DeleteMapping("/orders/{orderId}")
     public void deleteOrder(@PathVariable Long orderId) {
         orderService.deleteOrder(orderId);
     }

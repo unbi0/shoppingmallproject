@@ -17,9 +17,11 @@ import elice.shoppingmallproject.domain.user.entity.User;
 import elice.shoppingmallproject.domain.user.repository.UserRepository;
 import elice.shoppingmallproject.global.util.UserUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CartService {
 
     private final CartRepository cartRepository;
@@ -34,11 +36,19 @@ public class CartService {
         }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("조회된 유저가 없습니다."));
+
         ProductOption productOption = productOptionRepository.findById(cartCreateDTO.getOptionId())
-                .orElseThrow(() -> new RuntimeException("Product option not found"));
+                .orElseThrow(() -> {
+                    log.error("Product option not found for optionId: {}", cartCreateDTO.getOptionId());
+                    return new RuntimeException("Product option not found");
+                });
+
+        log.info("Found product option: {}", productOption);
+
         Product product = productOption.getProduct();
-        String url = product.getImages().get(0).getUrl();
-        Cart cart = new Cart(productOption, product, user, cartCreateDTO.getQuantity());
+        String imageUrl = product.getImages().get(0).getUrl();
+
+        Cart cart = new Cart(productOption, product, user, cartCreateDTO.getQuantity(), imageUrl);
         cart = cartRepository.save(cart);
         return toCartResponseDTO(cart);
     }
@@ -121,8 +131,8 @@ public class CartService {
         cartResponseDTO.setQuantity(cart.getQuantity());
         cartResponseDTO.setProductName(product.getName());
         cartResponseDTO.setProductPrice(product.getPrice());
-        cartResponseDTO.setProductImageUrl(product.getImages().get(0).getUrl());
         cartResponseDTO.setProductSize(productOption.getOptionSize()); // 상품 사이즈 추가
+        cartResponseDTO.setImageUrl(product.getImages().get(0).getUrl());
 
         return cartResponseDTO;
     }

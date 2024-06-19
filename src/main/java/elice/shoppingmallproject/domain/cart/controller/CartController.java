@@ -43,7 +43,8 @@ public class CartController {
     }
 
     @PutMapping("/{cartId}")
-    public CartResponseDTO updateCartItem(@PathVariable Long cartId, @RequestBody int quantity) {
+    public CartResponseDTO updateCartItem(@PathVariable("cartId") Long cartId, @RequestBody int quantity) {
+        // 변경된 부분: @PathVariable 어노테이션에 명시적으로 매개변수 이름을 추가
         return cartService.updateCartItem(cartId, quantity);
     }
 
@@ -53,7 +54,8 @@ public class CartController {
     }
 
     @DeleteMapping("/{cartId}")
-    public void deleteCartItem(@PathVariable Long cartId) {
+    public void deleteCartItem(@PathVariable("cartId") Long cartId) {
+        // 변경된 부분: @PathVariable 어노테이션에 명시적으로 매개변수 이름을 추가
         cartService.deleteCartItem(cartId);
     }
 

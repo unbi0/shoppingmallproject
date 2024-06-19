@@ -35,7 +35,6 @@ function loadCartItemsFromLocalStorage() {
             <div class="item-details">
                 <h2>${item.productName}</h2>
                 <p class="price">KRW ${item.productPrice * item.quantity}</p>
-                <p>[옵션: ${item.productSize}] <a href="#">옵션변경</a></p>
                 <div class="quantity">
                     <button onclick="updateQuantityInLocalStorage(${item.cartId}, ${item.quantity - 1})">-</button>
                     <span>${item.quantity}</span>
@@ -55,12 +54,9 @@ function loadTotalPriceFromLocalStorage() {
     const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
     const totalPriceContainer = document.getElementById('total-price');
     const finalPriceContainer = document.getElementById('final-price');
-    const discountPriceContainer = document.getElementById('discount-price');
-    const discount = 103200; // 예시 할인 금액
     const totalPrice = cartItems.reduce((total, item) => total + (item.productPrice * item.quantity), 0);
 
     totalPriceContainer.textContent = `KRW ${totalPrice.toFixed(2)}`;
-    discountPriceContainer.textContent = `-KRW ${discount.toFixed(2)}`;
     finalPriceContainer.textContent = `KRW ${(totalPrice - discount).toFixed(2)}`;
 }
 
@@ -111,7 +107,6 @@ function renderCartItems(cartItems) {
             <div class="item-details">
                 <h2>${item.productName}</h2>
                 <p class="price">KRW ${item.productPrice * item.quantity}</p>
-                <p>[옵션: ${item.productSize}] <a href="#">옵션변경</a></p>
                 <div class="quantity">
                     <button onclick="updateQuantity(${item.cartId}, ${item.quantity - 1})">-</button>
                     <span>${item.quantity}</span>

@@ -36,6 +36,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('product-price').textContent = product.price + '원';
             document.querySelector('.product-details').textContent = product.details;
             productPrice = product.price;
+
+            // 사이즈 버튼에 optionId를 설정
+            sizeButtons.forEach((button, index) => {
+                button.setAttribute('data-option-id', product.optionId[index]);
+            });
         })
         .catch(error => {
             console.error('Error fetching product:', error);
@@ -129,7 +134,6 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/loginCheck')
             .then(response => {
                 if (response.status === 204) {
-
                     const cartCreateDTO = {
                         optionId: optionId,
                         quantity: quantity

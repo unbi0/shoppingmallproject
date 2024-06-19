@@ -24,7 +24,7 @@ public class ProductController {
                                                 @RequestParam List<MultipartFile> files) throws IOException {
         ProductFormDTO productFormDTO = objectMapper.readValue(productJson, ProductFormDTO.class);
 
-    productService.addProduct(productFormDTO, files);
+        productService.addProduct(productFormDTO, files);
 
         return ResponseEntity.ok("CREATE");
     }
@@ -37,14 +37,12 @@ public class ProductController {
         return ResponseEntity.ok("UPDATE");
     }
 
-
     //<관리지 페이지> 삭제하기
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok("DELETE");
     }
-
 
     //전체 상품을 내림차순으로 조회
     @GetMapping()
@@ -74,5 +72,9 @@ public class ProductController {
         return ResponseEntity.ok(productDTO);
     }
 
+    @GetMapping("/option/{id}")
+    public ResponseEntity<ProductDTO> test(@PathVariable Long id){
+        ProductDTO productDTO = productService.findOptionidById(id);
+        return ResponseEntity.ok(productDTO);
+    }
 }
-

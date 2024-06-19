@@ -184,4 +184,9 @@ public class ProductService {
                 .orElseThrow(() -> new NoSuchElementException("Product with id " + id + " not found"));
         return ProductDTO.toProductDTO(product);
     }
+
+    public ProductDTO findOptionidById(Long id) {
+        Product product = productRepository.findOptionidById(id);
+        return ProductDTO.toProductDTO(product);
+    }
 }

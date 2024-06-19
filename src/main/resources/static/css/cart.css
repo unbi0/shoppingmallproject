@@ -101,7 +101,7 @@ h1 {
     font-weight: bold;
 }
 
-.checkout, .kakao-pay {
+.checkout{
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -112,9 +112,4 @@ h1 {
 .checkout {
     background-color: #000;
     color: white;
-}
-
-.kakao-pay {
-    background-color: #ffcd00;
-    color: black;
 }

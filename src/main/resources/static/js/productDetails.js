@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
             imageUrl: document.getElementById('product-image-1').src
         };
 
-        localStorage.setItem("productData", JSON.stringify(productDetails));
+        window.localStorage.setItem("productData", JSON.stringify(productDetails));
         window.location.href = `/order`;
     });
 
@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('사이즈를 선택해주세요.');
             return;
         }
+
         //localstore
         const productDetails = {
             id: productId,
@@ -106,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
             imageUrl: document.getElementById('product-image-1').src
         };
 
-        localStorage.setItem("productData", JSON.stringify(productDetails));
+        window.localStorage.setItem("productData", JSON.stringify(productDetails));
         window.location.href = `/cart/view`;
     });
 });

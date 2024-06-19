@@ -16,7 +16,7 @@
 <div class="page">
   <div class="layout">
     <h3>상품 정보</h3>
-    <div class="product-list" style="margin-bottom: 30px;">
+    <div id="product-list" class="product-list" style="margin-bottom: 30px;">
       <div class="product-list-wrap">
         <img class="thumb"
              src="//nomanual-shop.com/web/product/tiny/202302/b02de95d8e0986fa806430903b9c5c60.jpg"
@@ -85,7 +85,7 @@
       <input id="form-address" readonly="readonly" onclick="execDaumPostcode2()" placeholder="주소">
       <input id="form-detailAddress" placeholder="상세 주소">
       <div class="tel-form">
-        <select>
+        <select id="tel1">
           <option value="010">010</option>
           <option value="011">011</option>
           <option value="011">016</option>
@@ -94,11 +94,14 @@
           <option value="011">019</option>
         </select>
         <span>-</span>
-        <input>
+        <input id="tel2">
         <span>-</span>
-        <input>
+        <input id="tel3">
       </div>
-      <textarea placeholder="배송메시지"></textarea>
+      <p id="phoneNumberError" style="font-size: 12px; font-weight: bold; color: red; display: none;">전화번호 형식에 맞지
+        않습니다.</p>
+      <textarea id="form-deliveryRequest" placeholder="배송메시지"></textarea>
+      <p id="formError" style="font-size: 12px; font-weight: bold; color: red; display: none;">모든 정보를 채워주세요.</p>
     </form>
 
     <div class="total-box">
@@ -191,17 +194,17 @@ fetch(`/my`, {
     .catch((error) => console.error("Error fetching orders:", error))
 }
 
-function fetchCart(){
-fetch(`/cart`, {
-      method: "GET"
-    }
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data)
-    })
-    .catch((error) => console.error("Error fetching orders:", error))
-}
+<!--function fetchCart(){-->
+<!--fetch(`/cart`, {-->
+<!--      method: "GET"-->
+<!--    }-->
+<!--  )-->
+<!--    .then((response) => response.json())-->
+<!--    .then((data) => {-->
+<!--      console.log(data)-->
+<!--    })-->
+<!--    .catch((error) => console.error("Error fetching orders:", error))-->
+<!--}-->
 
  function populateEmailForm(email) {
     const emailParts = email.split('@');
@@ -213,48 +216,127 @@ fetch(`/cart`, {
     }
   }
 
-// 여기서 상품정보를 반복으로 가져와서 orderDetailRequestDtoList에 들어갈 리스트로 세팅
-<!--let orderDetailList = [];-->
+// 상품 정보 리스트 세팅
+function viewProductInfo() {
+  const productsData = localStorage.getItem("productList");
 
-<!--function createOrder(){-->
+  productsData.forEach((product) => {
 
-<!--    const createOrderData = {-->
-<!--      deliveryRequest :-->
-<!--      recipientName :-->
-<!--      recipientTel :-->
-<!--      postCode :-->
-<!--      deliveryAddress :-->
-<!--      deliveryDetailAddress :-->
-<!--      orderDetailRequestDtoList : orderDetailList-->
-<!--    }-->
-<!--    -->
-<!--    // 검증이 되면 수정 요청-->
-<!--    if (!validateForm()) {-->
-<!--      alert("모든 필드를 올바르게 채워주세요.");-->
-<!--      return false; // 이벤트 전파 중단-->
-<!--    }-->
-<!--    -->
-<!--    if (confirm("주문을 생성하시겠습니까?")){-->
-<!--      fetch(`/orders`, {-->
-<!--        method: "POST",-->
-<!--          headers: {-->
-<!--            "Content-Type": "application/json",-->
-<!--          },-->
-<!--          body: JSON.stringify(createOrderData),-->
-<!--      })-->
-<!--      .then((response) => response.json())-->
-<!--      .then((data) => {-->
-<!--        console.log(data)-->
-<!--        alert("주문이 완료되었습니다.");-->
-<!--      })-->
-<!--      .catch((error) => {-->
-<!--        console.error("Error fetching orders:", error));-->
-<!--        alert("주문 중 오류가 발생했습니다. 다시 시도해주세요.");-->
-<!--      }-->
-<!--    }else{-->
-<!--      return false;-->
-<!--    }-->
-<!--}-->
+    const productInfoList = document.getElementById("product-list");
+
+    const productInfoElement = `
+      <div class="product-list-wrap">
+        <img class="thumb"
+             src="${product.imageUrl}"
+             alt="">
+        <div class="product-info">
+          <span style="font-weight: bold;">${product.name}</span>
+          <span style="color: gray;">KRW ${product.price}</span>
+          <span></span>
+          <span>[옵션 : ${product.optionSize}]</span>
+          <span>수량 : ${product.count}</span>
+        </div>
+      </div>
+    `;
+
+    const productElementDiv = document.createElement("div");
+    productElementDiv.classList.add("product-item");
+    productElementDiv.innerHTML = productInfoElement;
+    productInfoList.appendChild(productElementDiv);
+  });
+}
+
+function createOrder(){
+
+  let orderDetailList = [];
+
+  const productsData = localStorage.getItem("productList");
+
+  productsData.forEach((product) => {
+
+    const orderDetailInit = {
+      "productOptionId": product.productOptionId,
+      "count": product.count
+    }
+
+    orderDetailList.add(orderDetailInit);
+  })
+
+  const part1 = document.getElementById("tel1").value;
+  const part2 = document.getElementById("tel2").value;
+  const part3 = document.getElementById("tel3").value;
+  const recipientTel = `${part1}-${part2}-${part3}`;
+
+  const createOrderData = {
+    deliveryRequest : document.getElementById("form-deliveryRequest").value,
+    recipientName : document.getElementById("form-recipientName").value,
+    recipientTel : recipientTel,
+    postCode : document.getElementById("form-postCode").value,
+    deliveryAddress : document.getElementById("form-address").value,
+    deliveryDetailAddress : document.getElementById("form-detailAddress").value,
+    orderDetailRequestDtoList : orderDetailList
+  }
+
+  // 검증이 되면 생성 요청
+  if (!validateForm()) {
+    alert("모든 필드를 올바르게 채워주세요.");
+    return false; // 이벤트 전파 중단
+  }
+
+  if (confirm("주문을 생성하시겠습니까?")){
+    fetch(`/orders`, {
+      method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(createOrderData),
+    })
+    .then((data) => {
+      console.log(data)
+      alert("주문이 완료되었습니다.");
+    })
+    .catch((error) => {
+      console.error("Error fetching orders:", error);
+      alert("주문 중 오류가 발생했습니다. 다시 시도해주세요.");
+    })
+  }else{
+    return false;
+  }
+}
+
+// 전화번호 검증 코드
+function validatePhoneNumber() {
+  const tel2 = document.getElementById("tel2").value;
+  const tel3 = document.getElementById("tel3").value;
+  const isValid = tel2.length === 4 && tel3.length === 4;
+  document.getElementById("phoneNumberError").style.display = isValid
+    ? "none"
+    : "block";
+  return isValid;
+}
+
+// 주문 폼 검증
+function validateForm() {
+  const deliveryRequest = document.getElementById("form-deliveryRequest").value;
+  const recipientName = document.getElementById("form-recipientName").value;
+  const tel2 = document.getElementById("tel2").value;
+  const tel3 = document.getElementById("tel3").value;
+  const postCode = document.getElementById("form-postCode").value;
+  const deliveryAddress = document.getElementById("form-address").value;
+  const deliveryDetailAddress = document.getElementById("form-detailAddress").value;
+  const orderDetailRequestDtoList = orderDetailList;
+
+  const isFormValid = deliveryRequest && recipientName && tel2 && tel3 && postCode && deliveryAddress && deliveryDetailAddress && orderDetailRequestDtoList;
+  const isPhoneValid = validatePhoneNumber();
+
+  if (!isFormValid) {
+    document.getElementById("formError").style.display = "block";
+  } else {
+    document.getElementById("formError").style.display = "none";
+  }
+
+  return isFormValid && isPhoneValid;
+}
 
  function populateEmailForm(email) {
     const emailParts = email.split('@');

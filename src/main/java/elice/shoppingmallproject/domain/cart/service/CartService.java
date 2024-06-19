@@ -38,7 +38,7 @@ public class CartService {
         cart = cartRepository.save(cart);
         return toCartResponseDTO(cart);
     }
-    
+
     public List<CartResponseDTO> getCartItems() {
         Long userId = userUtil.getAuthenticatedUser();
         List<Cart> cartItems = cartRepository.findByUserId(userId);

@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         .then(data => {
                             console.log('Success:', data);
                             alert('장바구니에 상품이 추가되었습니다.');
-                            window.location.href = `/carts`;
+                            window.location.href =`/cart/view`;
                         })
                         .catch((error) => {
                             console.error('Error:', error);

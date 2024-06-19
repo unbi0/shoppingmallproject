@@ -14,6 +14,8 @@ import elice.shoppingmallproject.domain.user.repository.UserRepository;
 import elice.shoppingmallproject.global.util.UserUtil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,10 +61,11 @@ public class UserService {
 
     // 시큐리티에서 이미 지금 로그인한 유저가 Admin 인 것을 인증했기때문에 굳이 인증할 필요 없음
     // 관리자 페이지에서 가입 유저를 조회
-    public UserManagementDto getUsers() {
-        List<User> users = userRepository.findAll();
+    public UserManagementDto getUsers(Pageable pageable) {
 
-        int totalUserCount = users.size();
+        Page<User> users = userRepository.findAll(pageable);
+
+        int totalUserCount = (int) users.getTotalElements();
         int adminCount = (int) users.stream()
                 .filter(user -> user.getRole() == Role.ADMIN)
                 .count();

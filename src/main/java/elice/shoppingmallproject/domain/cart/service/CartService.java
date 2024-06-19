@@ -37,6 +37,7 @@ public class CartService {
         ProductOption productOption = productOptionRepository.findById(cartCreateDTO.getOptionId())
                 .orElseThrow(() -> new RuntimeException("Product option not found"));
         Product product = productOption.getProduct();
+        String url = product.getImages().get(0).getUrl();
         Cart cart = new Cart(productOption, product, user, cartCreateDTO.getQuantity());
         cart = cartRepository.save(cart);
         return toCartResponseDTO(cart);
@@ -120,6 +121,7 @@ public class CartService {
         cartResponseDTO.setQuantity(cart.getQuantity());
         cartResponseDTO.setProductName(product.getName());
         cartResponseDTO.setProductPrice(product.getPrice());
+        cartResponseDTO.setProductImageUrl(product.getImages().get(0).getUrl());
         cartResponseDTO.setProductSize(productOption.getOptionSize()); // 상품 사이즈 추가
 
         return cartResponseDTO;

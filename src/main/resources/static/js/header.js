@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             if (response.status === 204) {
                 updateLoginLinkToLogout();
                 checkUserRole();
+                synchronizeCartWithServer();
             }
         })
         .catch(error => {
@@ -102,6 +103,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 if (adminPageLink) {
                     adminPageLink.remove();
                 }
+                clearCartInServer(); // 로그아웃 시 서버의 장바구니 비우기
+                loadCartItemsFromLocalStorage(); // 로컬 스토리지의 장바구니 항목 로드
             })
             .catch(error => {
                 console.error('Error during logout:', error);
@@ -130,4 +133,39 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 
     loginLink.addEventListener('click', redirectToLogin);
+
+    function synchronizeCartWithServer() {
+        const localCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        if (localCartItems.length > 0) {
+            localCartItems.forEach(item => {
+                fetch('/cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(item)
+                })
+                    .then(response => response.json())
+                    .then(() => {
+                        localStorage.removeItem('cartItems'); // 동기화 후 로컬 스토리지 비우기
+                    })
+                    .catch(error => {
+                        console.error('Error synchronizing cart:', error);
+                    });
+            });
+        }
+    }
+
+    function clearCartInServer() {
+        fetch('/cart/all', {
+            method: 'DELETE'
+        }).catch(error => {
+            console.error('Error clearing cart in server:', error);
+        });
+    }
+
+    function loadCartItemsFromLocalStorage() {
+        const localCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        renderCartItems(localCartItems);
+    }
 });

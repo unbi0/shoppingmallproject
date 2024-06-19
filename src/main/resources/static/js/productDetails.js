@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let productPrice = 0;
     let totalPrice = 0;
     let optionId = null;
+    let quantity = 1; // 초기 수량 설정
     const sizeQuantities = {}; // 각 사이즈별 수량을 저장하는 객체
 
     const pathArray = window.location.pathname.split('/');
@@ -104,6 +105,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         price: document.getElementById('product-price').textContent,
                         imageUrl: document.getElementById('product-image-1').src
                     };
+                    console.log('Sending cart data:', productDetails);
+                    alert('테스트중.');
                     window.location.href = `/order`;
                 } else if (response.status === 401) { // HTTP 401 Unauthorized
                     alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
@@ -123,28 +126,54 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('사이즈를 선택해주세요.');
             return;
         }
+        fetch('/loginCheck')
+            .then(response => {
+                if (response.status === 204) {
 
-        const productDetails = {
-            optionId: optionId, // 선택한 옵션 ID
-            quantity: quantity   // 선택한 수량
-        };
+                    const cartCreateDTO = {
+                        optionId: optionId,
+                        quantity: quantity
+                    };
 
-        fetch('/cart', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(productDetails)
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Cart response data:', data);
-                console.log("test");
-                window.location.href = `/cart/view`;
+                    console.log('Sending cart data:', cartCreateDTO);
+                    console.log('quantity:', quantity);
+                    console.log('optionId:', optionId);
+
+                    fetch('/cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(cartCreateDTO)
+                    })
+                        .then(response => {
+                            console.log('quantity:', quantity);
+                            console.log('optionId:', optionId);
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Success:', data);
+                            alert('장바구니에 상품이 추가되었습니다.');
+                            window.location.href = `/carts`;
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                            alert('장바구니에 상품을 추가하는 중 오류가 발생했습니다.');
+                        });
+
+                } else if (response.status === 401) { // HTTP 401 Unauthorized
+                    alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+                    window.location.href = `/loginForm`; // 로그인 페이지로 리다이렉트
+                } else {
+                    alert('로그인 상태를 확인하는 중 오류가 발생했습니다.');
+                }
             })
             .catch(error => {
-                console.error('Error adding to cart:', error);
-                alert('장바구니에 추가하는 중 오류가 발생했습니다.');
+                console.error('Error during login check:', error);
+                alert('로그인 상태를 확인하는 중 오류가 발생했습니다.');
             });
     });
 });

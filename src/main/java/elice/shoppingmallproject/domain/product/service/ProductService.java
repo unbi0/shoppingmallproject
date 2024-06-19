@@ -1,5 +1,6 @@
 package elice.shoppingmallproject.domain.product.service;
 
+import elice.shoppingmallproject.domain.cart.dto.CartCreateDTO;
 import elice.shoppingmallproject.domain.image.entity.Image;
 import elice.shoppingmallproject.domain.image.repository.ImageRepository;
 import elice.shoppingmallproject.domain.image.service.S3UploadService;
@@ -31,11 +32,11 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductOptionRepository optionRepository;
     private final CategoryRepository categoryRepository;
-    private final S3UploadService s3UploadService; // S3UploadService 추가
+    private final S3UploadService s3UploadService;
     private final ImageRepository imageRepository;
 
 
-    //<관리자 페이지> 상품등록(이미지-추가예정)
+    //<관리자 페이지> 상품등록
     public void addProduct(ProductFormDTO productFormDTO, List<MultipartFile> files) {
 
         Category category = categoryRepository.findById(productFormDTO.getCategoryId())
@@ -63,7 +64,7 @@ public class ProductService {
         productRepository.save(product);
     }
     
-    //<관리자 페이지> 상품 수정 (이미지-추가예정)
+    //<관리자 페이지> 상품 수정
     public void updateProduct(Long id, ProductFormDTO productFormDTO, List<MultipartFile> multipartFile) {
 
         Product product = productRepository.findById(id)

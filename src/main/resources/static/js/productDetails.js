@@ -10,9 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const addToCartButton = document.getElementById('add-to-cart');
 
     let selectedSize = null;
-    let quantity = 1;
     let productPrice = 0;
     let totalPrice = 0;
+    let optionId = null;
+    const sizeQuantities = {}; // 각 사이즈별 수량을 저장하는 객체
 
     const pathArray = window.location.pathname.split('/');
     const productId = pathArray[pathArray.length - 1];
@@ -46,17 +47,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 selectedSize = null;
                 selectedSizeQuantity.style.display = 'none';
             } else {
+                // 이전 사이즈의 수량 저장
+                if (selectedSize) {
+                    sizeQuantities[selectedSize] = quantity;
+                }
+
                 sizeButtons.forEach(btn => btn.classList.remove('selected'));
                 button.classList.add('selected');
                 selectedSize = button.getAttribute('data-size');
+                optionId = button.getAttribute('data-option-id'); // 선택한 옵션 ID
                 selectedSizeButton.textContent = selectedSize;
                 selectedSizeQuantity.style.display = 'flex';
+
+                // 선택한 사이즈의 수량 설정
+                quantity = sizeQuantities[selectedSize] || 1;
+                quantityElement.textContent = quantity;
+                updatePrice();
             }
         });
     });
 
     function updatePrice() {
-        if(quantity < 1) {
+        if (quantity < 1) {
             totalPrice = 0;
         }
         totalPrice = productPrice * quantity;
@@ -77,7 +89,6 @@ document.addEventListener('DOMContentLoaded', function() {
         updatePrice();
     });
 
-    //optionId, quantity
     buyNowButton.addEventListener('click', function() {
         if (!selectedSize) {
             alert('사이즈를 선택해주세요.');
@@ -114,13 +125,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const productDetails = {
-            id: productId,
-            size: selectedSize,
-            quantity: quantity,
-            price: document.getElementById('product-price').textContent,
-            imageUrl: document.getElementById('product-image-1').src
+            optionId: optionId, // 선택한 옵션 ID
+            quantity: quantity   // 선택한 수량
         };
 
-        window.location.href = `/cart/view`;
+        fetch('/cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productDetails)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Cart response data:', data);
+                console.log("test");
+                window.location.href = `/cart/view`;
+            })
+            .catch(error => {
+                console.error('Error adding to cart:', error);
+                alert('장바구니에 추가하는 중 오류가 발생했습니다.');
+            });
     });
 });

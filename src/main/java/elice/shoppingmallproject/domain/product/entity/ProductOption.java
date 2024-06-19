@@ -26,7 +26,6 @@ public class ProductOption {
     @Column(name = "stock", nullable = false)
     private int stock;
 
-
     public static ProductOption option(String optionSize, int stock) {
         ProductOption option = new ProductOption();
         option.setOptionSize(optionSize);
@@ -41,7 +40,4 @@ public class ProductOption {
         }
         this.stock -= count;
     }
-
-
-
 }

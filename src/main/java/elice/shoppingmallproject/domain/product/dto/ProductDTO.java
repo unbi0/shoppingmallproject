@@ -5,6 +5,8 @@ import elice.shoppingmallproject.global.common.BaseTimeEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class ProductDTO {
@@ -19,6 +21,7 @@ public class ProductDTO {
     private String details;
 
     private String imageUrl;
+
 
     public static ProductDTO toProductDTO(Product product) {
         ProductDTO productDTO = new ProductDTO();

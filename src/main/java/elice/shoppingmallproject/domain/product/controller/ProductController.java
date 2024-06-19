@@ -73,5 +73,6 @@ public class ProductController {
         ProductDTO productDTO = productService.findById(id);
         return ResponseEntity.ok(productDTO);
     }
+
 }
 

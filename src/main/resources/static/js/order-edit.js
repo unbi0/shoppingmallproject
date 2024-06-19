@@ -89,7 +89,7 @@ function updateView(data) {
     productItem.classList.add("product-list-wrap");
 
     productItem.innerHTML = `
-      <img class="thumb" src="//nomanual-shop.com/web/product/tiny/202302/b02de95d8e0986fa806430903b9c5c60.jpg" alt="">
+      <img class="thumb" src="${product.imageUrl}" alt="">
         <div class="product-info">
           <span style="font-weight: bold;">${product.productName}</span>
           <span style="color: gray;">KRW ${product.price.toLocaleString()}</span>

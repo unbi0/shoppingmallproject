@@ -100,7 +100,7 @@ const path = window.location.pathname;
   data.orderDetailDtoList.forEach((orderDetails) => {
     const orderElement = `
     <div class="product-list" style="border: 1px solid #C0C0C0; display: flex;">
-      <img class="thumb2" src="//nomanual-shop.com/web/product/tiny/202302/b02de95d8e0986fa806430903b9c5c60.jpg"
+      <img class="thumb2" src="${orderDetails.imageUrl}"
         alt="">
       <div class="product-info" style="margin-left: 5px;">
         <span style="font-weight: bold;">${orderDetails.productName}</span>

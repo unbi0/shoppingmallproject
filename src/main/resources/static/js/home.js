@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         loadProducts(); // 전체 상품 로드
     }
 
+
     function loadProducts() {
         fetch('/api/product')
             .then(response => response.json())

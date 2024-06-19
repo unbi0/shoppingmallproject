@@ -1,43 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>홈</title>
+    <title>Header</title>
     <link rel="stylesheet" type="text/css" href="/css/header.css">
-    <link rel="stylesheet" type="text/css" href="/css/home.css">
 </head>
 <body>
-<div class="header">
-    <ul class="nav">
-        <li id="home-link"><a href="/static">HOME</a></li>
-        <li id="shop-link"><a href="#">SHOP</a>
-            <ul class="dropdown" id="shop-dropdown"></ul>
-        </li>
-        <li><a href="#" id="search-link">SEARCH</a></li>
-    </ul>
+<div th:fragment="header">
+    <div class="header">
+        <ul class="nav">
+            <li id="home-link"><a href="/static">HOME</a></li>
+            <li id="shop-link"><a href="#">SHOP</a>
+                <ul class="dropdown" id="shop-dropdown"></ul>
+            </li>
+            <li><a href="#" id="search-link">SEARCH</a></li>
+        </ul>
 
-    <ul class="Lognav">
-        <li><a href="/loginForm" id="loginLink">LOGIN</a></li>
-        <li><a href="/account">ACCOUNT</a></li>
-        <li><a href="#">BAG(0)</a></li>
-    </ul>
-</div>
+        <ul class="Lognav">
+            <li><a href="/loginForm" id="loginLink">LOGIN</a></li>
+            <li><a href="/account">ACCOUNT</a></li>
+            <li><a href="#">BAG(0)</a></li>
+        </ul>
+    </div>
 
-<!-- 검색 모달 -->
-<div id="search-modal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <input type="text" id="search-input" class="underline-input" placeholder="검색어를 입력하세요">
-        <p id="search-description">엔터를 누르면 검색이 됩니다.</p>
-        <div id="search-results"></div> <!-- 검색 결과를 표시할 영역 -->
+    <!-- 검색 모달 -->
+    <div id="search-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <input type="text" id="search-input" class="underline-input" placeholder="검색어를 입력하세요">
+            <p id="search-description">엔터를 누르면 검색이 됩니다.</p>
+            <div id="search-results"></div> <!-- 검색 결과를 표시할 영역 -->
+        </div>
     </div>
 </div>
-
-<main>
-    <div class="product-list" id="product-list"></div>
-</main>
-
-<script src="/js/header.js"></script>
-<script src="/js/home.js"></script>
 </body>
 </html>

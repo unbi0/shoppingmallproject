@@ -23,7 +23,7 @@ function fetchOrder() {
   const parts = pathname.split('/');
   const orderId = parts[parts.length - 1];
 
-  fetch(`http://localhost:8080/orders/${orderId}`)
+  fetch(`/orders/${orderId}`)
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
@@ -159,7 +159,7 @@ function deleteOrder() {
     const parts = pathname.split('/');
     const orderId = parts[parts.length - 1];
 
-  fetch(`http://localhost:8080/orders/${orderId}`, {
+  fetch(`/orders/${orderId}`, {
     method: "DELETE",
   })
     .then((response) => {

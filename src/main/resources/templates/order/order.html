@@ -170,7 +170,7 @@
   }
 
   function fetchMy(){
-fetch(`http://localhost:8080/my`, {
+fetch(`/my`, {
       method: "GET"
     }
   )
@@ -192,7 +192,7 @@ fetch(`http://localhost:8080/my`, {
 }
 
 function fetchCart(){
-fetch(`http://localhost:8080/cart`, {
+fetch(`/cart`, {
       method: "GET"
     }
   )
@@ -235,7 +235,7 @@ fetch(`http://localhost:8080/cart`, {
 <!--    }-->
 <!--    -->
 <!--    if (confirm("주문을 생성하시겠습니까?")){-->
-<!--      fetch(`http://localhost:8080/orders`, {-->
+<!--      fetch(`/orders`, {-->
 <!--        method: "POST",-->
 <!--          headers: {-->
 <!--            "Content-Type": "application/json",-->

@@ -49,7 +49,7 @@ function fetchOrder(reset = false) {
     size: size,
   });
 
-  fetch(`http://localhost:8080/admin/orders?${params.toString()}`)
+  fetch(`/admin/orders?${params.toString()}`)
     .then((response) => response.json())
     .then((data) => {
       if (reset) {
@@ -160,7 +160,7 @@ function changeOrderStatus(event, orderId) {
   }
 
   // API 요청 보내기
-  fetch(`http://localhost:8080/orders/status/${orderId}`, {
+  fetch(`/orders/status/${orderId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

@@ -39,7 +39,7 @@ function fetchOrder() {
   const parts = pathname.split('/');
   const orderId = parts[2];
 
-  fetch(`http://localhost:8080/orders/${orderId}`)
+  fetch(`/orders/${orderId}`)
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
@@ -177,7 +177,7 @@ function handleOrderUpdate() {
 
   // 사용자에게 수정 여부를 확인
   if (confirm("주문 정보를 수정하시겠습니까?")) {
-      return fetch(`http://localhost:8080/orders/${orderId}`, {
+      return fetch(`/orders/${orderId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

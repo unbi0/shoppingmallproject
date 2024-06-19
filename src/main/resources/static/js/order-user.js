@@ -49,7 +49,7 @@ function fetchOrder(reset = false) {
     size: size,
   });
 
-  fetch(`http://localhost:8080/orders?${params.toString()}`, {
+  fetch(`/orders?${params.toString()}`, {
       method: "GET"
     }
   )

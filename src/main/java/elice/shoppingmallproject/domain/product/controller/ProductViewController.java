@@ -21,8 +21,8 @@ public class ProductViewController {
     }
 
     @GetMapping("/productdetail/{productId}")
-    public String productDetailsPage(@PathVariable Long productId, Model model) {
-        model.addAttribute("productId", productId);
+    public String productDetailsPage(@PathVariable Long productId) {
+        //model.addAttribute("productId", productId);
         return "productDetails";
     }
 

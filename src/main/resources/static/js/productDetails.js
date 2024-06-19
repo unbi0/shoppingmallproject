@@ -10,18 +10,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const addToCartButton = document.getElementById('add-to-cart');
 
     let selectedSize = null;
-    let quantity = 1; // 기본 수량을 1로 설정
+    let quantity = 1;
     let productPrice = 0;
     let totalPrice = 0;
 
-    // Get productId from data attribute
-    const productId = document.querySelector('.product-detail-page').getAttribute('data-product-id');
-    console.log('Product ID:', productId); // Product ID 확인
+    const pathArray = window.location.pathname.split('/');
+    const productId = pathArray[pathArray.length - 1];
+    console.log('Product ID:', productId);
+
+    const productDetailPage = document.querySelector('.product-detail-page');
+    productDetailPage.setAttribute('data-product-id', productId);
 
     fetch(`/api/product/${productId}`)
         .then(response => response.json())
         .then(product => {
-            console.log('Product data:', product); // 데이터 확인을 위해 콘솔에 출력
+            console.log('Product data:', product);
             if (!product) {
                 console.error('No product found');
                 return;
@@ -56,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if(quantity < 1) {
             totalPrice = 0;
         }
-
         totalPrice = productPrice * quantity;
         document.getElementById('product-price').textContent = totalPrice + '원';
     }
@@ -88,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
             imageUrl: document.getElementById('product-image-1').src
         };
 
-        window.localStorage.setItem("productData", JSON.stringify(productDetails));
         window.location.href = `/order`;
     });
 
@@ -98,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        //localstore
         const productDetails = {
             id: productId,
             size: selectedSize,
@@ -107,7 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
             imageUrl: document.getElementById('product-image-1').src
         };
 
-        window.localStorage.setItem("productData", JSON.stringify(productDetails));
         window.location.href = `/cart/view`;
     });
 });

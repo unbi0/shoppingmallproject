@@ -49,7 +49,7 @@ function fetchOrder(reset = false) {
     size: size,
   });
 
-  fetch(`http://localhost:8080/orders/admin?${params.toString()}`)
+  fetch(`http://localhost:8080/admin/orders?${params.toString()}`)
     .then((response) => response.json())
     .then((data) => {
       if (reset) {

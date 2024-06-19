@@ -31,10 +31,11 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
     private static final String[] WHITER_LIST = {
             "/error/**", "/css/**", "/js/**", "/",
-            "/loginForm", "/registerForm", "account", "my-page", //USER VIEW
-            "/login", "/sign-up", // USER API
-            "api/product", "api/product/category/**", "/api/product/search", // PRODUCT API
-
+            "/loginForm", "/registerForm", //USER VIEW
+            "/login", "/sign-up", "loginCheck", // USER API
+            "/productdetail/**",  //PRODUCT VIEW
+            "/api/product/**", // PRODUCT API
+            "/cart/view" //CART VIEW
     };
 
     private final AuthenticationConfiguration authenticationConfiguration;
@@ -55,8 +56,7 @@ public class SecurityConfig {
 
         return configuration.getAuthenticationManager();
     }
-//eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJlbWFpbCI6ImFkbWluQGVsaWNlLmNvbSIsInJvbGUiOiJST0xFX0FETUlOIiwiaWF0IjoxNzE4NjE4OTQ0LCJleHAiOjE3MTg2MTkwNDR9.GXYx5JvV5waivBXAFf4oYJ_dot_DQk-aFhJ4lzLXVZI
-//UuF8ewLobPOnkGoubRSFCFB4woY2FJi2
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -84,7 +84,6 @@ public class SecurityConfig {
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers(WHITER_LIST).permitAll()
-                .requestMatchers("/cart/**").permitAll() // 장바구니 URL 인증 비활성화
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/reissue").permitAll()
                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()

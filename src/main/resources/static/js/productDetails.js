@@ -115,11 +115,12 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => {
                 if (response.status === 204) { // HTTP 204 No Content
                     const productDetails = {
-                        id: productId,
+                        id: optionId,
+                        name: document.getElementById('product-name').textContent,
                         size: selectedSize,
                         quantity: quantity,
-                        price: document.getElementById('product-price').textContent,
-                        imageUrl: document.querySelector('.product-image').src
+                        price: productPrice,
+                        imageUrl: document.querySelector('.product-image').src,
                     };
 
                     productList.push(productDetails);

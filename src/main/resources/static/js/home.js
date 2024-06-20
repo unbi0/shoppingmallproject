@@ -57,8 +57,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
             products.forEach(product => {
                 const productDiv = document.createElement("div");
                 productDiv.className = "product-item";
+                const imageUrl = Array.isArray(product.imageUrl) && product.imageUrl.length > 0 ? product.imageUrl[0] : 'default_image.png';
+
                 productDiv.innerHTML = `
-                    <img src="${product.imageUrl ? product.imageUrl : 'default_image.png'}" alt="${product.name}">
+                    <img src="${imageUrl}" alt="${product.name}">
                     <h3>${product.name}</h3>
                     <p>${product.price} 원</p>
                 `;

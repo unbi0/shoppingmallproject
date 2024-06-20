@@ -181,5 +181,5 @@ async function handleOrder() {
     localStorage.setItem('product', JSON.stringify(orderData));
     localStorage.setItem('iscart', true);
 
-    location.href = '/order/order.html';
+    location.href = '/order';
 }

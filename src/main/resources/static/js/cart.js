@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => {
             if (response.status === 204) {
                 // 로그인 상태이면 서버와 동기화
-                synchronizeCartWithServer();
+                uploadLocalCartToServer(); // 로컬 스토리지 데이터를 서버로 업로드
             } else {
                 // 비로그인 상태이면 로컬 스토리지에서 데이터 로드
                 loadCartItemsFromLocalStorage();
@@ -28,7 +28,7 @@ function loadCartItemsFromLocalStorage() {
 
 function loadTotalPriceFromLocalStorage() {
     const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    const totalPrice = cartItems.reduce((total, item) => total + (item.productPrice * item.quantity), 0);
+    const totalPrice = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     document.getElementById('total-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
     document.getElementById('final-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
 }
@@ -70,19 +70,19 @@ function renderCartItems(cartItems) {
         const cartItem = document.createElement('div');
         cartItem.classList.add('cart-item');
         cartItem.innerHTML = `
-            <img src="${item.imageUrl}" alt="${item.productName}">
+            <img src="${item.imageUrl}" alt="${item.name}">
             <div class="item-details">
-                <h2>${item.productName}</h2>
-                <p class="price">Unit Price: KRW ${item.productPrice.toFixed(2)}</p>
-                <p class="price">Total: KRW ${(item.productPrice * item.quantity).toFixed(2)}</p>
-                <p class="size">Size: ${item.productSize}</p>
+                <h2>${item.name}</h2>
+                <p class="price">Unit Price: KRW ${item.price.toFixed(2)}</p>
+                <p class="price">Total: KRW ${(item.price * item.quantity).toFixed(2)}</p>
+                <p class="size">Size: ${item.size}</p>
                 <div class="quantity">
-                    <button onclick="updateQuantity(${item.cartId}, ${item.quantity - 1})">-</button>
+                    <button onclick="updateQuantity(${item.optionId}, ${item.quantity - 1})">-</button>
                     <span>${item.quantity}</span>
-                    <button onclick="updateQuantity(${item.cartId}, ${item.quantity + 1})">+</button>
+                    <button onclick="updateQuantity(${item.optionId}, ${item.quantity + 1})">+</button>
                 </div>
             </div>
-            <button class="remove" onclick="removeCartItem(${item.cartId})">삭제</button>
+            <button class="remove" onclick="removeCartItem(${item.optionId})">삭제</button>
         `;
         cartContainer.appendChild(cartItem);
     });
@@ -91,30 +91,24 @@ function renderCartItems(cartItems) {
 }
 
 function updateTotalPrice(cartItems) {
-    const totalPrice = cartItems.reduce((total, item) => total + (item.productPrice * item.quantity), 0);
+    const totalPrice = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     document.getElementById('total-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
     document.getElementById('final-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
 }
 
-function updateQuantity(cartId, quantity) {
-    console.log(`Updating quantity for cartId: ${cartId}, quantity: ${quantity}`);
-    if (quantity < 1) {
-        return;
-    }
-
+function updateQuantity(optionId, quantity) {
     fetch('/loginCheck')
         .then(response => {
             if (response.status === 204) {
-                // 로그인 상태에서만 서버로 업데이트 요청
-                fetch(`/cart/${cartId}`, {
+                // 로그인 상태에서 서버로 업데이트 요청
+                fetch(`/cart/update`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ quantity: quantity })
+                    body: JSON.stringify({ optionId, quantity })
                 })
                     .then(response => {
-                        console.log('Server response:', response);
                         if (!response.ok) {
                             return response.json().then(errorData => {
                                 console.error('Error details:', errorData);
@@ -124,9 +118,8 @@ function updateQuantity(cartId, quantity) {
                         return response.json();
                     })
                     .then(data => {
-                        console.log('Updated cart item:', data);
                         const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-                        const updatedCartItems = cartItems.map(item => item.cartId === cartId ? { ...item, quantity: data.quantity } : item);
+                        const updatedCartItems = cartItems.map(item => item.optionId === optionId ? { ...item, quantity: data.quantity } : item);
                         localStorage.setItem('cart', JSON.stringify(updatedCartItems));
                         renderCartItems(updatedCartItems);
                         updateTotalPrice(updatedCartItems);
@@ -135,9 +128,9 @@ function updateQuantity(cartId, quantity) {
                         console.error('Error updating quantity:', error);
                     });
             } else {
-                // 비로그인 상태에서는 로컬 스토리지에 업데이트
+                // 비로그인 상태에서 로컬 스토리지 업데이트
                 const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-                const updatedCartItems = cartItems.map(item => item.cartId === cartId ? { ...item, quantity: quantity } : item);
+                const updatedCartItems = cartItems.map(item => item.optionId === optionId ? { ...item, quantity: quantity } : item);
                 localStorage.setItem('cart', JSON.stringify(updatedCartItems));
                 renderCartItems(updatedCartItems);
                 updateTotalPrice(updatedCartItems);
@@ -148,14 +141,17 @@ function updateQuantity(cartId, quantity) {
         });
 }
 
-function removeCartItem(cartId) {
-    console.log(`Removing cart item with cartId: ${cartId}`);
+function removeCartItem(optionId) {
     fetch('/loginCheck')
         .then(response => {
             if (response.status === 204) {
-                // 로그인 상태에서만 서버로 삭제 요청
-                fetch(`/cart/${cartId}`, {
-                    method: 'DELETE'
+                // 로그인 상태에서 서버로 삭제 요청
+                fetch(`/cart/delete`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ optionId })
                 })
                     .then(response => {
                         if (!response.ok) {
@@ -164,9 +160,8 @@ function removeCartItem(cartId) {
                                 throw new Error('Error removing cart item');
                             });
                         }
-                        console.log('Cart item removed');
                         const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-                        const updatedCartItems = cartItems.filter(item => item.cartId !== cartId);
+                        const updatedCartItems = cartItems.filter(item => item.optionId !== optionId);
                         localStorage.setItem('cart', JSON.stringify(updatedCartItems));
                         renderCartItems(updatedCartItems);
                         updateTotalPrice(updatedCartItems);
@@ -175,9 +170,9 @@ function removeCartItem(cartId) {
                         console.error('Error removing cart item:', error);
                     });
             } else {
-                // 비로그인 상태에서는 로컬 스토리지에서 삭제
+                // 비로그인 상태에서 로컬 스토리지에서 삭제
                 const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-                const updatedCartItems = cartItems.filter(item => item.cartId !== cartId);
+                const updatedCartItems = cartItems.filter(item => item.optionId !== optionId);
                 localStorage.setItem('cart', JSON.stringify(updatedCartItems));
                 renderCartItems(updatedCartItems);
                 updateTotalPrice(updatedCartItems);
@@ -192,7 +187,7 @@ function clearCart() {
     fetch('/loginCheck')
         .then(response => {
             if (response.status === 204) {
-                // 로그인 상태에서만 서버로 모든 항목 삭제 요청
+                // 로그인 상태에서 서버로 모든 항목 삭제 요청
                 fetch('/cart/all', {
                     method: 'DELETE'
                 })
@@ -202,7 +197,7 @@ function clearCart() {
                         loadTotalPriceFromLocalStorage();
                     });
             } else {
-                // 비로그인 상태에서는 로컬 스토리지에서 모든 항목 삭제
+                // 비로그인 상태에서 로컬 스토리지에서 모든 항목 삭제
                 localStorage.setItem('cart', JSON.stringify([]));
                 loadCartItemsFromLocalStorage();
                 loadTotalPriceFromLocalStorage();
@@ -218,9 +213,9 @@ async function handleOrder() {
     const orderData = cartItems.map((item) => {
         return {
             product_id: item.productID, // productID를 사용하도록 수정
-            productName: item.productName,
-            price: item.productPrice,
-            optionSize: item.productSize,
+            productName: item.name,
+            price: item.price,
+            optionSize: item.size,
             count: item.quantity,
             imageUrl: item.imageUrl
         };
@@ -230,4 +225,38 @@ async function handleOrder() {
     localStorage.setItem('iscart', true);
 
     location.href = '/order';
+}
+
+function uploadLocalCartToServer() {
+    const localCartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    if (localCartItems.length === 0) {
+        // 로컬 스토리지에 항목이 없으면 동기화할 필요가 없음
+        synchronizeCartWithServer();
+        return;
+    }
+
+    fetch('/cart/upload', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(localCartItems)
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    console.error('Error details:', errorData);
+                    throw new Error('Error uploading cart');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Uploaded local cart to server:', data);
+            localStorage.removeItem('cart'); // 로컬 스토리지 비우기
+            synchronizeCartWithServer(); // 서버와 동기화
+        })
+        .catch(error => {
+            console.error('Error uploading local cart to server:', error);
+        });
 }

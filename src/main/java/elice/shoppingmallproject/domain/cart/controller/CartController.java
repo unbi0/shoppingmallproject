@@ -59,7 +59,6 @@ public class CartController {
         cartService.deleteAllCartItems();
     }
 
-    // 로컬 스토리지의 데이터를 서버로 전송하여 DB를 업데이트하는 메서드
     @PostMapping("/upload")
     public ResponseEntity<?> uploadCart(@RequestBody List<CartCreateDTO> localCartItems) {
         Long userId = userUtil.getAuthenticatedUser();
@@ -72,7 +71,7 @@ public class CartController {
             Cart existingCart = cartService.findByUserIdAndOptionId(userId, item.getOptionId());
             if (existingCart != null) {
                 // 기존 항목이 있다면 수량 업데이트
-                existingCart.setQuantity(Math.max(existingCart.getQuantity(), item.getQuantity()));
+                existingCart.setQuantity(existingCart.getQuantity() + item.getQuantity());
                 cartService.save(existingCart);
             } else {
                 // 새로운 항목이라면 추가

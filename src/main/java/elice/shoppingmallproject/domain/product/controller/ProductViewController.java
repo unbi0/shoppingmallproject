@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class ProductViewController {
 
+
     @GetMapping("admin/category/create")
     public String category() {
         return "product/category";
@@ -15,6 +16,7 @@ public class ProductViewController {
 
     @GetMapping("admin/product/store")
     public String inputProduct() {
+        // 필요한 경우 모델에 데이터 추가
         return "inputProduct";
     }
 

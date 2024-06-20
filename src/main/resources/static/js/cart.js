@@ -210,21 +210,31 @@ function clearCart() {
 
 async function handleOrder() {
   const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-  const orderData = cartItems.map((item) => {
-      return {
-          id: item.productID, // productID를 사용하도록 수정
-          name: item.name,
-          price: item.price,
-          size: item.size,
-          count: item.quantity,
-          imageUrl: item.imageUrl
-      };
-  });
 
-  localStorage.setItem('productList', JSON.stringify(orderData));
-  localStorage.setItem('isCart', true);
+  if(Array.isArray(cartItems)){
+    let productList = [];
+    cartItems.forEach((cartItem) => {
 
-  location.href = '/order';
+      const productListUnit = {
+        "id" : cartItem.optionId,
+        "name" : cartItem.productName,
+        "price" : cartItem.productPrice,
+        "size" : cartItem.productSize,
+        "quantity" : cartItem.quantity,
+        "imageUrl" : cartItem.imageUrl
+      }
+
+      productList.push(productListUnit);
+
+      localStorage.setItem('productList', JSON.stringify(productList));
+      localStorage.setItem('isCart', true);
+
+      location.href = '/order';
+    })
+  }else{
+    console.error("상품정보가 없습니다.");
+    return false;
+  }
 }
 
 function uploadLocalCartToServer() {

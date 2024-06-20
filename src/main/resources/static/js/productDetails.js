@@ -185,6 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         imageUrl: document.querySelector('.product-image').src,
                         optionId: optionId
                     };
+                    window.localStorage.setItem('productList', JSON.stringify(productDetails));
                     console.log('Test productDetails:', productDetails);
                     console.log('Test optionId:', optionId);
 

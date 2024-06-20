@@ -2,8 +2,10 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch('/loginCheck')
         .then(response => {
             if (response.status === 204) {
+                // 로그인 상태이면 서버와 동기화
                 synchronizeCartWithServer();
             } else {
+                // 비로그인 상태이면 로컬 스토리지에서 데이터 로드
                 loadCartItemsFromLocalStorage();
                 loadTotalPriceFromLocalStorage();
             }
@@ -100,68 +102,114 @@ function updateQuantity(cartId, quantity) {
         return;
     }
 
-    fetch(`/cart/${cartId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ quantity: quantity })
-    })
+    fetch('/loginCheck')
         .then(response => {
-            console.log('Server response:', response);
-            if (!response.ok) {
-                return response.json().then(errorData => {
-                    console.error('Error details:', errorData);
-                    throw new Error('Error updating quantity');
-                });
+            if (response.status === 204) {
+                // 로그인 상태에서만 서버로 업데이트 요청
+                fetch(`/cart/${cartId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ quantity: quantity })
+                })
+                    .then(response => {
+                        console.log('Server response:', response);
+                        if (!response.ok) {
+                            return response.json().then(errorData => {
+                                console.error('Error details:', errorData);
+                                throw new Error('Error updating quantity');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Updated cart item:', data);
+                        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+                        const updatedCartItems = cartItems.map(item => item.cartId === cartId ? { ...item, quantity: data.quantity } : item);
+                        localStorage.setItem('cart', JSON.stringify(updatedCartItems));
+                        renderCartItems(updatedCartItems);
+                        updateTotalPrice(updatedCartItems);
+                    })
+                    .catch(error => {
+                        console.error('Error updating quantity:', error);
+                    });
+            } else {
+                // 비로그인 상태에서는 로컬 스토리지에 업데이트
+                const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+                const updatedCartItems = cartItems.map(item => item.cartId === cartId ? { ...item, quantity: quantity } : item);
+                localStorage.setItem('cart', JSON.stringify(updatedCartItems));
+                renderCartItems(updatedCartItems);
+                updateTotalPrice(updatedCartItems);
             }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Updated cart item:', data);
-            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-            const updatedCartItems = cartItems.map(item => item.cartId === cartId ? { ...item, quantity: data.quantity } : item);
-            localStorage.setItem('cart', JSON.stringify(updatedCartItems));
-            renderCartItems(updatedCartItems);
-            updateTotalPrice(updatedCartItems);
         })
         .catch(error => {
-            console.error('Error updating quantity:', error);
+            console.error('Error checking login status:', error);
         });
 }
 
 function removeCartItem(cartId) {
     console.log(`Removing cart item with cartId: ${cartId}`);
-    fetch(`/cart/${cartId}`, {
-        method: 'DELETE'
-    })
+    fetch('/loginCheck')
         .then(response => {
-            if (!response.ok) {
-                return response.json().then(errorData => {
-                    console.error('Error details:', errorData);
-                    throw new Error('Error removing cart item');
-                });
+            if (response.status === 204) {
+                // 로그인 상태에서만 서버로 삭제 요청
+                fetch(`/cart/${cartId}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(errorData => {
+                                console.error('Error details:', errorData);
+                                throw new Error('Error removing cart item');
+                            });
+                        }
+                        console.log('Cart item removed');
+                        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+                        const updatedCartItems = cartItems.filter(item => item.cartId !== cartId);
+                        localStorage.setItem('cart', JSON.stringify(updatedCartItems));
+                        renderCartItems(updatedCartItems);
+                        updateTotalPrice(updatedCartItems);
+                    })
+                    .catch(error => {
+                        console.error('Error removing cart item:', error);
+                    });
+            } else {
+                // 비로그인 상태에서는 로컬 스토리지에서 삭제
+                const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+                const updatedCartItems = cartItems.filter(item => item.cartId !== cartId);
+                localStorage.setItem('cart', JSON.stringify(updatedCartItems));
+                renderCartItems(updatedCartItems);
+                updateTotalPrice(updatedCartItems);
             }
-            console.log('Cart item removed');
-            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-            const updatedCartItems = cartItems.filter(item => item.cartId !== cartId);
-            localStorage.setItem('cart', JSON.stringify(updatedCartItems));
-            renderCartItems(updatedCartItems);
-            updateTotalPrice(updatedCartItems);
         })
         .catch(error => {
-            console.error('Error removing cart item:', error);
+            console.error('Error checking login status:', error);
         });
 }
 
 function clearCart() {
-    fetch('/cart/all', {
-        method: 'DELETE'
-    })
-        .then(() => {
-            localStorage.setItem('cart', JSON.stringify([]));
-            loadCartItemsFromLocalStorage();
-            loadTotalPriceFromLocalStorage();
+    fetch('/loginCheck')
+        .then(response => {
+            if (response.status === 204) {
+                // 로그인 상태에서만 서버로 모든 항목 삭제 요청
+                fetch('/cart/all', {
+                    method: 'DELETE'
+                })
+                    .then(() => {
+                        localStorage.setItem('cart', JSON.stringify([]));
+                        loadCartItemsFromLocalStorage();
+                        loadTotalPriceFromLocalStorage();
+                    });
+            } else {
+                // 비로그인 상태에서는 로컬 스토리지에서 모든 항목 삭제
+                localStorage.setItem('cart', JSON.stringify([]));
+                loadCartItemsFromLocalStorage();
+                loadTotalPriceFromLocalStorage();
+            }
+        })
+        .catch(error => {
+            console.error('Error checking login status:', error);
         });
 }
 

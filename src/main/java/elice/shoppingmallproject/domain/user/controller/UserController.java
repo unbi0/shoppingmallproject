@@ -39,7 +39,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById());
     }
 
-    // 관리자만 가능
     @GetMapping("/admin/users")
     public ResponseEntity<UserManagementDto> getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
                                                       @RequestParam(value = "size", defaultValue = "20") int size) {

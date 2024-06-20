@@ -12,6 +12,32 @@
 </head>
 
 <body>
+<div class="header">
+  <ul class="nav">
+    <li id="home-link"><a href="/static">HOME</a></li>
+    <li id="shop-link"><a href="#">SHOP</a>
+      <ul class="dropdown" id="shop-dropdown"></ul>
+    </li>
+    <li><a href="#" id="search-link">SEARCH</a></li>
+  </ul>
+
+  <ul class="Lognav">
+    <li><a href="/loginForm" id="loginLink">LOGIN</a></li>
+    <li><a href="/account">ACCOUNT</a></li>
+    <li><a href="/cart/view">BAG(0)</a></li>
+  </ul>
+</div>
+
+<!-- 검색 모달 -->
+<div id="search-modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <input type="text" id="search-input" class="underline-input" placeholder="검색어를 입력하세요">
+    <p id="search-description">엔터를 누르면 검색이 됩니다.</p>
+    <div id="search-results"></div> <!-- 검색 결과를 표시할 영역 -->
+  </div>
+</div>
+
 <h2 style="margin-top: 40px; margin-bottom: 40px;">주문서 작성</h2>
 <div class="page">
   <div class="layout">
@@ -235,10 +261,10 @@ function viewProductInfo() {
                alt="">
           <div class="product-info">
             <span style="font-weight: bold;">${product.name}</span>
-            <span style="color: gray;">KRW ${product.price}</span>
+            <span style="color: gray;">KRW ${product.price.toLocaleString()}</span>
             <span></span>
-            <span>[옵션 : ${product.optionSize}]</span>
-            <span>수량 : ${product.count}</span>
+            <span>[옵션 : ${product.size}]</span>
+            <span>수량 : ${product.quantity}</span>
           </div>
         </div>
       `;
@@ -248,7 +274,7 @@ function viewProductInfo() {
       productElementDiv.innerHTML = productInfoElement;
       productInfoList.appendChild(productElementDiv);
 
-      totalPrice += product.price * product.count;
+      totalPrice += product.price * product.quantity;
     });
   }else{
     console.error("상품정보가 없습니다.");
@@ -268,8 +294,8 @@ function createOrder(){
     productsData.forEach((product) => {
 
       const orderDetailInit = {
-        "productOptionId": product.productOptionId,
-        "count": product.count
+        "productOptionId": product.id,
+        "count": product.quantity
       }
 
       orderDetailList.push(orderDetailInit);
@@ -309,7 +335,23 @@ function createOrder(){
         body: JSON.stringify(createOrderData),
     })
     .then((data) => {
-      console.log(data)
+      console.log(data);
+
+      const isCart = JSON.parse(localStorage.getItem("productList"));
+
+      // 장바구니에서 온 주문이면 localStorage 비우고 장바구니 전체삭제
+      // 상품상세에서 온 주문이면 localStorage 비움
+      if(isCart){
+        localStorage.removeItem("productList");
+        localStorage.removeItem("isCart");
+
+        fetch(`/cart/all`);
+
+      }else{
+        localStorage.removeItem("productList");
+        localStorage.removeItem("isCart");
+      }
+
       alert("주문이 완료되었습니다.");
       window.location.href = "/user/order";
     })
@@ -321,6 +363,11 @@ function createOrder(){
     return false;
   }
 }
+
+window.addEventListener('beforeunload', function() {
+    localStorage.removeItem("productList");
+    localStorage.removeItem("isCart");
+});
 
 // 전화번호 검증 코드
 function validatePhoneNumber() {

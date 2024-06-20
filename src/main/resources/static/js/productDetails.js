@@ -110,8 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         price: document.getElementById('product-price').textContent,
                         imageUrl: document.getElementById('product-image-1').src
                     };
-                    console.log('Sending cart data:', productDetails);
-                    alert('테스트중.');
                     window.location.href = `/order`;
                 } else if (response.status === 401) { // HTTP 401 Unauthorized
                     alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');

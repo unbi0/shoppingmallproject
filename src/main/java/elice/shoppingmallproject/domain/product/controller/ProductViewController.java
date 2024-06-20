@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class ProductViewController {
 
+
     @GetMapping("/admin/category/create")
     public String category() {
         return "product/category";
     }
+
 
     @GetMapping("/admin/product/store")
     public String inputProduct() {

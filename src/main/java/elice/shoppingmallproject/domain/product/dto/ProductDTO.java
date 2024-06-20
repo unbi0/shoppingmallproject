@@ -2,7 +2,6 @@ package elice.shoppingmallproject.domain.product.dto;
 
 import elice.shoppingmallproject.domain.image.entity.Image;
 import elice.shoppingmallproject.domain.product.entity.Product;
-import elice.shoppingmallproject.domain.product.entity.ProductOption;
 import lombok.Getter;
 import lombok.Setter;
 

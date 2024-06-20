@@ -171,7 +171,7 @@ function createOrder(){
     .then((data) => {
       console.log(data);
 
-      const isCart = JSON.parse(localStorage.getItem("productList"));
+      const isCart = JSON.parse(localStorage.getItem("isCart"));
 
       // 장바구니에서 온 주문이면 localStorage 비우고 장바구니 전체삭제
       // 상품상세에서 온 주문이면 localStorage 비움
@@ -199,8 +199,36 @@ function createOrder(){
 }
 
 window.addEventListener('beforeunload', function() {
-    localStorage.removeItem("productList");
-    localStorage.removeItem("isCart");
+
+    const isCart = JSON.parse(localStorage.getItem("isCart"));
+
+    if(isCart){
+      localStorage.removeItem("productList");
+      localStorage.removeItem("isCart");
+    }else{
+      const productsData = JSON.parse(localStorage.getItem("productList"));
+      const productData = productsData[0];
+      let cartData = {
+        "optionId": productData.id,
+        "quantity": productData.quantity
+      }
+      fetch(`/cart`, {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         body: JSON.stringify(cartData),
+      })
+      .then((data) => {
+         console.log(data);
+      })
+      .catch((error) => {
+         console.error("Error fetching orders:", error);
+         alert("장바구니 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
+      })
+       localStorage.removeItem("productList");
+       localStorage.removeItem("isCart");
+    }
 });
 
 // 전화번호 검증 코드

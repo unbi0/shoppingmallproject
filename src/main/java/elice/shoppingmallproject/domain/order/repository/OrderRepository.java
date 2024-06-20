@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface OrderRepository extends JpaRepository<Orders, Long> {
     @Query("SELECT o FROM Orders o WHERE o.userId = :userId " +
-        "AND (:orderId IS NULL OR o.id = :orderId) " +
+        "AND (:orderId IS NULL OR CAST(o.id AS string) LIKE CONCAT('%', :orderId, '%')) " +
         "AND (:startDate IS NULL OR o.createAt >= :startDate)" +
         "AND (:endDate IS NULL OR o.createAt <= :endDate)" +
         "ORDER BY o.createAt DESC")
@@ -22,7 +22,7 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
         @Param("endDate") LocalDateTime endDate,
         Pageable pageable);
 
-    @Query("SELECT o FROM Orders o WHERE (:orderId IS NULL OR o.id = :orderId) " +
+    @Query("SELECT o FROM Orders o WHERE (:orderId IS NULL OR CAST(o.id AS string) LIKE CONCAT('%', :orderId, '%')) " +
         "AND (:startDate IS NULL OR o.createAt >= :startDate)" +
         "AND (:endDate IS NULL OR o.createAt <= :endDate)" +
         "AND (:orderStatus IS NULL OR o.orderStatus = :orderStatus)" +

@@ -28,7 +28,7 @@
     <ul class="Lognav">
       <li><a href="/loginForm" id="loginLink">LOGIN</a></li>
       <li><a href="/account">ACCOUNT</a></li>
-      <li><a href="#">BAG(0)</a></li>
+      <li><a href="/cart/view">BAG</a></li>
     </ul>
   </div>
 
@@ -48,10 +48,10 @@
   <div class="page">
     <div class="layout">
       <h3>상품 정보</h3>
-      <div id="product-list" class="product-list" style="margin-bottom: 30px;">
+      <div id="product-list-order" class="product-list-order" style="margin-bottom: 30px;">
         <!-- 상품 정보들이 출력되는 공간 -->
       </div>
-      <h3>주문 정보 수정</h3>
+      <h3 style="margin-bottom: 10px;">주문 정보 수정</h3>
       <hr style="margin-bottom: 15px;">
       <form id="orderEditFrom" class="delivery-form" style="margin-bottom: 30px;">
         <input id="recipientName" placeholder="이름" required>
@@ -95,7 +95,9 @@
         </div>
         <button class="submit-btn" onclick="handleOrderUpdate()">주문 수정하기</button>
       </div>
-
+      <div style="margin-top: 20px; display: flex; justify-content: center; align-items: center;">
+        <button class="backBtn" onclick="goBack()">뒤로</button>
+      </div>
     </div>
   </div>
 </div>

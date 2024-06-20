@@ -22,7 +22,8 @@ body {
 
 .product-image {
     background-color: #e0e0e0;
-    height: 200px;
+    max-width: 100%;
+    height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -116,4 +117,5 @@ body {
 
 .product-details {
     margin-top: 20px;
+    white-space: pre-line; /* 이 속성을 추가합니다 */
 }

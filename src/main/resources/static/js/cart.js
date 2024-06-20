@@ -22,12 +22,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function loadCartItemsFromLocalStorage() {
     const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    cartItems.forEach(item => {
-        // 가격을 숫자로 변환
-        if (typeof item.price === 'string') {
-            item.price = parseInt(item.price.replace('원', '').trim(), 10);
-        }
-    });
     renderCartItems(cartItems);
     loadTotalPriceFromLocalStorage();
 }
@@ -215,22 +209,32 @@ function clearCart() {
 }
 
 async function handleOrder() {
-    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    const orderData = cartItems.map((item) => {
-        return {
-            product_id: item.productID, // productID를 사용하도록 수정
-            productName: item.name,
-            price: item.price,
-            optionSize: item.size,
-            count: item.quantity,
-            imageUrl: item.imageUrl
-        };
-    });
+  const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
 
-    localStorage.setItem('product', JSON.stringify(orderData));
-    localStorage.setItem('iscart', true);
+  if(Array.isArray(cartItems)){
+    let productList = [];
+    cartItems.forEach((cartItem) => {
 
-    location.href = '/order';
+      const productListUnit = {
+        "id" : cartItem.optionId,
+        "name" : cartItem.productName,
+        "price" : cartItem.productPrice,
+        "size" : cartItem.productSize,
+        "quantity" : cartItem.quantity,
+        "imageUrl" : cartItem.imageUrl
+      }
+
+      productList.push(productListUnit);
+
+      localStorage.setItem('productList', JSON.stringify(productList));
+      localStorage.setItem('isCart', true);
+
+      location.href = '/order';
+    })
+  }else{
+    console.error("상품정보가 없습니다.");
+    return false;
+  }
 }
 
 function uploadLocalCartToServer() {
@@ -240,13 +244,6 @@ function uploadLocalCartToServer() {
         synchronizeCartWithServer();
         return;
     }
-
-    // 가격을 숫자로 변환
-    localCartItems.forEach(item => {
-        if (typeof item.price === 'string') {
-            item.price = parseInt(item.price.replace('원', '').trim(), 10);
-        }
-    });
 
     fetch('/cart/upload', {
         method: 'POST',

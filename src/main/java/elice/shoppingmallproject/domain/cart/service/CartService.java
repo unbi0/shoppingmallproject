@@ -29,7 +29,6 @@ public class CartService {
     private final UserRepository userRepository;
     private final ProductOptionRepository productOptionRepository;
 
-
     public CartResponseDTO addCart(CartCreateDTO cartCreateDTO) {
         Long userId = userUtil.getAuthenticatedUser();
         if (userId == null) {
@@ -51,7 +50,6 @@ public class CartService {
 
         Cart cart = new Cart(productOption, product, user, cartCreateDTO.getQuantity(), imageUrl);
         cart = cartRepository.save(cart);
-        log.info("Cart saved: {}", cart); // 추가된 로그
         return toCartResponseDTO(cart);
     }
 
@@ -121,6 +119,14 @@ public class CartService {
         return cartItems.stream()
                 .mapToDouble(cart -> cart.getProduct().getPrice() * cart.getQuantity())
                 .sum();
+    }
+
+    public Cart findByUserIdAndOptionId(Long userId, Long optionId) {
+        return cartRepository.findByUserIdAndOptionId(userId, optionId);
+    }
+
+    public void save(Cart cart) {
+        cartRepository.save(cart);
     }
 
     private CartResponseDTO toCartResponseDTO(Cart cart) {

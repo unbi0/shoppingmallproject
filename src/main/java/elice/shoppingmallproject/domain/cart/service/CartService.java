@@ -1,7 +1,6 @@
 package elice.shoppingmallproject.domain.cart.service;
 
 import org.springframework.stereotype.Service;
-
 import elice.shoppingmallproject.domain.cart.dto.CartCreateDTO;
 import elice.shoppingmallproject.domain.cart.dto.CartResponseDTO;
 import elice.shoppingmallproject.domain.cart.entity.Cart;
@@ -139,6 +138,7 @@ public class CartService {
         cartResponseDTO.setProductPrice(product.getPrice());
         cartResponseDTO.setProductSize(productOption.getOptionSize());
         cartResponseDTO.setImageUrl(product.getImages().get(0).getUrl());
+        cartResponseDTO.setProductID(product.getProductId());  // productId 추가
 
         return cartResponseDTO;
     }

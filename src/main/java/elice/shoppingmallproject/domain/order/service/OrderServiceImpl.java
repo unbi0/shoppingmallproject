@@ -119,6 +119,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     // 사용자 : 주문 생성
+    @Transactional
     public Orders createOrder(OrderRequestDto orderRequestDto) {
 
         // 주문 상세 리스트가 비어 있는지 확인
@@ -185,6 +186,13 @@ public class OrderServiceImpl implements OrderService{
     // 사용자 : 주문 삭제
     @Override
     public void deleteOrder(Long id) {
+
+        Orders existingOrder = orderRepository.findById(id)
+            .orElseThrow(() -> new OrderNotFoundException("주문 ID " + id + "를 찾을 수 없습니다"));
+
+        for (OrderDetail orderDetail : existingOrder.getOrderDetailList()){
+            orderDetail.getProductOption().increaseStock(orderDetail.getCount());
+        }
         orderRepository.deleteById(id);
     }
 

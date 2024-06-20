@@ -168,7 +168,13 @@ function createOrder(){
         },
         body: JSON.stringify(createOrderData),
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        // 서버 응답이 2xx 범위가 아니면 에러를 던짐
+        throw new Error('재고가 부족하여 주문이 불가한 상품입니다.');
+      }
+      return response.json();
+    })
     .then((data) => {
       console.log(data);
 
@@ -202,7 +208,8 @@ function createOrder(){
     })
     .catch((error) => {
       console.error("Error fetching orders:", error);
-      alert("주문 중 오류가 발생했습니다. 다시 시도해주세요.");
+      alert("재고가 부족하여 주문이 불가한 상품입니다.");
+      window.history.back();
     })
   }else{
     return false;

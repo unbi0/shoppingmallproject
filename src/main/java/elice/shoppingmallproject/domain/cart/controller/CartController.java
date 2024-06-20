@@ -5,8 +5,10 @@ import org.springframework.web.bind.annotation.*;
 
 import elice.shoppingmallproject.domain.cart.dto.CartCreateDTO;
 import elice.shoppingmallproject.domain.cart.dto.CartResponseDTO;
+import elice.shoppingmallproject.domain.cart.entity.Cart;
 import elice.shoppingmallproject.domain.cart.service.CartService;
 import elice.shoppingmallproject.global.util.UserUtil;
+import org.springframework.http.ResponseEntity; // ResponseEntity import 추가
 
 import java.util.List;
 import java.util.Map;
@@ -55,5 +57,29 @@ public class CartController {
     @DeleteMapping("/all")
     public void deleteAllCartItems() {
         cartService.deleteAllCartItems();
+    }
+
+    // 로컬 스토리지의 데이터를 서버로 전송하여 DB를 업데이트하는 메서드
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadCart(@RequestBody List<CartCreateDTO> localCartItems) {
+        Long userId = userUtil.getAuthenticatedUser();
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
+
+        for (CartCreateDTO item : localCartItems) {
+            // 기존 항목이 있는지 확인
+            Cart existingCart = cartService.findByUserIdAndOptionId(userId, item.getOptionId());
+            if (existingCart != null) {
+                // 기존 항목이 있다면 수량 업데이트
+                existingCart.setQuantity(Math.max(existingCart.getQuantity(), item.getQuantity()));
+                cartService.save(existingCart);
+            } else {
+                // 새로운 항목이라면 추가
+                cartService.addCart(item);
+            }
+        }
+
+        return ResponseEntity.ok("Cart uploaded successfully");
     }
 }

@@ -26,7 +26,7 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cart_id")
-    private Long cartId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -43,17 +43,9 @@ public class Cart {
     @Column(nullable = false)
     private int quantity;
     private String imageUrl;  // 이미지 URL 필드 추가
-    private Long id;
     // 총 가격을 계산하는 메서드 추가
     public double getTotalPrice() {
         return this.product.getPrice() * this.quantity;
-    }
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Cart(ProductOption productOption, Product product, User user, int quantity,String imageUrl) {

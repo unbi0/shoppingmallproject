@@ -167,6 +167,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
 
                 } else if (response.status === 401) { // HTTP 401 Unauthorized
+
+                    localStorage.setItem('quantity', quantity);
+                    localStorage.setItem('optionId', optionId);
+
+                    //console.log('quantity', quantity);
+                    //console.log('optionId', optionId);
+
                     alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
                     window.location.href = `/loginForm`; // 로그인 페이지로 리다이렉트
                 } else {

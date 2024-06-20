@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const increaseQuantityButton = document.getElementById('increase-quantity');
     const buyNowButton = document.getElementById('buy-now');
     const addToCartButton = document.getElementById('add-to-cart');
+    const productImagesContainer = document.getElementById('product-images');
 
     let selectedSize = null;
     let productPrice = 0;
@@ -34,10 +35,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             document.getElementById('product-name').textContent = product.name;
-            document.getElementById('product-image-1').src = product.imageUrl;
             document.getElementById('product-price').textContent = product.price + '원';
             document.querySelector('.product-details').textContent = product.details;
             productPrice = product.price;
+
+            // 여러 이미지 추가
+            product.imageUrl.forEach((url, index) => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = `상품 이미지 ${index + 1}`;
+                img.className = 'product-image';
+                productImagesContainer.appendChild(img);
+            });
 
             // 사이즈 버튼에 optionId를 설정
             sizeButtons.forEach((button, index) => {
@@ -105,22 +114,17 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/loginCheck')
             .then(response => {
                 if (response.status === 204) { // HTTP 204 No Content
-
-                    //키값을 productlist로 해서 로컬스토리지에 저장하되, list형식으로 여러개 담을 수 있게 하기
                     const productDetails = {
                         id: productId,
                         size: selectedSize,
                         quantity: quantity,
                         price: document.getElementById('product-price').textContent,
-                        imageUrl: document.getElementById('product-image-1').src
+                        imageUrl: document.querySelector('.product-image').src
                     };
 
                     productList.push(productDetails);
-
-                    //키값을 productlist로 해서 로컬스토리지에 저장
-                    //로컬스토리이제 iscart라는 키값으로 bool타입으로 default로 false 보내기
-                    window.localStorage.setItem('productList',JSON.stringify(productList));
-                    window.localStorage.setItem('isCart',JSON.stringify(isCart));
+                    window.localStorage.setItem('productList', JSON.stringify(productList));
+                    window.localStorage.setItem('isCart', JSON.stringify(isCart));
                     window.location.href = `/order`;
 
                 } else if (response.status === 401) { // HTTP 401 Unauthorized
@@ -157,8 +161,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         body: JSON.stringify(cartCreateDTO)
                     })
                         .then(response => {
-                            console.log('quantity:', quantity);
-                            console.log('optionId:', optionId);
                             if (!response.ok) {
                                 throw new Error('Network response was not ok');
                             }
@@ -174,21 +176,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             alert('장바구니에 상품을 추가하는 중 오류가 발생했습니다.');
                         });
 
-                } else if (response.status === 401) { // HTTP 401 Unauthorized
-                    //로그인 하지 않았을 때 로컬스토리지에 저장되는 값
+                } else if (response.status === 401) {
                     const productDetails = {
                         id: productId,
                         size: selectedSize,
                         quantity: quantity,
                         price: document.getElementById('product-price').textContent,
-                        imageUrl: document.getElementById('product-image-1').src,
+                        imageUrl: document.querySelector('.product-image').src,
                         optionId: optionId
                     };
                     console.log('Test productDetails:', productDetails);
                     console.log('Test optionId:', optionId);
-                    
+
                     alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
-                    window.location.href = `/loginForm`; // 로그인 페이지로 리다이렉트
+                    window.location.href = `/loginForm`;
                 } else {
                     alert('로그인 상태를 확인하는 중 오류가 발생했습니다.');
                 }

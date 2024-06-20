@@ -1,5 +1,6 @@
 package elice.shoppingmallproject.domain.product.dto;
 
+import elice.shoppingmallproject.domain.image.entity.Image;
 import elice.shoppingmallproject.domain.product.entity.Product;
 import elice.shoppingmallproject.domain.product.entity.ProductOption;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class ProductDTO {
     private int price;
     private String description;
     private String details;
-    private String imageUrl;
+    private List<String> imageUrl; // 변경된 부분
     private List<Long> optionId; // 추가된 부분
 
     public static ProductDTO toProductDTO(Product product) {
@@ -27,8 +28,11 @@ public class ProductDTO {
         productDTO.setDescription(product.getDescription());
         productDTO.setDetails(product.getDetails());
 
+        // 이미지 URL 리스트를 설정
         if (product.getImages() != null && !product.getImages().isEmpty()) {
-            productDTO.setImageUrl(product.getImages().get(0).getUrl());  // 첫 번째 이미지의 URL을 설정
+            productDTO.setImageUrl(product.getImages().stream()
+                    .map(Image::getUrl)
+                    .collect(Collectors.toList()));
         }
 
         // ProductOption의 optionId 값을 리스트로 설정

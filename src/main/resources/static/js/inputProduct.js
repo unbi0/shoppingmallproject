@@ -28,8 +28,7 @@ document.getElementById('productForm').addEventListener('submit', function(event
             formData.append('files', fileInput.files[i]);
         }
     }
-    
-    ///admin/api/product
+
     fetch('/admin/api/product', {
         method: 'POST',
         body: formData

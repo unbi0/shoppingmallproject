@@ -183,7 +183,6 @@ function createOrder(){
         fetch(`/cart/all`, {
                 method: "DELETE"
               })
-              .then(response => response.json())  // 응답을 JSON으로 파싱 (필요한 경우)
               .then((cartData) => {
                 console.log(cartData);
                 alert("주문이 완료되었습니다.");

@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     addCategoryButton.addEventListener('click', () => {
         const categoryName = newCategoryInput.value.trim();
         if (categoryName) {
-            fetch('/category', {
+            fetch('/admin/category', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 
     function updateCategory(categoryId, categoryName) {
-        fetch(`/category/${categoryId}`, {
+        fetch(`/admin/category/${categoryId}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 
     function deleteCategory(categoryId) {
-        fetch(`/category/${categoryId}`, {
+        fetch(`/admin/category/${categoryId}`, {
             method: 'DELETE'
         })
             .then(response => {

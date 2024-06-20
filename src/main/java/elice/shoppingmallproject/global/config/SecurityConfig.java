@@ -35,7 +35,8 @@ public class SecurityConfig {
             "/login", "/sign-up", "loginCheck", // USER API
             "/productdetail/**",  //PRODUCT VIEW
             "/api/product/**", // PRODUCT API
-            "/cart/view" //CART VIEW
+            "/cart/view", //CART VIEW
+            "/category"
     };
 
     private final AuthenticationConfiguration authenticationConfiguration;
@@ -100,4 +101,5 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
 

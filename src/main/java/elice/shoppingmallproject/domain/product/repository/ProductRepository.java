@@ -23,5 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "OR LOWER(p.category.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Product> searchProducts(@Param("keyword") String keyword);
 
-
+    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.options WHERE p.productId = :id")
+    Product findOptionidById(@Param("id") Long id);
 }

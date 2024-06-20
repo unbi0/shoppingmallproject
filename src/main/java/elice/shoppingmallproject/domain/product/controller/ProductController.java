@@ -73,5 +73,10 @@ public class ProductController {
         ProductDTO productDTO = productService.findById(id);
         return ResponseEntity.ok(productDTO);
     }
-}
 
+    @GetMapping("/option/{id}")
+    public ResponseEntity<ProductDTO> test(@PathVariable Long id){
+        ProductDTO productDTO = productService.findOptionidById(id);
+        return ResponseEntity.ok(productDTO);
+    }
+}

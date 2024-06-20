@@ -176,3 +176,7 @@ function deleteOrder() {
       alert("주문 취소에 실패했습니다.");
     });
 }
+
+function goBack() {
+            window.history.back();
+        }

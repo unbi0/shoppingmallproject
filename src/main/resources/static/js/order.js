@@ -220,7 +220,7 @@ window.addEventListener('beforeunload', function() {
       const productsData = JSON.parse(localStorage.getItem("productList"));
       const productData = productsData[0];
       let cartData = {
-        "optionId": productData.id,
+        "optionId": BigInt(productData.id),
         "quantity": productData.quantity
       }
       fetch(`/cart`, {
@@ -299,3 +299,7 @@ function copyOrderInfo() {
     document.getElementById('form-address').value = '';
     document.getElementById('form-detailAddress').value = '';
   }
+
+  function goBack() {
+              window.history.back();
+          }

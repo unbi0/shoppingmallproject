@@ -202,3 +202,7 @@ function handleOrderUpdate() {
       return false;
     }
 }
+
+function goBack() {
+            window.history.back();
+        }

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let quantity = 1; // 초기 수량 설정
     const sizeQuantities = {}; // 각 사이즈별 수량을 저장하는 객체
     let isCart = false;
-    let productList = [];
+
 
     const pathArray = window.location.pathname.split('/');
     const productId = pathArray[pathArray.length - 1];
@@ -113,7 +113,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         fetch('/loginCheck')
             .then(response => {
-                if (response.status === 204) { // HTTP 204 No Content
+                if (response.status === 204) {
+                    let productList = [];
+
                     const productDetails = {
                         id: optionId,
                         name: document.getElementById('product-name').textContent,
@@ -178,15 +180,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
 
                 } else if (response.status === 401) {
+                    let productList = [];
                     const productDetails = {
                         id: productId,
                         size: selectedSize,
                         quantity: quantity,
+                        name: document.getElementById('product-name').textContent,
                         price: document.getElementById('product-price').textContent,
                         imageUrl: document.querySelector('.product-image').src,
                         optionId: optionId
                     };
-                    window.localStorage.setItem('productList', JSON.stringify(productDetails));
+
+                    productList.push(productDetails);
+                    window.localStorage.setItem('productList', JSON.stringify(productList));
+
                     console.log('Test productDetails:', productDetails);
                     console.log('Test optionId:', optionId);
 

@@ -209,22 +209,22 @@ function clearCart() {
 }
 
 async function handleOrder() {
-    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    const orderData = cartItems.map((item) => {
-        return {
-            product_id: item.productID, // productID를 사용하도록 수정
-            productName: item.name,
-            price: item.price,
-            optionSize: item.size,
-            count: item.quantity,
-            imageUrl: item.imageUrl
-        };
-    });
+  const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+  const orderData = cartItems.map((item) => {
+      return {
+          id: item.productID, // productID를 사용하도록 수정
+          name: item.name,
+          price: item.price,
+          size: item.size,
+          count: item.quantity,
+          imageUrl: item.imageUrl
+      };
+  });
 
-    localStorage.setItem('product', JSON.stringify(orderData));
-    localStorage.setItem('iscart', true);
+  localStorage.setItem('productList', JSON.stringify(orderData));
+  localStorage.setItem('isCart', true);
 
-    location.href = '/order';
+  location.href = '/order';
 }
 
 function uploadLocalCartToServer() {

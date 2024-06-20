@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
             loadTotalPriceFromLocalStorage();
         });
 
-    // "주문하기" 버튼 클릭 이벤트 처리
     const orderButton = document.getElementById('order-button');
     orderButton.addEventListener('click', handleOrder);
 });
@@ -166,40 +165,21 @@ function clearCart() {
         });
 }
 
-// 주문하기 버튼 클릭 이벤트 핸들러
-function handleOrder() {
+async function handleOrder() {
     const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    const orderData = cartItems.map(item => ({
-        productId: item.optionId, // Assuming optionId is the productId
-        productName: item.productName,
-        price: item.productPrice,
-        optionSize: item.productSize,
-        count: item.quantity,
-        imageUrl: item.imageUrl
-    }));
+    const orderData = cartItems.map((item) => {
+        return {
+            product_id: item.productID, // productID를 사용하도록 수정
+            productName: item.productName,
+            price: item.productPrice,
+            optionSize: item.productSize,
+            count: item.quantity,
+            imageUrl: item.imageUrl
+        };
+    });
 
-    // orderData를 서버로 전송
-    fetch('/orders', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(orderData)
-    })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(errorData => {
-                    console.error('Error details:', errorData);
-                    throw new Error('Error submitting order');
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Order submitted successfully:', data);
-            location.href = '/order/order.html'; // 주문서 작성 페이지로 이동
-        })
-        .catch(error => {
-            console.error('Error submitting order:', error);
-        });
+    localStorage.setItem('product', JSON.stringify(orderData));
+    localStorage.setItem('iscart', true);
+
+    location.href = '/order/order.html';
 }

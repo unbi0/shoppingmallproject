@@ -86,14 +86,14 @@ function viewProductInfo() {
   if(Array.isArray(productsData)){
     productsData.forEach((product) => {
 
-      const productInfoList = document.getElementById("product-list");
+      const productInfoList = document.getElementById("product-list-order");
 
       const productInfoElement = `
         <div class="product-list-wrap">
           <img class="thumb"
                src="${product.imageUrl}"
                alt="">
-          <div class="product-info">
+          <div class="product-info-order">
             <span style="font-weight: bold;">${product.name}</span>
             <span style="color: gray;">KRW ${product.price.toLocaleString()}</span>
             <span></span>
@@ -168,6 +168,7 @@ function createOrder(){
         },
         body: JSON.stringify(createOrderData),
     })
+    .then(response => response.json())
     .then((data) => {
       console.log(data);
 
@@ -179,15 +180,26 @@ function createOrder(){
         localStorage.removeItem("productList");
         localStorage.removeItem("isCart");
 
-        fetch(`/cart/all`);
+        fetch(`/cart/all`, {
+                method: "DELETE"
+              })
+              .then(response => response.json())  // 응답을 JSON으로 파싱 (필요한 경우)
+              .then((cartData) => {
+                console.log(cartData);
+                alert("주문이 완료되었습니다.");
+                window.location.href = "/user/order";
+              })
+              .catch((error) => {
+                console.error("Error deleting cart:", error);
+                alert("장바구니 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
+              });
 
       }else{
         localStorage.removeItem("productList");
         localStorage.removeItem("isCart");
+        alert("주문이 완료되었습니다.");
+        window.location.href = "/user/order";
       }
-
-      alert("주문이 완료되었습니다.");
-      window.location.href = "/user/order";
     })
     .catch((error) => {
       console.error("Error fetching orders:", error);
@@ -221,13 +233,14 @@ window.addEventListener('beforeunload', function() {
       })
       .then((data) => {
          console.log(data);
+         localStorage.removeItem("productList");
+         localStorage.removeItem("isCart");
       })
       .catch((error) => {
          console.error("Error fetching orders:", error);
          alert("장바구니 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
       })
-       localStorage.removeItem("productList");
-       localStorage.removeItem("isCart");
+
     }
 });
 

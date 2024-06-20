@@ -80,7 +80,7 @@ function updateView(data) {
   ).textContent = `KRW ${totalAmount.toLocaleString()}`;
 
   // 화면에 그리기
-  const productContainer = document.getElementById("product-list");
+  const productContainer = document.getElementById("product-list-order");
   productContainer.innerHTML = "";
 
   // 여러 개의 상품 정보 반복으로 출력
@@ -90,7 +90,7 @@ function updateView(data) {
 
     productItem.innerHTML = `
       <img class="thumb" src="${product.imageUrl}" alt="">
-        <div class="product-info">
+        <div class="product-info-order">
           <span style="font-weight: bold;">${product.productName}</span>
           <span style="color: gray;">KRW ${product.price.toLocaleString()}</span>
           <span>[옵션 : ${product.optionSize}]</span>

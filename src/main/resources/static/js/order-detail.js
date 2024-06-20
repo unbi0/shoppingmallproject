@@ -99,10 +99,10 @@ const path = window.location.pathname;
 
   data.orderDetailDtoList.forEach((orderDetails) => {
     const orderElement = `
-    <div class="product-list" style="border: 1px solid #C0C0C0; display: flex;">
+    <div class="product-list-order" style="border: 1px solid #C0C0C0; display: flex;">
       <img class="thumb2" src="${orderDetails.imageUrl}"
         alt="">
-      <div class="product-info" style="margin-left: 5px;">
+      <div class="product-info-order" style="margin-left: 5px;">
         <span style="font-weight: bold;">${orderDetails.productName}</span>
         <span style="color: gray;">KRW ${orderDetails.price.toLocaleString()}</span>
         <span></span>
@@ -113,7 +113,7 @@ const path = window.location.pathname;
     `;
 
     const orderElementDiv = document.createElement("div");
-    orderElementDiv.classList.add("product-item");
+    orderElementDiv.classList.add("product-item-order");
     orderElementDiv.innerHTML = orderElement;
     orderListContainer.appendChild(orderElementDiv);
   });

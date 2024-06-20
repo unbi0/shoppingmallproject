@@ -8,108 +8,116 @@
   <link rel="stylesheet" href="/css/reset.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/orderDetail.css">
+  <link rel="stylesheet" type="text/css" href="/css/header.css">
+  <script type="module" src="/js/header.js"></script>
+
   <script src="/js/order-detail.js"></script>
 </head>
 
 <body>
+
 <div class="header">
-  <ul class="nav">
-    <li id="home-link"><a href="/static">HOME</a></li>
-    <li id="shop-link"><a href="#">SHOP</a>
-      <ul class="dropdown" id="shop-dropdown"></ul>
-    </li>
-    <li><a href="#" id="search-link">SEARCH</a></li>
-  </ul>
+  <div class="header">
+    <ul class="nav">
+      <li id="home-link"><a href="/">HOME</a></li>
+      <li id="shop-link"><a href="#">SHOP</a>
+        <ul class="dropdown" id="shop-dropdown"></ul>
+      </li>
+      <li><a href="#" id="search-link">SEARCH</a></li>
+    </ul>
 
-  <ul class="Lognav">
-    <li><a href="/loginForm" id="loginLink">LOGIN</a></li>
-    <li><a href="/account">ACCOUNT</a></li>
-    <li><a href="/cart/view">BAG(0)</a></li>
-  </ul>
-</div>
-
-<!-- 검색 모달 -->
-<div id="search-modal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <input type="text" id="search-input" class="underline-input" placeholder="검색어를 입력하세요">
-    <p id="search-description">엔터를 누르면 검색이 됩니다.</p>
-    <div id="search-results"></div> <!-- 검색 결과를 표시할 영역 -->
+    <ul class="Lognav">
+      <li><a href="/loginForm" id="loginLink">LOGIN</a></li>
+      <li><a href="/account">ACCOUNT</a></li>
+      <li><a href="#">BAG(0)</a></li>
+    </ul>
   </div>
-</div>
 
-  <h2 style="margin-top: 40px; margin-bottom: 40px;">주문 상세</h2>
-  <div class="page">
-    <div class="layout" style="gap: 7px;">
-      <span class="delivery-status" id="orderStatus"></span>
-      <h3 style="font-size: 16px; font-weight: bold;" id="recipientName"></h3>
-      <div style="font-size: 12px; margin-top: 10px;" id="createAt"></div>
-      <div style="font-size: 12px; margin-bottom: 5px;" id="orderId"></div>
-
-      <div id="productList">
-        <div class="product-list" style="border: 1px solid #C0C0C0; display: flex;">
-          <img class="thumb2" src="//nomanual-shop.com/web/product/tiny/202302/b02de95d8e0986fa806430903b9c5c60.jpg"
-            alt="">
-          <div class="product-info" style="margin-left: 5px;">
-            <span style="font-weight: bold;">상품 이름</span>
-            <span style="color: gray;">KRW 4,000</span>
-            <span></span>
-            <span>[옵션 : XL]</span>
-            <span>수량 : 2</span>
-          </div>
-        </div>
-        <div class="product-list" style="border: 1px solid #C0C0C0; display: flex;">
-          <img class="thumb2" src="//nomanual-shop.com/web/product/tiny/202302/b02de95d8e0986fa806430903b9c5c60.jpg"
-            alt="">
-          <div class="product-info" style="margin-left: 5px;">
-            <span style="font-weight: bold;">상품 이름</span>
-            <span style="color: gray;">KRW 4,000</span>
-            <span></span>
-            <span>[옵션 : XL]</span>
-            <span>수량 : 2</span>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="delivery-info">
-        <div style="margin-top: 10px;">
-          <div class="info-title">배송지</div>
-          <p id="postCode"></p>
-          <p id="deliveryAddress"></p>
-          <p id="deliveryDetailAddress"></p>
-        </div>
-        <div>
-          <div class="info-title">전화번호</div>
-          <p id="recipientTel"></p>
-        </div>
-        <div>
-          <div class="info-title">요청사항</div>
-          <p id="deliveryRequest"></p>
-        </div>
-        <div style="display: flex; flex-direction: column; margin-top: 15px;">
-          <div class="price-info2">
-            <span style="float: left;">총 주문금액</span>
-            <span style="float: right;" id="totalPrice"></span>
-          </div>
-          <div class="price-info2">
-            <span style="float: left;">배송비</span>
-            <span style="float: right;" id="deliveryFee"></span>
-          </div>
-        </div>
-      </div>
-      <div class="total-info" style="margin: 0; padding-top: 10px; border-top: 1px solid rgb(0, 0, 0);">
-        <span style="float: left;">총 결제금액</span>
-        <span style="float: right;" id="totalAmount"></span>
-      </div>
-      <div id="orderButtons" style="display: flex; align-items: center; justify-content: center; padding: 20px 0;">
-        <button class="orderBtn orderEditBtn">
-          <a id="editLink" href="#" style="color:white;">주문 수정</a>
-        </button>
-        <button class="orderBtn orderDelBtn" style="margin-left: 10px;" onclick="confirmDeleteOrder()">주문 취소</button>
-      </div>
+  <!-- 검색 모달 -->
+  <div id="search-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <input type="text" id="search-input" class="underline-input" placeholder="검색어를 입력하세요">
+      <p id="search-description">엔터를 누르면 검색이 됩니다.</p>
+      <div id="search-results"></div> <!-- 검색 결과를 표시할 영역 -->
     </div>
   </div>
+</div>
+
+
+
+<h2 style="margin-top: 40px; margin-bottom: 40px;">주문 상세</h2>
+<div class="page">
+  <div class="layout" style="gap: 7px;">
+    <span class="delivery-status" id="orderStatus"></span>
+    <h3 style="font-size: 16px; font-weight: bold;" id="recipientName"></h3>
+    <div style="font-size: 12px; margin-top: 10px;" id="createAt"></div>
+    <div style="font-size: 12px; margin-bottom: 5px;" id="orderId"></div>
+
+    <div id="productList">
+      <div class="product-list" style="border: 1px solid #C0C0C0; display: flex;">
+        <img class="thumb2" src="//nomanual-shop.com/web/product/tiny/202302/b02de95d8e0986fa806430903b9c5c60.jpg"
+             alt="">
+        <div class="product-info" style="margin-left: 5px;">
+          <span style="font-weight: bold;">상품 이름</span>
+          <span style="color: gray;">KRW 4,000</span>
+          <span></span>
+          <span>[옵션 : XL]</span>
+          <span>수량 : 2</span>
+        </div>
+      </div>
+      <div class="product-list" style="border: 1px solid #C0C0C0; display: flex;">
+        <img class="thumb2" src="//nomanual-shop.com/web/product/tiny/202302/b02de95d8e0986fa806430903b9c5c60.jpg"
+             alt="">
+        <div class="product-info" style="margin-left: 5px;">
+          <span style="font-weight: bold;">상품 이름</span>
+          <span style="color: gray;">KRW 4,000</span>
+          <span></span>
+          <span>[옵션 : XL]</span>
+          <span>수량 : 2</span>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="delivery-info">
+      <div style="margin-top: 10px;">
+        <div class="info-title">배송지</div>
+        <p id="postCode"></p>
+        <p id="deliveryAddress"></p>
+        <p id="deliveryDetailAddress"></p>
+      </div>
+      <div>
+        <div class="info-title">전화번호</div>
+        <p id="recipientTel"></p>
+      </div>
+      <div>
+        <div class="info-title">요청사항</div>
+        <p id="deliveryRequest"></p>
+      </div>
+      <div style="display: flex; flex-direction: column; margin-top: 15px;">
+        <div class="price-info2">
+          <span style="float: left;">총 주문금액</span>
+          <span style="float: right;" id="totalPrice"></span>
+        </div>
+        <div class="price-info2">
+          <span style="float: left;">배송비</span>
+          <span style="float: right;" id="deliveryFee"></span>
+        </div>
+      </div>
+    </div>
+    <div class="total-info" style="margin: 0; padding-top: 10px; border-top: 1px solid rgb(0, 0, 0);">
+      <span style="float: left;">총 결제금액</span>
+      <span style="float: right;" id="totalAmount"></span>
+    </div>
+    <div id="orderButtons" style="display: flex; align-items: center; justify-content: center; padding: 20px 0;">
+      <button class="orderBtn orderEditBtn">
+        <a id="editLink" href="#" style="color:white;">주문 수정</a>
+      </button>
+      <button class="orderBtn orderDelBtn" style="margin-left: 10px;" onclick="confirmDeleteOrder()">주문 취소</button>
+    </div>
+  </div>
+</div>
 </body>
 
 </html>

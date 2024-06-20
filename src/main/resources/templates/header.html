@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Header</title>
     <link rel="stylesheet" type="text/css" href="/css/header.css">
 </head>
 <body>
-<div th:fragment="header">
+<div class="header">
     <div class="header">
         <ul class="nav">
-            <li id="home-link"><a href="/static">HOME</a></li>
+            <li id="home-link"><a href="/">HOME</a></li>
             <li id="shop-link"><a href="#">SHOP</a>
                 <ul class="dropdown" id="shop-dropdown"></ul>
             </li>
@@ -33,5 +33,7 @@
         </div>
     </div>
 </div>
+<script type="module" src="/js/header.js"></script>
 </body>
+
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,35 @@
 </head>
 <body>
 <!-- Header를 포함 -->
-<div th:replace="header :: header"></div>
+
+<div class="header">
+    <div class="header">
+        <ul class="nav">
+            <li id="home-link"><a href="/">HOME</a></li>
+            <li id="shop-link"><a href="#">SHOP</a>
+                <ul class="dropdown" id="shop-dropdown"></ul>
+            </li>
+            <li><a href="#" id="search-link">SEARCH</a></li>
+        </ul>
+
+        <ul class="Lognav">
+            <li><a href="/loginForm" id="loginLink">LOGIN</a></li>
+            <li><a href="/account">ACCOUNT</a></li>
+            <li><a href="#">BAG(0)</a></li>
+        </ul>
+    </div>
+
+    <!-- 검색 모달 -->
+    <div id="search-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <input type="text" id="search-input" class="underline-input" placeholder="검색어를 입력하세요">
+            <p id="search-description">엔터를 누르면 검색이 됩니다.</p>
+            <div id="search-results"></div> <!-- 검색 결과를 표시할 영역 -->
+        </div>
+    </div>
+</div>
+
 
 <div class="container">
     <h1>BAG (<span id="item-count">0</span>)</h1>

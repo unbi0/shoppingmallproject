@@ -8,94 +8,101 @@
   <link rel="stylesheet" href="/css/reset.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/orderList.css">
+  <link rel="stylesheet" type="text/css" href="/css/header.css">
+
   <script src="/js/order-user.js"></script>
+  <script type="module" src="/js/header.js"></script>
 </head>
 
 <body>
+
 <div class="header">
-  <ul class="nav">
-    <li id="home-link"><a href="/static">HOME</a></li>
-    <li id="shop-link"><a href="#">SHOP</a>
-      <ul class="dropdown" id="shop-dropdown"></ul>
-    </li>
-    <li><a href="#" id="search-link">SEARCH</a></li>
-  </ul>
+  <div class="header">
+    <ul class="nav">
+      <li id="home-link"><a href="/">HOME</a></li>
+      <li id="shop-link"><a href="#">SHOP</a>
+        <ul class="dropdown" id="shop-dropdown"></ul>
+      </li>
+      <li><a href="#" id="search-link">SEARCH</a></li>
+    </ul>
 
-  <ul class="Lognav">
-    <li><a href="/loginForm" id="loginLink">LOGIN</a></li>
-    <li><a href="/account">ACCOUNT</a></li>
-    <li><a href="/cart/view">BAG(0)</a></li>
-  </ul>
-</div>
-
-<!-- 검색 모달 -->
-<div id="search-modal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <input type="text" id="search-input" class="underline-input" placeholder="검색어를 입력하세요">
-    <p id="search-description">엔터를 누르면 검색이 됩니다.</p>
-    <div id="search-results"></div> <!-- 검색 결과를 표시할 영역 -->
+    <ul class="Lognav">
+      <li><a href="/loginForm" id="loginLink">LOGIN</a></li>
+      <li><a href="/account">ACCOUNT</a></li>
+      <li><a href="#">BAG(0)</a></li>
+    </ul>
   </div>
-</div>
 
-  <h2 style="margin-top: 40px; margin-bottom: 40px;">주문 조회</h2>
-  <div class="page">
-    <div class="layout" style="max-width: 840px;">
-      <div class="search-area">
-        <span>기간 조회</span>
-        <input class="date-input" type="date" id="startDate">
-        <span>~</span>
-        <input class="date-input" type="date" id="endDate">
-        <span style="margin-left: 30px;">주문번호</span>
-        <input id="orderId">
-        <button class="search-btn" id="searchButton">조회</button>
-      </div>
-
-      <div class="orders-list-area">
-        <div class="orders-list-nav">
-          <div class="orders-list-layout">
-            <chip class="orders-info-chip">총 금액</chip>
-            <span id="totalAmount"></span>
-            <chip class="orders-info-chip">주문 건수</chip>
-            <span id="listLength"></span>
-            <chip class="orders-info-chip">기준일수</chip>
-            <span id="dateLength"></span>
-          </div>
-          <select class="search-option">
-            <option>최신순</option>
-            <option>가격순</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="orders-list-title">
-        <p style="width: 100px;">주문번호</p>
-        <p style="width: 250px;">주문상품</p>
-        <p style="width: 120px;">주문일</p>
-        <p style="width: 115px;">주문상태</p>
-        <p style="width: 115px;">주문상품수</p>
-        <p style="width: 140px;">주문가격</p>
-      </div>
-
-      <div id="orderList">
-        <div class="orders-list">
-          <p style="font-weight: bold; width: 100px;">12345678105</p>
-          <div style="display: flex; justify-content: center; align-items: center; width: 250px;">
-            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">17 MESH BLOCK
-              FOOTBALL JERSEY - WHITE</p>
-            <chip class="chip gray-chip" style="margin-left: 5px;">주문상세</chip>
-          </div>
-          <p style="width: 120px;">2024-05-18</p>
-          <div style="width: 115px; display: flex; justify-content: center;">
-            <chip class="chip blue-chip">주문완료</chip>
-          </div>
-          <p style="font-weight: bold; width: 115px;">35</p>
-          <p style="font-weight: bold; width: 140px;">KRW 100,350,000</p>
-        </div>
-      </div>
-      <p id="noOrdersMessage" style="display: none; text-align: center; margin-top: 20px;">주문 내역이 없습니다</p>
+  <!-- 검색 모달 -->
+  <div id="search-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <input type="text" id="search-input" class="underline-input" placeholder="검색어를 입력하세요">
+      <p id="search-description">엔터를 누르면 검색이 됩니다.</p>
+      <div id="search-results"></div> <!-- 검색 결과를 표시할 영역 -->
     </div>
   </div>
-  <button id="scrollToTopBtn" onclick="scrollToTop()">Top</button>
+</div>
+
+
+<h2 style="margin-top: 40px; margin-bottom: 40px;">주문 조회</h2>
+<div class="page">
+  <div class="layout" style="max-width: 840px;">
+    <div class="search-area">
+      <span>기간 조회</span>
+      <input class="date-input" type="date" id="startDate">
+      <span>~</span>
+      <input class="date-input" type="date" id="endDate">
+      <span style="margin-left: 30px;">주문번호</span>
+      <input id="orderId">
+      <button class="search-btn" id="searchButton">조회</button>
+    </div>
+
+    <div class="orders-list-area">
+      <div class="orders-list-nav">
+        <div class="orders-list-layout">
+          <chip class="orders-info-chip">총 금액</chip>
+          <span id="totalAmount"></span>
+          <chip class="orders-info-chip">주문 건수</chip>
+          <span id="listLength"></span>
+          <chip class="orders-info-chip">기준일수</chip>
+          <span id="dateLength"></span>
+        </div>
+        <select class="search-option">
+          <option>최신순</option>
+          <option>가격순</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="orders-list-title">
+      <p style="width: 100px;">주문번호</p>
+      <p style="width: 250px;">주문상품</p>
+      <p style="width: 120px;">주문일</p>
+      <p style="width: 115px;">주문상태</p>
+      <p style="width: 115px;">주문상품수</p>
+      <p style="width: 140px;">주문가격</p>
+    </div>
+
+    <div id="orderList">
+      <div class="orders-list">
+        <p style="font-weight: bold; width: 100px;">12345678105</p>
+        <div style="display: flex; justify-content: center; align-items: center; width: 250px;">
+          <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">17 MESH BLOCK
+            FOOTBALL JERSEY - WHITE</p>
+          <chip class="chip gray-chip" style="margin-left: 5px;">주문상세</chip>
+        </div>
+        <p style="width: 120px;">2024-05-18</p>
+        <div style="width: 115px; display: flex; justify-content: center;">
+          <chip class="chip blue-chip">주문완료</chip>
+        </div>
+        <p style="font-weight: bold; width: 115px;">35</p>
+        <p style="font-weight: bold; width: 140px;">KRW 100,350,000</p>
+      </div>
+    </div>
+    <p id="noOrdersMessage" style="display: none; text-align: center; margin-top: 20px;">주문 내역이 없습니다</p>
+  </div>
+</div>
+<button id="scrollToTopBtn" onclick="scrollToTop()">Top</button>
 </body>
 </html>

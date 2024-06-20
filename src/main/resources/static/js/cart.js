@@ -22,6 +22,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function loadCartItemsFromLocalStorage() {
     const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    cartItems.forEach(item => {
+        // 가격을 숫자로 변환
+        if (typeof item.price === 'string') {
+            item.price = parseInt(item.price.replace('원', '').trim(), 10);
+        }
+    });
     renderCartItems(cartItems);
     loadTotalPriceFromLocalStorage();
 }
@@ -234,6 +240,13 @@ function uploadLocalCartToServer() {
         synchronizeCartWithServer();
         return;
     }
+
+    // 가격을 숫자로 변환
+    localCartItems.forEach(item => {
+        if (typeof item.price === 'string') {
+            item.price = parseInt(item.price.replace('원', '').trim(), 10);
+        }
+    });
 
     fetch('/cart/upload', {
         method: 'POST',

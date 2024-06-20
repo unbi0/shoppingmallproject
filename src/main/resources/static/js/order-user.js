@@ -49,7 +49,7 @@ function fetchOrder(reset = false) {
     size: size,
   });
 
-  fetch(`http://localhost:8080/orders?${params.toString()}`, {
+  fetch(`/orders?${params.toString()}`, {
       method: "GET"
     }
   )
@@ -107,7 +107,7 @@ function updateOrderList(data) {
           order.productName
         ).join(", ")}</p>
         <chip id="orderDetailBtn" class="chip gray-chip" style="margin-left: 5px;">
-          <a href="./order/${order.orderId}">주문상세</a>
+          <a href="/order/${order.orderId}">주문상세</a>
         </chip>
       </div>
       <p style="width: 120px;">${formatDate(order.createAt)}</p>

@@ -1,8 +1,5 @@
 package elice.shoppingmallproject.domain.cart.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 
 import elice.shoppingmallproject.domain.cart.dto.CartCreateDTO;
@@ -17,9 +14,15 @@ import elice.shoppingmallproject.domain.user.entity.User;
 import elice.shoppingmallproject.domain.user.repository.UserRepository;
 import elice.shoppingmallproject.global.util.UserUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CartService {
 
     private final CartRepository cartRepository;
@@ -29,18 +32,33 @@ public class CartService {
 
     public CartResponseDTO addCart(CartCreateDTO cartCreateDTO) {
         Long userId = userUtil.getAuthenticatedUser();
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("조회된 유저가 없습니다."));
+
         ProductOption productOption = productOptionRepository.findById(cartCreateDTO.getOptionId())
-                .orElseThrow(() -> new RuntimeException("Product option not found"));
+                .orElseThrow(() -> {
+                    log.error("Product option not found for optionId: {}", cartCreateDTO.getOptionId());
+                    return new RuntimeException("Product option not found");
+                });
+
+        log.info("Found product option: {}", productOption);
+
         Product product = productOption.getProduct();
-        Cart cart = new Cart(productOption, product, user, cartCreateDTO.getQuantity());
+        String imageUrl = product.getImages().get(0).getUrl();
+
+        Cart cart = new Cart(productOption, product, user, cartCreateDTO.getQuantity(), imageUrl);
         cart = cartRepository.save(cart);
         return toCartResponseDTO(cart);
     }
-    
+
     public List<CartResponseDTO> getCartItems() {
         Long userId = userUtil.getAuthenticatedUser();
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
         List<Cart> cartItems = cartRepository.findByUserId(userId);
         return cartItems.stream()
                 .map(this::toCartResponseDTO)
@@ -49,20 +67,32 @@ public class CartService {
 
     public CartResponseDTO updateCartItem(Long cartId, int quantity) {
         Long userId = userUtil.getAuthenticatedUser();
-        Cart cart = cartRepository.findByCartIdAndUserId(cartId, userId);
-
-        if (cart != null) {
-            cart.setQuantity(quantity);
-            cart = cartRepository.save(cart);
-        } else {
-            throw new RuntimeException("Cart item not found or does not belong to the user.");
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
         }
 
-        return toCartResponseDTO(cart);
+        Optional<Cart> optionalCart = cartRepository.findById(cartId);
+        if (optionalCart.isPresent()) {
+            Cart cart = optionalCart.get();
+            if (!cart.getUser().getId().equals(userId)) {
+                log.error("Cart item with id {} does not belong to user with id {}", cartId, userId);
+                throw new RuntimeException("Cart item not found or does not belong to the user.");
+            }
+            log.info("Updating cart item: {}, new quantity: {}", cartId, quantity);
+            cart.setQuantity(quantity);
+            cart = cartRepository.save(cart);
+            return toCartResponseDTO(cart);
+        } else {
+            log.error("Cart item with id {} not found", cartId);
+            throw new RuntimeException("Cart item not found or does not belong to the user.");
+        }
     }
 
     public void deleteCartItem(Long cartId) {
         Long userId = userUtil.getAuthenticatedUser();
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
         Cart cart = cartRepository.findByCartIdAndUserId(cartId, userId);
 
         if (cart != null) {
@@ -74,13 +104,18 @@ public class CartService {
 
     public void deleteAllCartItems() {
         Long userId = userUtil.getAuthenticatedUser();
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
         List<Cart> userCarts = cartRepository.findByUserId(userId);
         cartRepository.deleteAll(userCarts);
     }
 
-    // 총 가격 계산 메서드 추가
     public double getTotalPrice() {
         Long userId = userUtil.getAuthenticatedUser();
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
         List<Cart> cartItems = cartRepository.findByUserId(userId);
         return cartItems.stream()
                 .mapToDouble(cart -> cart.getProduct().getPrice() * cart.getQuantity())
@@ -92,13 +127,8 @@ public class CartService {
             return null;
         }
 
-        ProductOption productOption = cart.getProductOption(); // 즉시 로딩 사용
-        Product product = productOption.getProduct(); // 즉시 로딩 사용
-        // 이미지 URL 가져오기
-        //String productImageUrl = null;
-        //if (product.getImages() != null && !product.getImages().isEmpty()) {
-        //    productImageUrl = product.getImages().get(0).getUrl();
-        //}
+        ProductOption productOption = cart.getProductOption();
+        Product product = productOption.getProduct();
 
         CartResponseDTO cartResponseDTO = new CartResponseDTO();
         cartResponseDTO.setCartId(cart.getCartId());
@@ -107,8 +137,8 @@ public class CartService {
         cartResponseDTO.setQuantity(cart.getQuantity());
         cartResponseDTO.setProductName(product.getName());
         cartResponseDTO.setProductPrice(product.getPrice());
-        // cartResponseDTO.setProductImageUrl(productImageUrl);
-        cartResponseDTO.setProductSize(productOption.getOptionSize()); // 상품 사이즈 추가
+        cartResponseDTO.setProductSize(productOption.getOptionSize());
+        cartResponseDTO.setImageUrl(product.getImages().get(0).getUrl());
 
         return cartResponseDTO;
     }

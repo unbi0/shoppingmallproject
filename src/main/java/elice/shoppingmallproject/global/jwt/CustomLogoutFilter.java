@@ -21,6 +21,7 @@ public class CustomLogoutFilter extends GenericFilter {
 
     private static final String LOGOUT_URI = "/logout";
     private static final String LOGOUT_METHOD = "POST";
+    private static final String ACCESS_COOKIE_NAME = "access";
     private static final String REFRESH_COOKIE_NAME = "refresh";
 
     private final RefreshRepository refreshRepository;
@@ -61,7 +62,7 @@ public class CustomLogoutFilter extends GenericFilter {
         // 로그아웃 진행
         // refersh token DB에서 삭제, refresh token cookie 값 -> 0
         refreshRepository.deleteByToken(refreshToken);
-        clearRefreshTokenCookie(httpResponse);
+        clearTokenCookies(httpResponse);
 
         httpResponse.setStatus(HttpServletResponse.SC_OK);
     }
@@ -80,8 +81,15 @@ public class CustomLogoutFilter extends GenericFilter {
                 .findFirst()
                 .orElse(null);
     }
-    private void clearRefreshTokenCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie(REFRESH_COOKIE_NAME, null);
+
+
+    private void clearTokenCookies(HttpServletResponse response) {
+        clearCookie(response, REFRESH_COOKIE_NAME);
+        clearCookie(response, ACCESS_COOKIE_NAME); // 추가된 부분
+    }
+
+    private void clearCookie(HttpServletResponse response, String cookieName) {
+        Cookie cookie = new Cookie(cookieName, null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);

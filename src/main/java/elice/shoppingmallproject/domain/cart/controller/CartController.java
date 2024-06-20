@@ -1,20 +1,15 @@
 package elice.shoppingmallproject.domain.cart.controller;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.*;
 
 import elice.shoppingmallproject.domain.cart.dto.CartCreateDTO;
 import elice.shoppingmallproject.domain.cart.dto.CartResponseDTO;
 import elice.shoppingmallproject.domain.cart.service.CartService;
 import elice.shoppingmallproject.global.util.UserUtil;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/cart")
@@ -30,6 +25,8 @@ public class CartController {
 
     @PostMapping
     public CartResponseDTO addToCart(@RequestBody CartCreateDTO cartCreateDTO) {
+        Assert.notNull(cartCreateDTO, "CartCreateDTO must not be null");
+        Assert.notNull(cartCreateDTO.getOptionId(), "Option ID must not be null");
         return cartService.addCart(cartCreateDTO);
     }
 
@@ -39,17 +36,19 @@ public class CartController {
     }
 
     @PutMapping("/{cartId}")
-    public CartResponseDTO updateCartItem(@PathVariable Long cartId, @RequestBody int quantity) {
+    public CartResponseDTO updateCartItem(@PathVariable("cartId") Long cartId, @RequestBody Map<String, Integer> request) {
+        int quantity = request.get("quantity");
+        System.out.println("Updating cart item: " + cartId + " with quantity: " + quantity);
         return cartService.updateCartItem(cartId, quantity);
     }
-    
-    @GetMapping("/total") // 총 가격을 반환하는 메서드 추가
+
+    @GetMapping("/total")
     public double getTotalPrice() {
         return cartService.getTotalPrice();
     }
 
     @DeleteMapping("/{cartId}")
-    public void deleteCartItem(@PathVariable Long cartId) {
+    public void deleteCartItem(@PathVariable("cartId") Long cartId) {
         cartService.deleteCartItem(cartId);
     }
 

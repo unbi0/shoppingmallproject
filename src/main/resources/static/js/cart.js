@@ -1,153 +1,206 @@
-// 장바구니 관련 로직을 처리하는 파일입니다.
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('/loginCheck')
+        .then(response => {
+            if (response.status === 204) {
+                synchronizeCartWithServer();
+            } else {
+                loadCartItemsFromLocalStorage();
+                loadTotalPriceFromLocalStorage();
+            }
+        })
+        .catch(error => {
+            console.error('Error checking login status:', error);
+            loadCartItemsFromLocalStorage();
+            loadTotalPriceFromLocalStorage();
+        });
 
-// 장바구니 데이터를 로컬스토리지에서 가져오는 함수
-function getLocalCart() {
-    const cart = localStorage.getItem('cart');
-    return cart ? JSON.parse(cart) : [];
+    // "주문하기" 버튼 클릭 이벤트 처리
+    const orderButton = document.getElementById('order-button');
+    orderButton.addEventListener('click', handleOrder);
+});
+
+function loadCartItemsFromLocalStorage() {
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    renderCartItems(cartItems);
+    loadTotalPriceFromLocalStorage();
 }
 
-// 장바구니 데이터를 로컬스토리지에 저장하는 함수
-function setLocalCart(cart) {
-    localStorage.setItem('cart', JSON.stringify(cart));
+function loadTotalPriceFromLocalStorage() {
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    const totalPrice = cartItems.reduce((total, item) => total + (item.productPrice * item.quantity), 0);
+    document.getElementById('total-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
+    document.getElementById('final-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
 }
 
-// 로그인 여부를 확인하는 함수
-function isUserLoggedIn() {
-    // 실제 구현에 따라 로그인 여부를 확인하는 로직을 추가하세요.
-    // 예를 들어, 쿠키나 로컬스토리지에서 토큰을 확인할 수 있습니다.
-    return !!localStorage.getItem('authToken');
+function synchronizeCartWithServer() {
+    fetch('/cart')
+        .then(response => response.json())
+        .then(serverCartItems => {
+            const localCartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            const mergedCartItems = mergeCarts(localCartItems, serverCartItems);
+            localStorage.setItem('cart', JSON.stringify(mergedCartItems));
+            renderCartItems(mergedCartItems);
+            loadTotalPriceFromLocalStorage();
+        })
+        .catch(error => console.error('Error synchronizing cart with server:', error));
 }
 
-// 로그인 상태에 따라 장바구니 데이터를 가져오는 함수
-function loadCartData() {
-    if (isUserLoggedIn()) {
-        // 로그인 상태라면 서버에서 장바구니 데이터를 가져옵니다.
-        fetch('/api/cart')
-            .then(response => response.json())
-            .then(cartItems => {
-                renderCartItems(cartItems);
-                calculateAndDisplayTotalPrice(cartItems);
-            });
-    } else {
-        // 비로그인 상태라면 로컬스토리지에서 장바구니 데이터를 가져옵니다.
-        const cartItems = getLocalCart();
-        renderCartItems(cartItems);
-        calculateAndDisplayTotalPrice(cartItems);
-    }
+function mergeCarts(localCartItems, serverCartItems) {
+    const mergedCart = [...serverCartItems];
+    localCartItems.forEach(localItem => {
+        const existingItem = mergedCart.find(item => item.optionId === localItem.optionId);
+        if (existingItem) {
+            existingItem.quantity = Math.max(existingItem.quantity, localItem.quantity);
+        } else {
+            mergedCart.push(localItem);
+        }
+    });
+    return mergedCart;
 }
 
-// 장바구니 아이템을 화면에 렌더링하는 함수
 function renderCartItems(cartItems) {
-    const cartContainer = document.getElementById('cart-container');
+    const cartContainer = document.getElementById('cart-items');
+    const itemCount = document.getElementById('item-count');
     cartContainer.innerHTML = '';
+    let totalItems = 0;
 
     cartItems.forEach(item => {
-        const row = document.createElement('tr');
-
-        row.innerHTML = `
-            <td><img src="${item.productImageUrl}" alt="Product Image" width="50" height="50"></td>
-            <td>${item.productName}</td>
-            <td>${item.productSize}</td>
-            <td>${item.productPrice}</td>
-            <td>${item.quantity}</td>
-            <td>
-                <input type="number" value="${item.quantity}" min="1" onchange="updateCartItem(${item.cartId}, this.value)">
-                <button onclick="deleteCartItem(${item.cartId})">Delete</button>
-            </td>
+        totalItems += item.quantity;
+        const cartItem = document.createElement('div');
+        cartItem.classList.add('cart-item');
+        cartItem.innerHTML = `
+            <img src="${item.imageUrl}" alt="${item.productName}">
+            <div class="item-details">
+                <h2>${item.productName}</h2>
+                <p class="price">Unit Price: KRW ${item.productPrice.toFixed(2)}</p>
+                <p class="price">Total: KRW ${(item.productPrice * item.quantity).toFixed(2)}</p>
+                <p class="size">Size: ${item.productSize}</p>
+                <div class="quantity">
+                    <button onclick="updateQuantity(${item.cartId}, ${item.quantity - 1})">-</button>
+                    <span>${item.quantity}</span>
+                    <button onclick="updateQuantity(${item.cartId}, ${item.quantity + 1})">+</button>
+                </div>
+            </div>
+            <button class="remove" onclick="removeCartItem(${item.cartId})">삭제</button>
         `;
-
-        cartContainer.appendChild(row);
+        cartContainer.appendChild(cartItem);
     });
+
+    itemCount.textContent = totalItems;
 }
 
-// 총 가격을 계산하고 HTML에 표시하는 함수
-function calculateAndDisplayTotalPrice(cartItems) {
-    const totalPrice = cartItems.reduce((total, item) => {
-        return total + (item.productPrice * item.quantity);
-    }, 0);
-
-    const totalPriceContainer = document.getElementById('total-price-container');
-    totalPriceContainer.textContent = 'Total Price: ' + totalPrice + ' 원';
+function updateTotalPrice(cartItems) {
+    const totalPrice = cartItems.reduce((total, item) => total + (item.productPrice * item.quantity), 0);
+    document.getElementById('total-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
+    document.getElementById('final-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
 }
 
-// 장바구니 아이템을 업데이트하는 함수
-function updateCartItem(cartId, quantity) {
-    if (isUserLoggedIn()) {
-        // 로그인 상태라면 서버에 업데이트 요청을 보냅니다.
-        fetch(`/api/cart/${cartId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ quantity }),
-        }).then(loadCartData);
-    } else {
-        // 비로그인 상태라면 로컬스토리지에서 업데이트합니다.
-        const cart = getLocalCart();
-        const itemIndex = cart.findIndex(item => item.cartId === cartId);
-        if (itemIndex !== -1) {
-            cart[itemIndex].quantity = quantity;
-            setLocalCart(cart);
-            loadCartData();
-        }
+function updateQuantity(cartId, quantity) {
+    console.log(`Updating quantity for cartId: ${cartId}, quantity: ${quantity}`);
+    if (quantity < 1) {
+        removeCartItem(cartId);
+        return;
     }
+
+    fetch(`/cart/${cartId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ quantity: quantity })
+    })
+        .then(response => {
+            console.log('Server response:', response);
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    console.error('Error details:', errorData);
+                    throw new Error('Error updating quantity');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Updated cart item:', data);
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            const updatedCartItems = cartItems.map(item => item.cartId === cartId ? { ...item, quantity: data.quantity } : item);
+            localStorage.setItem('cart', JSON.stringify(updatedCartItems));
+            renderCartItems(updatedCartItems);
+            updateTotalPrice(updatedCartItems);
+        })
+        .catch(error => {
+            console.error('Error updating quantity:', error);
+        });
 }
 
-// 장바구니 아이템을 삭제하는 함수
-function deleteCartItem(cartId) {
-    if (isUserLoggedIn()) {
-        // 로그인 상태라면 서버에 삭제 요청을 보냅니다.
-        fetch(`/api/cart/${cartId}`, {
-            method: 'DELETE',
-        }).then(loadCartData);
-    } else {
-        // 비로그인 상태라면 로컬스토리지에서 삭제합니다.
-        const cart = getLocalCart();
-        const updatedCart = cart.filter(item => item.cartId !== cartId);
-        setLocalCart(updatedCart);
-        loadCartData();
-    }
+function removeCartItem(cartId) {
+    console.log(`Removing cart item with cartId: ${cartId}`);
+    fetch(`/cart/${cartId}`, {
+        method: 'DELETE'
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    console.error('Error details:', errorData);
+                    throw new Error('Error removing cart item');
+                });
+            }
+            console.log('Cart item removed');
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            const updatedCartItems = cartItems.filter(item => item.cartId !== cartId);
+            localStorage.setItem('cart', JSON.stringify(updatedCartItems));
+            renderCartItems(updatedCartItems);
+            updateTotalPrice(updatedCartItems);
+        })
+        .catch(error => {
+            console.error('Error removing cart item:', error);
+        });
 }
 
-// 전체 장바구니를 비우는 함수
 function clearCart() {
-    if (isUserLoggedIn()) {
-        fetch('/api/cart/all', {
-            method: 'DELETE',
-        }).then(loadCartData);
-    } else {
-        localStorage.removeItem('cart');
-        loadCartData();
-    }
+    fetch('/cart/all', {
+        method: 'DELETE'
+    })
+        .then(() => {
+            localStorage.setItem('cart', JSON.stringify([]));
+            loadCartItemsFromLocalStorage();
+            loadTotalPriceFromLocalStorage();
+        });
 }
 
-// 장바구니 초기화
-document.addEventListener('DOMContentLoaded', loadCartData);
+// 주문하기 버튼 클릭 이벤트 핸들러
+function handleOrder() {
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    const orderData = cartItems.map(item => ({
+        productId: item.optionId, // Assuming optionId is the productId
+        productName: item.productName,
+        price: item.productPrice,
+        optionSize: item.productSize,
+        count: item.quantity,
+        imageUrl: item.imageUrl
+    }));
 
-// 'Add to Cart' 버튼 클릭 시 처리하는 함수 (예제)
-document.getElementById('addToCartButton').addEventListener('click', () => {
-    const productId = document.getElementById('productId').value;
-    const quantity = document.getElementById('quantity').value;
-
-    if (isUserLoggedIn()) {
-        fetch('/api/cart', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ productId, quantity }),
-        }).then(loadCartData);
-    } else {
-        const cart = getLocalCart();
-        const itemIndex = cart.findIndex(item => item.productId === productId);
-
-        if (itemIndex !== -1) {
-            cart[itemIndex].quantity += parseInt(quantity);
-        } else {
-            cart.push({ cartId: Date.now(), productId, quantity: parseInt(quantity), productImageUrl: 'example.jpg', productName: 'Example', productSize: 'M', productPrice: '100' });
-        }
-
-        setLocalCart(cart);
-        loadCartData();
-    }
-});
+    // orderData를 서버로 전송
+    fetch('/orders', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    console.error('Error details:', errorData);
+                    throw new Error('Error submitting order');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Order submitted successfully:', data);
+            location.href = '/order/order.html'; // 주문서 작성 페이지로 이동
+        })
+        .catch(error => {
+            console.error('Error submitting order:', error);
+        });
+}

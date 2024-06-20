@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "장바구니")
+@Table(name = "cart")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -42,16 +42,22 @@ public class Cart {
 
     @Column(nullable = false)
     private int quantity;
+    private String imageUrl;  // 이미지 URL 필드 추가
 
     // 총 가격을 계산하는 메서드 추가
     public double getTotalPrice() {
         return this.product.getPrice() * this.quantity;
     }
 
-    public Cart(ProductOption productOption, Product product, User user, int quantity) {
+    public Cart(ProductOption productOption, Product product, User user, int quantity,String imageUrl) {
         this.productOption = productOption;
         this.product = product;
         this.user = user;
         this.quantity = quantity;
+        this.imageUrl = imageUrl;
+
     }
 }
+
+
+

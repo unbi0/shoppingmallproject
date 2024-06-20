@@ -40,4 +40,8 @@ public class ProductOption {
         }
         this.stock -= count;
     }
+
+    public void increaseStock(int count){
+        this.stock += count;
+    }
 }

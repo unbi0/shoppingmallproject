@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', function () {
             loadCartItemsFromLocalStorage();
             loadTotalPriceFromLocalStorage();
         });
+
+    // "주문하기" 버튼 클릭 이벤트 처리
+    const orderButton = document.getElementById('order-button');
+    orderButton.addEventListener('click', handleOrder);
 });
 
 function loadCartItemsFromLocalStorage() {
@@ -85,15 +89,10 @@ function renderCartItems(cartItems) {
     itemCount.textContent = totalItems;
 }
 
-function loadTotalPrice() {
-    fetch('/cart/total')
-        .then(response => response.json())
-        .then(data => {
-            const totalPrice = data;
-            const discount = 103200;
-            document.getElementById('total-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
-            document.getElementById('final-price').textContent = `KRW ${(totalPrice - discount).toFixed(2)}`;
-        });
+function updateTotalPrice(cartItems) {
+    const totalPrice = cartItems.reduce((total, item) => total + (item.productPrice * item.quantity), 0);
+    document.getElementById('total-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
+    document.getElementById('final-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
 }
 
 function updateQuantity(cartId, quantity) {
@@ -126,7 +125,7 @@ function updateQuantity(cartId, quantity) {
             const updatedCartItems = cartItems.map(item => item.cartId === cartId ? { ...item, quantity: data.quantity } : item);
             localStorage.setItem('cart', JSON.stringify(updatedCartItems));
             renderCartItems(updatedCartItems);
-            loadTotalPriceFromLocalStorage();
+            updateTotalPrice(updatedCartItems);
         })
         .catch(error => {
             console.error('Error updating quantity:', error);
@@ -150,7 +149,7 @@ function removeCartItem(cartId) {
             const updatedCartItems = cartItems.filter(item => item.cartId !== cartId);
             localStorage.setItem('cart', JSON.stringify(updatedCartItems));
             renderCartItems(updatedCartItems);
-            loadTotalPriceFromLocalStorage();
+            updateTotalPrice(updatedCartItems);
         })
         .catch(error => {
             console.error('Error removing cart item:', error);
@@ -165,5 +164,43 @@ function clearCart() {
             localStorage.setItem('cart', JSON.stringify([]));
             loadCartItemsFromLocalStorage();
             loadTotalPriceFromLocalStorage();
+        });
+}
+
+// 주문하기 버튼 클릭 이벤트 핸들러
+function handleOrder() {
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    const orderData = cartItems.map(item => ({
+        productId: item.optionId, // Assuming optionId is the productId
+        productName: item.productName,
+        price: item.productPrice,
+        optionSize: item.productSize,
+        count: item.quantity,
+        imageUrl: item.imageUrl
+    }));
+
+    // orderData를 서버로 전송
+    fetch('/orders', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    console.error('Error details:', errorData);
+                    throw new Error('Error submitting order');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Order submitted successfully:', data);
+            location.href = '/order/order.html'; // 주문서 작성 페이지로 이동
+        })
+        .catch(error => {
+            console.error('Error submitting order:', error);
         });
 }

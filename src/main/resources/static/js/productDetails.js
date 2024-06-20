@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let optionId = null;
     let quantity = 1; // 초기 수량 설정
     const sizeQuantities = {}; // 각 사이즈별 수량을 저장하는 객체
+    let isCart = false;
+    let productList = [];
 
     const pathArray = window.location.pathname.split('/');
     const productId = pathArray[pathArray.length - 1];
@@ -103,6 +105,8 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/loginCheck')
             .then(response => {
                 if (response.status === 204) { // HTTP 204 No Content
+
+                    //키값을 productlist로 해서 로컬스토리지에 저장하되, list형식으로 여러개 담을 수 있게 하기
                     const productDetails = {
                         id: productId,
                         size: selectedSize,
@@ -110,7 +114,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         price: document.getElementById('product-price').textContent,
                         imageUrl: document.getElementById('product-image-1').src
                     };
+
+                    productList.push(productDetails);
+
+                    //키값을 productlist로 해서 로컬스토리지에 저장
+                    //로컬스토리이제 iscart라는 키값으로 bool타입으로 default로 false 보내기
+                    window.localStorage.setItem('productList',JSON.stringify(productList));
+                    window.localStorage.setItem('isCart',JSON.stringify(isCart));
                     window.location.href = `/order`;
+
                 } else if (response.status === 401) { // HTTP 401 Unauthorized
                     alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
                     window.location.href = `/loginForm`; // 로그인 페이지로 리다이렉트
@@ -137,10 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         quantity: quantity
                     };
 
-                    console.log('Sending cart data:', cartCreateDTO);
-                    console.log('quantity:', quantity);
-                    console.log('optionId:', optionId);
-
                     fetch('/cart', {
                         method: 'POST',
                         headers: {
@@ -159,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         .then(data => {
                             console.log('Success:', data);
                             alert('장바구니에 상품이 추가되었습니다.');
-                            window.location.href =`/cart/view`;
+                            window.location.href = `/cart/view`;
                         })
                         .catch((error) => {
                             console.error('Error:', error);
@@ -167,13 +175,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
 
                 } else if (response.status === 401) { // HTTP 401 Unauthorized
-
-                    localStorage.setItem('quantity', quantity);
-                    localStorage.setItem('optionId', optionId);
-
-                    //console.log('quantity', quantity);
-                    //console.log('optionId', optionId);
-
+                    //로그인 하지 않았을 때 로컬스토리지에 저장되는 값
+                    const productDetails = {
+                        id: productId,
+                        size: selectedSize,
+                        quantity: quantity,
+                        price: document.getElementById('product-price').textContent,
+                        imageUrl: document.getElementById('product-image-1').src,
+                        optionId: optionId
+                    };
+                    console.log('Test productDetails:', productDetails);
+                    console.log('Test optionId:', optionId);
+                    
                     alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
                     window.location.href = `/loginForm`; // 로그인 페이지로 리다이렉트
                 } else {

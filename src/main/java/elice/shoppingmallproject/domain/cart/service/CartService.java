@@ -1,8 +1,5 @@
 package elice.shoppingmallproject.domain.cart.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 
 import elice.shoppingmallproject.domain.cart.dto.CartCreateDTO;
@@ -18,6 +15,10 @@ import elice.shoppingmallproject.domain.user.repository.UserRepository;
 import elice.shoppingmallproject.global.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,16 +70,22 @@ public class CartService {
         if (userId == null) {
             throw new IllegalArgumentException("User ID must not be null");
         }
-        Cart cart = cartRepository.findByCartIdAndUserId(cartId, userId);
 
-        if (cart != null) {
+        Optional<Cart> optionalCart = cartRepository.findById(cartId);
+        if (optionalCart.isPresent()) {
+            Cart cart = optionalCart.get();
+            if (!cart.getUser().getId().equals(userId)) {
+                log.error("Cart item with id {} does not belong to user with id {}", cartId, userId);
+                throw new RuntimeException("Cart item not found or does not belong to the user.");
+            }
+            log.info("Updating cart item: {}, new quantity: {}", cartId, quantity);
             cart.setQuantity(quantity);
             cart = cartRepository.save(cart);
+            return toCartResponseDTO(cart);
         } else {
+            log.error("Cart item with id {} not found", cartId);
             throw new RuntimeException("Cart item not found or does not belong to the user.");
         }
-
-        return toCartResponseDTO(cart);
     }
 
     public void deleteCartItem(Long cartId) {
@@ -104,7 +111,6 @@ public class CartService {
         cartRepository.deleteAll(userCarts);
     }
 
-    // 총 가격 계산 메서드 추가
     public double getTotalPrice() {
         Long userId = userUtil.getAuthenticatedUser();
         if (userId == null) {
@@ -121,8 +127,8 @@ public class CartService {
             return null;
         }
 
-        ProductOption productOption = cart.getProductOption(); // 즉시 로딩 사용
-        Product product = productOption.getProduct(); // 즉시 로딩 사용
+        ProductOption productOption = cart.getProductOption();
+        Product product = productOption.getProduct();
 
         CartResponseDTO cartResponseDTO = new CartResponseDTO();
         cartResponseDTO.setCartId(cart.getCartId());
@@ -131,7 +137,7 @@ public class CartService {
         cartResponseDTO.setQuantity(cart.getQuantity());
         cartResponseDTO.setProductName(product.getName());
         cartResponseDTO.setProductPrice(product.getPrice());
-        cartResponseDTO.setProductSize(productOption.getOptionSize()); // 상품 사이즈 추가
+        cartResponseDTO.setProductSize(productOption.getOptionSize());
         cartResponseDTO.setImageUrl(product.getImages().get(0).getUrl());
 
         return cartResponseDTO;

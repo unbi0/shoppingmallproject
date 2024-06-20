@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService{
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ProductOptionRepository productOptionRepository;
-//    private final CartService cartService;
+    private final CartService cartService;
     private final UserUtil userUtil;
 
     // 관리자 : 주문 조회
@@ -66,7 +66,6 @@ public class OrderServiceImpl implements OrderService{
                 .map(orderDetail -> orderDetail.getProductOption().getProduct().getName())
                 .collect(Collectors.toList()),
             order.getOrderStatus(),
-//            order.getUser().getUsername(),
             order.getRecipientName(),
             order.getPostCode(),
             order.getDeliveryAddress(),
@@ -92,8 +91,8 @@ public class OrderServiceImpl implements OrderService{
                         orderDetail.getProductOption().getProduct().getName(),
                         orderDetail.getPrice(),
                         orderDetail.getProductOption().getOptionSize(),
-                        orderDetail.getCount()
-//                        orderDetail.getProductOption().getProduct().getImages().get(0).getUrl()
+                        orderDetail.getCount(),
+                        orderDetail.getProductOption().getProduct().getImages().get(0).getUrl()
                     ))
                     .collect(Collectors.toList());
 

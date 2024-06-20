@@ -98,7 +98,6 @@ function updateTotalPrice(cartItems) {
 function updateQuantity(cartId, quantity) {
     console.log(`Updating quantity for cartId: ${cartId}, quantity: ${quantity}`);
     if (quantity < 1) {
-        removeCartItem(cartId);
         return;
     }
 

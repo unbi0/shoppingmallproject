@@ -42,6 +42,8 @@ public class Cart {
 
     @Column(nullable = false)
     private int quantity;
+
+    @Column
     private String imageUrl;  // 이미지 URL 필드 추가
     // 총 가격을 계산하는 메서드 추가
     public double getTotalPrice() {

@@ -166,7 +166,7 @@ function deleteOrder() {
       if (response.ok) {
         alert("주문이 취소되었습니다.");
         // 주문 목록 페이지로 이동하거나 페이지를 새로고침
-        window.location.href = "/order-user";
+        window.location.href = "/user/order";
       } else {
         alert("주문 취소에 실패했습니다.");
       }

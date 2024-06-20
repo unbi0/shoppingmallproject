@@ -30,7 +30,7 @@ document.getElementById('productForm').addEventListener('submit', function(event
     }
     
     ///admin/api/product
-    fetch('/api/product/create', {
+    fetch('/admin/api/product', {
         method: 'POST',
         body: formData
     })

@@ -132,7 +132,7 @@ public class CartService {
         Product product = productOption.getProduct();
 
         CartResponseDTO cartResponseDTO = new CartResponseDTO();
-        cartResponseDTO.setCartId(cart.getCartId());
+        cartResponseDTO.setCartId(cart.getId());
         cartResponseDTO.setOptionId(productOption.getOptionId());
         cartResponseDTO.setUserId(cart.getUser().getId());
         cartResponseDTO.setQuantity(cart.getQuantity());

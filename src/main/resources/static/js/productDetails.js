@@ -190,8 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Test productDetails:', productDetails);
                     console.log('Test optionId:', optionId);
 
-                    alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
-                    window.location.href = `/loginForm`;
+                    window.location.href = `/cart/view`;
                 } else {
                     alert('로그인 상태를 확인하는 중 오류가 발생했습니다.');
                 }

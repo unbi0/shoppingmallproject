@@ -115,3 +115,14 @@ a:visited {
 a:hover {
   color: inherit; 
 }
+
+.backBtn{
+  background-color: #a7a0ff;
+  border-radius: 5px;
+  border:none;
+  color: rgb(255, 255, 255);
+  padding: 5px 10px;
+}
+.backBtn:hover{
+  background-color: #8a82fc;
+}

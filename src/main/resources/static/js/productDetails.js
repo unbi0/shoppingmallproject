@@ -107,6 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
             imageUrl: document.getElementById('product-image-1').src
         };
 
-        window.location.href = `/carts`;
+        window.location.href = `/cart/view`;
     });
 });

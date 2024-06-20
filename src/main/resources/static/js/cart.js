@@ -1,12 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // 서버로부터 로그인 상태 확인
     fetch('/loginCheck')
         .then(response => {
             if (response.status === 204) {
-                // 로그인된 상태
                 synchronizeCartWithServer();
             } else {
-                // 로그인되지 않은 상태
                 loadCartItemsFromLocalStorage();
                 loadTotalPriceFromLocalStorage();
             }
@@ -18,80 +15,45 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
-// 로컬 스토리지에서 장바구니 항목을 불러와서 화면에 렌더링하는 함수
 function loadCartItemsFromLocalStorage() {
     const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    const cartContainer = document.getElementById('cart-items');
-    const itemCount = document.getElementById('item-count');
-    cartContainer.innerHTML = '';
-    let totalItems = 0;
-
-    cartItems.forEach(item => {
-        totalItems += item.quantity;
-        const cartItem = document.createElement('div');
-        cartItem.classList.add('cart-item');
-        cartItem.innerHTML = `
-            <img src="${item.productImageUrl}" alt="${item.productName}">
-            <div class="item-details">
-                <h2>${item.productName}</h2>
-                <p class="price">KRW ${item.productPrice * item.quantity}</p>
-                <div class="quantity">
-                    <button onclick="updateQuantityInLocalStorage(${item.cartId}, ${item.quantity - 1})">-</button>
-                    <span>${item.quantity}</span>
-                    <button onclick="updateQuantityInLocalStorage(${item.cartId}, ${item.quantity + 1})">+</button>
-                </div>
-            </div>
-            <button class="remove" onclick="removeCartItemFromLocalStorage(${item.cartId})">삭제</button>
-        `;
-        cartContainer.appendChild(cartItem);
-    });
-
-    itemCount.textContent = totalItems;
+    renderCartItems(cartItems);
+    loadTotalPriceFromLocalStorage();
 }
 
-// 로컬 스토리지에서 총 가격을 불러와서 화면에 렌더링하는 함수
 function loadTotalPriceFromLocalStorage() {
     const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    const totalPriceContainer = document.getElementById('total-price');
-    const finalPriceContainer = document.getElementById('final-price');
     const totalPrice = cartItems.reduce((total, item) => total + (item.productPrice * item.quantity), 0);
-
-    totalPriceContainer.textContent = `KRW ${totalPrice.toFixed(2)}`;
-    finalPriceContainer.textContent = `KRW ${(totalPrice - discount).toFixed(2)}`;
+    document.getElementById('total-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
+    document.getElementById('final-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
 }
 
-// 서버로부터 장바구니 항목을 불러와서 로컬 스토리지와 동기화하는 함수
 function synchronizeCartWithServer() {
     fetch('/cart')
         .then(response => response.json())
         .then(serverCartItems => {
             const localCartItems = JSON.parse(localStorage.getItem('cart')) || [];
             const mergedCartItems = mergeCarts(localCartItems, serverCartItems);
-
             localStorage.setItem('cart', JSON.stringify(mergedCartItems));
             renderCartItems(mergedCartItems);
-            loadTotalPrice();
+            loadTotalPriceFromLocalStorage();
         })
         .catch(error => console.error('Error synchronizing cart with server:', error));
 }
 
-// 로컬 스토리지와 서버의 장바구니를 병합하는 함수
 function mergeCarts(localCartItems, serverCartItems) {
     const mergedCart = [...serverCartItems];
-
     localCartItems.forEach(localItem => {
         const existingItem = mergedCart.find(item => item.optionId === localItem.optionId);
         if (existingItem) {
-            existingItem.quantity += localItem.quantity;
+            existingItem.quantity = Math.max(existingItem.quantity, localItem.quantity);
         } else {
             mergedCart.push(localItem);
         }
     });
-
     return mergedCart;
 }
 
-// 서버에서 장바구니 항목을 불러와서 화면에 렌더링하는 함수
 function renderCartItems(cartItems) {
     const cartContainer = document.getElementById('cart-items');
     const itemCount = document.getElementById('item-count');
@@ -103,10 +65,12 @@ function renderCartItems(cartItems) {
         const cartItem = document.createElement('div');
         cartItem.classList.add('cart-item');
         cartItem.innerHTML = `
-            <img src="${item.productImageUrl}" alt="${item.productName}">
+            <img src="${item.imageUrl}" alt="${item.productName}">
             <div class="item-details">
                 <h2>${item.productName}</h2>
-                <p class="price">KRW ${item.productPrice * item.quantity}</p>
+                <p class="price">Unit Price: KRW ${item.productPrice.toFixed(2)}</p>
+                <p class="price">Total: KRW ${(item.productPrice * item.quantity).toFixed(2)}</p>
+                <p class="size">Size: ${item.productSize}</p>
                 <div class="quantity">
                     <button onclick="updateQuantity(${item.cartId}, ${item.quantity - 1})">-</button>
                     <span>${item.quantity}</span>
@@ -121,46 +85,24 @@ function renderCartItems(cartItems) {
     itemCount.textContent = totalItems;
 }
 
-// 서버에서 총 가격을 불러와서 화면에 렌더링하는 함수
 function loadTotalPrice() {
     fetch('/cart/total')
         .then(response => response.json())
         .then(data => {
-            const totalPriceContainer = document.getElementById('total-price');
-            const finalPriceContainer = document.getElementById('final-price');
-            const discountPriceContainer = document.getElementById('discount-price');
-            const discount = 103200; // 예시 할인 금액
-            totalPriceContainer.textContent = `KRW ${data.toFixed(2)}`;
-            discountPriceContainer.textContent = `-KRW ${discount.toFixed(2)}`;
-            finalPriceContainer.textContent = `KRW ${(data - discount).toFixed(2)}`;
+            const totalPrice = data;
+            const discount = 103200;
+            document.getElementById('total-price').textContent = `KRW ${totalPrice.toFixed(2)}`;
+            document.getElementById('final-price').textContent = `KRW ${(totalPrice - discount).toFixed(2)}`;
         });
 }
 
-// 로컬 스토리지의 장바구니 항목의 수량을 업데이트하는 함수
-function updateQuantityInLocalStorage(cartId, quantity) {
-    if (quantity < 1) return;
-    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    const itemIndex = cartItems.findIndex(item => item.cartId === cartId);
-    if (itemIndex !== -1) {
-        cartItems[itemIndex].quantity = quantity;
-        localStorage.setItem('cart', JSON.stringify(cartItems));
-        loadCartItemsFromLocalStorage();
-        loadTotalPriceFromLocalStorage();
-    }
-}
-
-// 로컬 스토리지의 장바구니 항목을 삭제하는 함수
-function removeCartItemFromLocalStorage(cartId) {
-    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    cartItems = cartItems.filter(item => item.cartId !== cartId);
-    localStorage.setItem('cart', JSON.stringify(cartItems));
-    loadCartItemsFromLocalStorage();
-    loadTotalPriceFromLocalStorage();
-}
-
-// 서버에서 장바구니 항목의 수량을 업데이트하는 함수
 function updateQuantity(cartId, quantity) {
-    if (quantity < 1) return;
+    console.log(`Updating quantity for cartId: ${cartId}, quantity: ${quantity}`);
+    if (quantity < 1) {
+        removeCartItem(cartId);
+        return;
+    }
+
     fetch(`/cart/${cartId}`, {
         method: 'PUT',
         headers: {
@@ -168,29 +110,59 @@ function updateQuantity(cartId, quantity) {
         },
         body: JSON.stringify({ quantity: quantity })
     })
-        .then(response => response.json())
-        .then(() => {
-            synchronizeCartWithServer();
+        .then(response => {
+            console.log('Server response:', response);
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    console.error('Error details:', errorData);
+                    throw new Error('Error updating quantity');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Updated cart item:', data);
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            const updatedCartItems = cartItems.map(item => item.cartId === cartId ? { ...item, quantity: data.quantity } : item);
+            localStorage.setItem('cart', JSON.stringify(updatedCartItems));
+            renderCartItems(updatedCartItems);
+            loadTotalPriceFromLocalStorage();
+        })
+        .catch(error => {
+            console.error('Error updating quantity:', error);
         });
 }
 
-// 서버에서 장바구니 항목을 삭제하는 함수
 function removeCartItem(cartId) {
+    console.log(`Removing cart item with cartId: ${cartId}`);
     fetch(`/cart/${cartId}`, {
         method: 'DELETE'
     })
-        .then(() => {
-            synchronizeCartWithServer();
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    console.error('Error details:', errorData);
+                    throw new Error('Error removing cart item');
+                });
+            }
+            console.log('Cart item removed');
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            const updatedCartItems = cartItems.filter(item => item.cartId !== cartId);
+            localStorage.setItem('cart', JSON.stringify(updatedCartItems));
+            renderCartItems(updatedCartItems);
+            loadTotalPriceFromLocalStorage();
+        })
+        .catch(error => {
+            console.error('Error removing cart item:', error);
         });
 }
 
-// 장바구니를 비우는 함수
 function clearCart() {
     fetch('/cart/all', {
         method: 'DELETE'
     })
         .then(() => {
-            localStorage.setItem('cart', JSON.stringify([])); // 로컬 스토리지 초기화
+            localStorage.setItem('cart', JSON.stringify([]));
             loadCartItemsFromLocalStorage();
             loadTotalPriceFromLocalStorage();
         });

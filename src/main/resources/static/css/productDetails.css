@@ -2,10 +2,15 @@ body {
     font-family: Arial, sans-serif;
 }
 
+.header {
+    margin-bottom: 20px; /* 헤더와 콘텐츠 사이의 간격 추가 */
+}
+
 .product-detail-page {
     display: flex;
     max-width: 800px;
     margin: 0 auto;
+    margin-top: 40px; /* 추가: 헤더와 상품 상세 페이지 사이에 간격을 만듭니다 */
 }
 
 .product-images {
@@ -17,9 +22,7 @@ body {
 
 .product-image {
     background-color: #e0e0e0;
-    /* 이미지 스타일 조정 */
-    max-width: 100%;
-    height: auto;
+    height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;

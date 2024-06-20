@@ -1,18 +1,28 @@
 body {
     font-family: Arial, sans-serif;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     height: 100vh;
     background-color: #f0f0f0;
+    margin: 0;
+}
+
+.header {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 80px; /* 추가: header와 container 사이에 공간을 추가 */
 }
 
 .container {
     background-color: white;
     border: 1px solid #ccc;
     padding: 20px;
-    width: 300px;
+    width: 90%;
+    max-width: 500px; /* 수정: 최대 너비를 400px로 줄임 */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
 }
 
 .header {
@@ -39,6 +49,7 @@ body {
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    box-sizing: border-box;
 }
 
 .container input[type="file"] {

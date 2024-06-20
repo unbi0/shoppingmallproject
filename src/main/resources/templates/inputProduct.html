@@ -5,9 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 등록</title>
     <link rel="stylesheet" href="/css/inputProduct.css">
+    <link rel="stylesheet" type="text/css" href="/css/header.css">
     <script src="/js/inputProduct.js" defer></script>
 </head>
 <body>
+
+<div class="header">
+    <div class="header">
+        <ul class="nav">
+            <li id="home-link"><a href="/">HOME</a></li>
+            <li id="shop-link"><a href="#">SHOP</a>
+                <ul class="dropdown" id="shop-dropdown"></ul>
+            </li>
+            <li><a href="#" id="search-link">SEARCH</a></li>
+        </ul>
+
+        <ul class="Lognav">
+            <li><a href="/loginForm" id="loginLink">LOGIN</a></li>
+            <li><a href="/account">ACCOUNT</a></li>
+            <li><a href="#">BAG(0)</a></li>
+        </ul>
+    </div>
+
+    <!-- 검색 모달 -->
+    <div id="search-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <input type="text" id="search-input" class="underline-input" placeholder="검색어를 입력하세요">
+            <p id="search-description">엔터를 누르면 검색이 됩니다.</p>
+            <div id="search-results"></div> <!-- 검색 결과를 표시할 영역 -->
+        </div>
+    </div>
+</div>
+
 <div class="container">
     <h2>상품등록</h2>
 
@@ -56,5 +86,6 @@
         <button type="submit">등록완료</button>
     </form>
 </div>
+<script type="module" src="/js/header.js"></script>
 </body>
 </html>

@@ -1,7 +1,6 @@
 package elice.shoppingmallproject.domain.cart.service;
 
 import org.springframework.stereotype.Service;
-
 import elice.shoppingmallproject.domain.cart.dto.CartCreateDTO;
 import elice.shoppingmallproject.domain.cart.dto.CartResponseDTO;
 import elice.shoppingmallproject.domain.cart.entity.Cart;
@@ -30,9 +29,6 @@ public class CartService {
     private final UserRepository userRepository;
     private final ProductOptionRepository productOptionRepository;
 
-    /**
-     * 장바구니에 항목 추가
-     */
     public CartResponseDTO addCart(CartCreateDTO cartCreateDTO) {
         Long userId = userUtil.getAuthenticatedUser();
         if (userId == null) {
@@ -57,9 +53,6 @@ public class CartService {
         return toCartResponseDTO(cart);
     }
 
-    /**
-     * 사용자 ID로 장바구니 항목 조회
-     */
     public List<CartResponseDTO> getCartItems() {
         Long userId = userUtil.getAuthenticatedUser();
         if (userId == null) {
@@ -71,9 +64,6 @@ public class CartService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * 장바구니 항목 업데이트
-     */
     public CartResponseDTO updateCartItem(Long cartId, int quantity) {
         Long userId = userUtil.getAuthenticatedUser();
         if (userId == null) {
@@ -97,9 +87,6 @@ public class CartService {
         }
     }
 
-    /**
-     * 장바구니 항목 삭제
-     */
     public void deleteCartItem(Long cartId) {
         Long userId = userUtil.getAuthenticatedUser();
         if (userId == null) {
@@ -114,9 +101,6 @@ public class CartService {
         }
     }
 
-    /**
-     * 사용자 ID로 모든 장바구니 항목 삭제
-     */
     public void deleteAllCartItems() {
         Long userId = userUtil.getAuthenticatedUser();
         if (userId == null) {
@@ -126,9 +110,6 @@ public class CartService {
         cartRepository.deleteAll(userCarts);
     }
 
-    /**
-     * 사용자 ID로 장바구니 항목 조회 및 총 가격 계산
-     */
     public double getTotalPrice() {
         Long userId = userUtil.getAuthenticatedUser();
         if (userId == null) {
@@ -140,23 +121,14 @@ public class CartService {
                 .sum();
     }
 
-    /**
-     * 사용자 ID와 옵션 ID로 장바구니 항목 조회
-     */
     public Cart findByUserIdAndOptionId(Long userId, Long optionId) {
         return cartRepository.findByUserIdAndOptionId(userId, optionId);
     }
 
-    /**
-     * 장바구니 항목 저장
-     */
     public void save(Cart cart) {
         cartRepository.save(cart);
     }
 
-    /**
-     * Cart 엔티티를 CartResponseDTO로 변환
-     */
     private CartResponseDTO toCartResponseDTO(Cart cart) {
         if (cart == null) {
             return null;

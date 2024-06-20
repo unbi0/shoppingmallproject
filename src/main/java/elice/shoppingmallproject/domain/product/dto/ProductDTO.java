@@ -1,7 +1,6 @@
 package elice.shoppingmallproject.domain.product.dto;
 
 import elice.shoppingmallproject.domain.product.entity.Product;
-import elice.shoppingmallproject.global.common.BaseTimeEntity;
 import lombok.Getter;
 import lombok.Setter;
 

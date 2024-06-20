@@ -12,8 +12,4 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping("/cartViewPage")
-    public String cartView() {
-        return "cartTest";
-    }
 }

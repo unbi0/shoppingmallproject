@@ -17,27 +17,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("category")
 @RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @PostMapping
+    @PostMapping("/admin/category")
     public ResponseEntity<CategoryResponseDto> createCategory(HttpServletRequest request, @RequestBody CategoryRequestDto categoryRequestDto) {
         CategoryResponseDto category = categoryService.createCategory(categoryRequestDto.getName());
 
         return ResponseEntity.ok(category);
     }
 
-    @GetMapping
+    @GetMapping("/category")
     public ResponseEntity<List<CategoryResponseDto>> getCategories() {
         List<CategoryResponseDto> categories = categoryService.getCategories();
 
         return ResponseEntity.ok(categories);
     }
 
-    @PatchMapping("/{categoryId}")
+    @PatchMapping("/admin/category/{categoryId}")
     public ResponseEntity<CategoryResponseDto> updateCategory(@RequestBody CategoryRequestDto categoryRequestDto,
                                                               @PathVariable Long categoryId) {
 
@@ -45,7 +44,7 @@ public class CategoryController {
                 categoryRequestDto.getName()));
     }
 
-    @DeleteMapping("/{categoryId}")
+    @DeleteMapping("/admin/category/{categoryId}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteCategory(categoryId);
 

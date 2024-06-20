@@ -163,12 +163,20 @@
 }
 
 .product-item h3 {
-    font-size: 1.2em;
-    margin: 10px 0;
+    font-size: 0.7em; /* 폰트 크기를 더 줄임 */
+    margin: 5px 0; /* 상하 여백 조정 */
 }
 
 .product-item p {
-    margin: 5px 0;
+    font-size: 0.7em; /* 폰트 크기를 더 줄임 */
+    font-weight:bold;
+    margin: 3px 0; /* 상하 여백 조정 */
+    opacity: 0; /* 기본적으로 투명하게 설정 */
+    transition: opacity 0.2s ease-in-out; /* 트랜지션 효과 추가 */
+}
+
+.product-item:hover p {
+    opacity: 1; /* 마우스 오버 시 불투명하게 설정 */
 }
 
 /* 상품 설명 스타일 */

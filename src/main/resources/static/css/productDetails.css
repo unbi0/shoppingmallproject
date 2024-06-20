@@ -17,7 +17,9 @@ body {
 
 .product-image {
     background-color: #e0e0e0;
-    height: 200px;
+    /* 이미지 스타일 조정 */
+    max-width: 100%;
+    height: auto;
     display: flex;
     align-items: center;
     justify-content: center;

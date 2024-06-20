@@ -190,7 +190,7 @@ function handleOrderUpdate() {
             // 주문 목록 페이지로 이동하거나 페이지를 새로고침
             window.location.href = `/order/${orderId}`;
           } else {
-            alert("주문 취소에 실패했습니다.");
+            alert("주문 수정에 실패했습니다.");
           }
         })
         .catch((error) => {

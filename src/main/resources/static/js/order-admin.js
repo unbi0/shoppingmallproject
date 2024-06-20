@@ -98,9 +98,6 @@ function updateOrderList(data) {
 
     const orderElement = `
     <div class="orders-list">
-      <div style="width: 40px;">
-        <input type="checkbox">
-      </div>
       <p style="font-weight: bold; width: 100px;">${order.orderId}</p>
       <p style="width: 100px;">${formattedDate}</p>
       <div style="display: flex; justify-content: center; align-items: center; width: 200px;">

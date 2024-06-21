@@ -2,6 +2,7 @@ package elice.shoppingmallproject.domain.user.service;
 
 import elice.shoppingmallproject.domain.address.dto.AddressResponseDto;
 import elice.shoppingmallproject.domain.address.entity.Address;
+import elice.shoppingmallproject.domain.auth.repository.AuthRepository;
 import elice.shoppingmallproject.domain.cart.repository.CartRepository;
 import elice.shoppingmallproject.domain.user.dto.UserDetail;
 import elice.shoppingmallproject.domain.user.dto.UserManagementDto;
@@ -29,6 +30,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
+    private final AuthRepository authRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserUtil userUtil;
 
@@ -100,6 +102,7 @@ public class UserService {
         User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new UserNotFoundException("조회된 유저가 없습니다."));
         cartRepository.deleteByUserId(loginUserId);
+        authRepository.deleteByUserId(loginUserId);
 
         userRepository.delete(user);
     }

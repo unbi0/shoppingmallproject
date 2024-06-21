@@ -2,13 +2,18 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch('/my')
         .then(response => response.json())
         .then(data => {
-            document.getElementById('email').value = data.email;
-            document.getElementById('username').value = data.username;
-            document.getElementById('postcode').value = data.address.postcode;
-            document.getElementById('address').value = data.address.address;
-            document.getElementById('detailAddress').value = data.address.detailAddress;
+            document.getElementById('email').value = data.email || '';
+            document.getElementById('username').value = data.username || '';
+            document.getElementById('postcode').value = data.address?.postcode || '';
+            document.getElementById('address').value = data.address?.address || '';
+            document.getElementById('detailAddress').value = data.address?.detailAddress || '';
         })
         .catch(error => console.error('Error:', error));
+
+    document.getElementById('addressSearchButton').addEventListener('click', daumPost);
+    document.getElementById('signupForm').addEventListener('submit', handleSubmit);
+    document.getElementById('cancelButton').addEventListener('click', () => location.href = '/');
+    document.getElementById('deleteButton').addEventListener('click', handleDelete);
 });
 
 function daumPost() {
@@ -70,9 +75,19 @@ function handleDelete(event) {
         .then(response => {
             if (response.ok) {
                 alert('회원 탈퇴가 완료되었습니다.');
-                location.href = '/'; // 탈퇴 후 메인 페이지로 리다이렉션
+                handleLogout(); // 회원 탈퇴 후 로그아웃 처리
             } else {
                 alert('회원 탈퇴에 실패하였습니다.');
             }
+        });
+}
+
+function handleLogout() {
+    fetch('/logout', { method: 'POST' })
+        .then(() => {
+            location.href = '/'; // 로그아웃 후 로그인 페이지로 리다이렉션
+        })
+        .catch(error => {
+            console.error('Error during logout:', error);
         });
 }

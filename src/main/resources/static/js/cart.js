@@ -185,10 +185,14 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch('/loginCheck')
             .then(response => {
                 if (response.status === 204) {
-                    // 로그인 상태이면 주문 페이지로 이동하고 장바구니 데이터를 로컬 스토리지에 저장
+                    // 로그인 상태이면 서버에서 장바구니 데이터 가져오기
                     fetch('/cart')
                         .then(response => response.json())
                         .then(cartItems => {
+                            if (cartItems.length === 0) {
+                                alert('장바구니에 상품이 없습니다.');
+                                return;
+                            }
                             // 필요한 형식으로 변환
                             const formattedCartItems = cartItems.map(item => ({
                                 id: item.optionId,  // 변경된 부분
@@ -217,6 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error('Error checking login status:', error);
             });
     });
+
 
     function uploadLocalCartToServer() {
         const localCartItems = JSON.parse(localStorage.getItem('productList')) || [];

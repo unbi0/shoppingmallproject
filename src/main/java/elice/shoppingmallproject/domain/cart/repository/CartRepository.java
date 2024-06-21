@@ -1,5 +1,6 @@
 package elice.shoppingmallproject.domain.cart.repository;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +19,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 
     @Query("SELECT c FROM Cart c WHERE c.id = :cartId AND c.user.id = :userId")
     Cart findByCartIdAndUserId(@Param("cartId") Long cartId, @Param("userId") Long userId);
+
+    @Transactional
+    void deleteByUserId(Long userId);
 }

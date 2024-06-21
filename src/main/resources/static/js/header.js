@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const searchInput = document.getElementById("search-input");
     const shopLink = document.getElementById("shop-link");
     const shopDropdown = document.getElementById("shop-dropdown");
-    const loginLink = document.getElementById("loginLink"); // 수정된 부분: loginLink의 id가 "loginLink"임을 확인
+    const loginLink = document.getElementById("loginLink");
     const logNav = document.querySelector(".Lognav");
 
     modal.style.display = "none"; // 페이지 로드 시 모달을 숨김
@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 }
                 clearCartInServer(); // 로그아웃 시 서버의 장바구니 비우기
                 loadCartItemsFromLocalStorage(); // 로컬 스토리지의 장바구니 항목 로드
+                location.href = "/"; // 로그아웃 후 홈으로 리다이렉트
             })
             .catch(error => {
                 console.error('Error during logout:', error);
@@ -195,7 +196,4 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 window.location.href = '/loginForm';
             });
     });
-
-
-
 });

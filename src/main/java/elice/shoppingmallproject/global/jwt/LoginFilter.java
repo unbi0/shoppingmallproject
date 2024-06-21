@@ -27,7 +27,7 @@ import org.springframework.util.StreamUtils;
 @Slf4j
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
-    private static final long ACCESS_TOKEN_EXPIRATION_MS = 600000L; // 10 minutes
+    private static final long ACCESS_TOKEN_EXPIRATION_MS = 86400000L; // 10 minutes
     private static final long REFRESH_TOKEN_EXPIRATION_MS = 86400000L; // 24 hours
     private static final String ACCESS_TOKEN_HEADER = "access";
     private static final String REFRESH_TOKEN_COOKIE_NAME = "refresh";

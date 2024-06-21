@@ -175,4 +175,27 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const localCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
         renderCartItems(localCartItems);
     }
+
+    accountLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        fetch('/loginCheck')
+            .then(response => {
+                if (response.status === 204) {
+                    // 로그인 상태이면 ACCOUNT 페이지로 이동
+                    window.location.href = '/account';
+                } else {
+                    // 비로그인 상태이면 로그인 페이지로 리디렉션
+                    alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+                    window.location.href = '/loginForm';
+                }
+            })
+            .catch(error => {
+                console.error('Error checking login status:', error);
+                alert('로그인 상태를 확인하는 중 오류가 발생했습니다. 로그인 페이지로 이동합니다.');
+                window.location.href = '/loginForm';
+            });
+    });
+
+
+
 });

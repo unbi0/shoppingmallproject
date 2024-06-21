@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private static final long ACCESS_TOKEN_EXPIRATION_MS = 600000L;
+    private static final long ACCESS_TOKEN_EXPIRATION_MS = 86400000L;
     private static final long REFRESH_TOKEN_EXPIRATION_MS = 8600000L;
     private static final String ACCESS_TOKEN_HEADER = "access";
     private static final String REFRESH_TOKEN_COOKIE_NAME = "refresh";

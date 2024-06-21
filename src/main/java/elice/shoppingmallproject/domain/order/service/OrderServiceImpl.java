@@ -45,6 +45,9 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public Page<OrderListDto> searchAllOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+        if (endDate != null) {
+            endDate = endDate.plusDays(1);
+        }
         Page<Orders> ordersPage = orderRepository.searchAllOrders(orderId, startDate, endDate, orderStatus, pageable);
         return ordersPage.map(this::mapToOrderListDto);
     }
@@ -52,6 +55,9 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public Page<OrderListDto> searchUserOrders(Long orderId, LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
         Long userId = userUtil.getAuthenticatedUser();
+        if (endDate != null) {
+            endDate = endDate.plusDays(1);
+        }
         Pageable pageable = PageRequest.of(page, size);
         Page<Orders> ordersPage = orderRepository.searchUserOrders(userId, orderId, startDate, endDate, pageable);
         return ordersPage.map(this::mapToOrderListDto);

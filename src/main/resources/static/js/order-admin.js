@@ -268,3 +268,18 @@ function scrollToTop() {
     behavior: "smooth",
   });
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+
+        startDateInput.addEventListener('input', function () {
+            // endDate의 최소값을 startDate의 값으로 설정
+            endDateInput.min = startDateInput.value;
+        });
+
+        endDateInput.addEventListener('input', function () {
+            // startDate의 최대값을 endDate의 값으로 설정
+            startDateInput.max = endDateInput.value;
+        });
+    });

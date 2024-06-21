@@ -179,14 +179,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             alert('장바구니에 상품을 추가하는 중 오류가 발생했습니다.');
                         });
 
-                } else if (response.status === 401) {
-                    let productList = [];
+                } else {
+                    let productList = JSON.parse(window.localStorage.getItem('productList')) || [];
                     const productDetails = {
                         id: productId,
                         size: selectedSize,
                         quantity: quantity,
                         name: document.getElementById('product-name').textContent,
-                        price: document.getElementById('product-price').textContent,
+                        price: productPrice, // 숫자로 저장
                         imageUrl: document.querySelector('.product-image').src,
                         optionId: optionId
                     };
@@ -198,8 +198,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Test optionId:', optionId);
 
                     window.location.href = `/cart/view`;
-                } else {
-                    alert('로그인 상태를 확인하는 중 오류가 발생했습니다.');
                 }
             })
             .catch(error => {

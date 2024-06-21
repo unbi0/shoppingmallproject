@@ -58,27 +58,4 @@ public class CartController {
     public void deleteAllCartItems() {
         cartService.deleteAllCartItems();
     }
-
-    @PostMapping("/upload")
-    public ResponseEntity<?> uploadCart(@RequestBody List<CartCreateDTO> localCartItems) {
-        Long userId = userUtil.getAuthenticatedUser();
-        if (userId == null) {
-            throw new IllegalArgumentException("User ID must not be null");
-        }
-
-        for (CartCreateDTO item : localCartItems) {
-            // 기존 항목이 있는지 확인
-            Cart existingCart = cartService.findByUserIdAndOptionId(userId, item.getOptionId());
-            if (existingCart != null) {
-                // 기존 항목이 있다면 수량 업데이트
-                existingCart.setQuantity(existingCart.getQuantity() + item.getQuantity());
-                cartService.save(existingCart);
-            } else {
-                // 새로운 항목이라면 추가
-                cartService.addCart(item);
-            }
-        }
-
-        return ResponseEntity.ok("Cart uploaded successfully");
-    }
 }

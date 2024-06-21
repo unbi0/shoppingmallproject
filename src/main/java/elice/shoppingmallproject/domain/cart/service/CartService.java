@@ -121,9 +121,7 @@ public class CartService {
                 .sum();
     }
 
-    public Cart findByUserIdAndOptionId(Long userId, Long optionId) {
-        return cartRepository.findByUserIdAndOptionId(userId, optionId);
-    }
+
 
     public void save(Cart cart) {
         cartRepository.save(cart);

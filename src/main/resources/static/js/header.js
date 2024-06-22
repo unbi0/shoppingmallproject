@@ -110,9 +110,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 if (adminPageLink) {
                     adminPageLink.remove();
                 }
+                location.href = "/"; // 로그아웃 후 홈으로 리다이렉트
                 clearCartInServer(); // 로그아웃 시 서버의 장바구니 비우기
                 loadCartItemsFromLocalStorage(); // 로컬 스토리지의 장바구니 항목 로드
-                location.href = "/"; // 로그아웃 후 홈으로 리다이렉트
+
             })
             .catch(error => {
                 console.error('Error during logout:', error);
